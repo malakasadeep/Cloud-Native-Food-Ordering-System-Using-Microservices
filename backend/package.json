@@ -1,0 +1,11 @@
+{
+  "name": "food-delivery-system",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "user-service",
+    "restaurant-service",
+    "order-service",
+    "delivery-service"
+  ]
+}

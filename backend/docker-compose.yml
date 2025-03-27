@@ -1,0 +1,12 @@
+#version: "3.8"
+services:
+  user-service:
+    image: malakasadeep/fds-user-service:latest
+    container_name: user-service
+    ports:
+      - "5001:5001"
+    environment:
+      - PORT=5001
+      - MONGO_URL=mongodb+srv://pgmsadeep:1234@cluster0.phudmlq.mongodb.net/FoodDelevery_DB?retryWrites=true&w=majority
+      - JWT_SECRET=576520617265204465764372616674732e206465766372616674732e746f70
+    restart: unless-stopped
