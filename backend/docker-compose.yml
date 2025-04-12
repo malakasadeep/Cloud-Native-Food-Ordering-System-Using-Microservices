@@ -10,3 +10,15 @@ services:
       - MONGO_URL=mongodb+srv://pgmsadeep:1234@cluster0.phudmlq.mongodb.net/FoodDelevery_DB?retryWrites=true&w=majority
       - JWT_SECRET=576520617265204465764372616674732e206465766372616674732e746f70
     restart: unless-stopped
+
+  api-gateway:
+    image: malakasadeep/fds-gateway:latest
+    container_name: api-gateway
+    ports:
+      - "80:80"
+    depends_on:
+      - user-service
+      # - restaurant-service
+      # - order-service
+      # - delivery-service
+    restart: unless-stopped

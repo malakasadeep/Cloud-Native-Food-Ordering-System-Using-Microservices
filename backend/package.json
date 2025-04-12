@@ -6,6 +6,8 @@
     "user-service",
     "restaurant-service",
     "order-service",
-    "delivery-service"
+    "delivery-service",
+    "api-gateway"
+
   ]
 }
