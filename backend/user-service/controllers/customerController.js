@@ -9,7 +9,7 @@ export const sendMobileOTP = async (req, res) => {
     }
     
     const otp = await authService.loginWithMobile(mobile);
-    res.json({ success: true, message: 'OTP sent', otp }); // Don't send OTP in production
+    res.json({ success: true, message: 'OTP sent', otp }); 
   } catch (error) {
     console.error('Error in sendMobileOTP:', error);
     res.status(500).json({ success: false, message: error.message || 'Failed to send OTP' });
@@ -42,7 +42,7 @@ export const sendEmailOTP = async (req, res) => {
     }
     
     const otp = await authService.loginWithEmail(email);
-    res.json({ success: true, message: 'OTP sent', otp }); // Don't send OTP in production
+    res.json({ success: true, message: 'OTP sent', otp });
   } catch (error) {
     console.error('Error in sendEmailOTP:', error);
     res.status(500).json({ success: false, message: error.message || 'Failed to send OTP' });
@@ -100,7 +100,7 @@ export const verifyOTP = async (req, res, next) => {
     
     // Pass res to the service function
     await authService.verifyMobileOTP(mobile, otp, res);
-    // Response is handled in the service
+
   } catch (error) {
     console.error('Error in verifyOTP:', error);
     const statusCode = error.message === 'Invalid OTP' ? 400 : 500;
