@@ -97,8 +97,7 @@ export const verifyOTP = async (req, res, next) => {
     if (!mobile || !otp) {
       return res.status(400).json({ success: false, message: 'Mobile number and OTP are required' });
     }
-    
-    // Pass res to the service function
+
     await authService.verifyMobileOTP(mobile, otp, res);
 
   } catch (error) {

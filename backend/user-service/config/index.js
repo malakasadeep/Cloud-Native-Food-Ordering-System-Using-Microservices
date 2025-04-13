@@ -1,0 +1,17 @@
+/**
+ * Application configuration
+ */
+const config = {
+  env: process.env.NODE_ENV || 'development',
+  services: {
+    notification: {
+      baseUrl: process.env.NOTIFICATION_SERVICE_URL || 'http://localhost:5005'
+    }
+  },
+  // Add other configuration as needed
+  logging: {
+    level: process.env.LOG_LEVEL || 'info'
+  }
+};
+
+export default config;

@@ -1,13 +1,14 @@
-import { generateToken, verifyToken } from '../utils/jwt.js';
-import smsSender from '../utils/smsSender.js';
-import mailer from '../utils/mailer.js';
+import { generateToken } from '../utils/jwt.js';
+import { notifySMS, notifyEmail } from '../utils/notify.js';
 import Customer from '../models/customerModel.js';
 import { generateOTP, storeOTP, getOTP, deleteOTP } from '../utils/otpManager.js';
+import { getOtpEmailTemplate } from '../templates/otpEmailTemplate.js';
+
 
 export async function loginWithMobile(mobile) {
   try {
     const otp = generateOTP();
-    await smsSender.sendSMS(mobile, `Your OTP is ${otp}`);
+    await notifySMS(mobile, `Your OTP is ${otp}`);
     storeOTP(`otp:mobile:${mobile}`, otp);
     return otp;
   } catch (error) {
@@ -22,8 +23,7 @@ export async function verifyMobileOTP(mobile, otp, res) {
     if (!storedOTP || storedOTP !== otp) {
       throw new Error('Invalid OTP');
     }
-    
-    // Clear OTP after successful verification
+
     deleteOTP(`otp:mobile:${mobile}`);
     
     let user = await Customer.findOne({ mobile });
@@ -53,8 +53,12 @@ export async function verifyMobileOTP(mobile, otp, res) {
 export async function loginWithEmail(email) {
   try {
     const otp = generateOTP();
-    await mailer.sendEmail(email, 'Your OTP', `Your OTP is ${otp}`);
-    // Store OTP in Map with expiration
+    
+
+    const emailHtml = getOtpEmailTemplate(otp);
+    await notifyEmail(email, 'Your Login OTP', emailHtml);
+    
+
     storeOTP(`otp:email:${email}`, otp);
     return otp;
   } catch (error) {
@@ -65,13 +69,12 @@ export async function loginWithEmail(email) {
 
 export async function verifyEmailOTP(email, otp) {
   try {
-    // Validate OTP from Map
+
     const storedOTP = getOTP(`otp:email:${email}`);
     if (!storedOTP || storedOTP !== otp) {
       throw new Error('Invalid OTP');
     }
     
-    // Clear OTP after successful verification
     deleteOTP(`otp:email:${email}`);
     
     let user = await Customer.findOne({ email });

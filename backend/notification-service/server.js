@@ -24,7 +24,7 @@ const validateSmsRequest = (req, res, next) => {
   next();
 };
 
-app.post('api/v1/notification/send-email', validateEmailRequest, async (req, res, next) => {
+app.post('/api/v1/notification/send-email', validateEmailRequest, async (req, res, next) => {
   const { to, subject, message } = req.body;
   try {
     await sendEmail(to, subject, message);
@@ -34,7 +34,7 @@ app.post('api/v1/notification/send-email', validateEmailRequest, async (req, res
   }
 });
 
-app.post('api/v1/notification/send-sms', validateSmsRequest, async (req, res, next) => {
+app.post('/api/v1/notification/send-sms', validateSmsRequest, async (req, res, next) => {
   const { mobile, message } = req.body;
   try {
     await sendSMS(mobile, message);
