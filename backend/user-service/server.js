@@ -3,7 +3,7 @@ import dbConnect from "./config/dbConnect.js";
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import authRoutes from "./routes/authRoute.js";
+import customerRoutes from "./routes/customerRoute.js";
 import http from "http";
 
 dotenv.config();
@@ -16,7 +16,7 @@ app.use(cookieParser());
 const DEFAULT_PORT = process.env.PORT || 5001;
 const FALLBACK_PORT = 7001;
 
-app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/customer", customerRoutes);
 
 const startServer = (port) => {
   const server = http.createServer(app);
