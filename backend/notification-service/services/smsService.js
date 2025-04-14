@@ -12,7 +12,7 @@ export const sendSMS = async (mobile, message) => {
       method: 'POST',
       url: 'https://xk8z1q.api.infobip.com/sms/2/text/advanced',
       headers: {
-        'Authorization': 'App d97962ed12ebccd0870087ab1b3fc066-e50be66a-ad92-4cf5-9747-b77f9d89e1b2',
+        'Authorization': `App ${process.env.SMS_API_KEY}`,
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },

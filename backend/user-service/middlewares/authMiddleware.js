@@ -1,23 +1,25 @@
 import  { verifyToken } from '../utils/jwt.js';
 
 export const authenticate = (req, res, next) => {
-  const token = req.headers.authorization?.split(' ')[1];
-  if (!token) return res.status(401).json({ error: 'Unauthorized' });
+  let token;
+  const authHeader = req.headers.authorization;
+  const cookieToken = req.cookies?.access_token;
+
+  if (cookieToken) {
+    token = cookieToken;
+  } else if (authHeader && authHeader.startsWith("Bearer ")) {
+    token = authHeader.split(" ")[1];
+  }
+
+  if (!token) {
+    return res.status(401).json({ message: "Token not found" });
+  }
 
   try {
-    const decoded = verifyToken(token);
+    const decoded = verifyToken(token, process.env.JWT_SECRET);
     req.user = decoded;
     next();
-  } catch {
-    res.status(403).json({ error: 'Invalid token' });
+  } catch (error) {
+    return res.status(401).json({ message: "Not authorized, invalid token" });
   }
-};
-
-export const authorize = (roles) => {
-  return (req, res, next) => {
-    if (!req.user || !roles.includes(req.user.role)) {
-      return res.status(403).json({ error: 'Forbidden' });
-    }
-    next();
-  };
 };
