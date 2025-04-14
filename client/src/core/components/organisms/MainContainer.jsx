@@ -5,7 +5,7 @@ import HomeContainer from "./HomeContainer";
 import RowContainer from "./RowContainer";
 import MenuContainer from "./MenuContainer";
 import CartContainer from "./CartContainer";
-import { foodItems } from "../utils/foodData";
+import { foodItems } from "../../utils/foodData";
 import Header from "./Header";
 
 const MainContainer = () => {

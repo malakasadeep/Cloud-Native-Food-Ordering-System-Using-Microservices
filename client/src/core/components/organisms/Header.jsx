@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { MdShoppingBasket } from "react-icons/md";
 import { motion } from "framer-motion";
-import Logo from "../../assets/img/logo.png";
+import Logo from "../../../assets/img/logo.png";
 import { Link } from "react-router-dom";
 import { User, Store } from "lucide-react"; // Import Lucide React icons
-import { useCart } from "../utils/CartContext";
+import { useCart } from "../../contexts/CartContext";
 
 const Header = () => {
   const [cartItems, setCartItems] = useState([]);

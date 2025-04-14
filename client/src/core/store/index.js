@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import authReducer from "../../src/features/auth/authslices";
+import authReducer from "../../features/customerAuth/slices/customerSlice";
 
 import { useDispatch } from "react-redux";
 

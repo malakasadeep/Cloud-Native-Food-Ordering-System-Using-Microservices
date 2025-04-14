@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { MdShoppingBasket } from "react-icons/md";
 import { motion } from "framer-motion";
-import NotFound from "../../assets/img/NotFound.svg";
+import NotFound from "../../../assets/img/NotFound.svg";
 
 const RowContainer = ({ flag, data, scrollValue }) => {
   const rowContainer = useRef();

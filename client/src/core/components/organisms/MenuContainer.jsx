@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { IoFastFood } from "react-icons/io5";
-import { categories } from "../utils/data";
+import { categories } from "../../utils/data";
 import { motion } from "framer-motion";
 import RowContainer from "./RowContainer";
-import { foodItems } from "../utils/foodData";
+import { foodItems } from "../../utils/foodData";
 
 const MenuContainer = () => {
   const [filter, setFilter] = useState("chicken");

@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { MdOutlineKeyboardBackspace } from "react-icons/md";
 import { RiRefreshFill } from "react-icons/ri";
 import { motion } from "framer-motion";
-import EmptyCart from "../../assets/img/emptyCart.svg";
-import CartItem from "./CartItem";
-import { useCart } from "../utils/CartContext";
+import EmptyCart from "../../../assets/img/emptyCart.svg";
+import CartItem from "./../molecules/CartItem";
+import { useCart } from "../../contexts/CartContext";
 
 const CartContainer = () => {
   const { isCartOpen, toggleCart } = useCart();
