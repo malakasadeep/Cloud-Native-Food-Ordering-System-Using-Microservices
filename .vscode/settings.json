@@ -1,0 +1,11 @@
+{
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+  "tailwindCSS.includeLanguages": {
+    "javascript": "javascript",
+    "javascriptreact": "javascriptreact"
+  },
+  "tailwindCSS.emmetCompletions": true,
+  "editor.inlineSuggest.enabled": true
+}

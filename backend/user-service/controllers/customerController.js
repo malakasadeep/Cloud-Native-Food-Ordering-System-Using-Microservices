@@ -24,8 +24,8 @@ export const verifyMobileOTP = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Mobile number and OTP are required' });
     }
     
-    const result = await authService.verifyMobileOTP(mobile, otp);
-    res.json({ success: true, ...result });
+    await authService.verifyMobileOTP(mobile, otp, res);
+    // No need for additional response as it's handled in the service
   } catch (error) {
     console.error('Error in verifyMobileOTP:', error);
     const statusCode = error.message === 'Invalid OTP' ? 400 : 500;
@@ -57,8 +57,8 @@ export const verifyEmailOTP = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Email and OTP are required' });
     }
     
-    const result = await authService.verifyEmailOTP(email, otp);
-    res.json({ success: true, ...result });
+    await authService.verifyEmailOTP(email, otp, res);
+    // No need for additional response as it's handled in the service
   } catch (error) {
     console.error('Error in verifyEmailOTP:', error);
     const statusCode = error.message === 'Invalid OTP' ? 400 : 500;
