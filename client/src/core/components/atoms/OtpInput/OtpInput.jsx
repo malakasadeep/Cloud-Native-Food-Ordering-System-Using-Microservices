@@ -6,21 +6,18 @@ const OtpInput = ({ onComplete, isLoading, error, setError }) => {
   const inputRefs = [useRef(null), useRef(null), useRef(null), useRef(null), useRef(null), useRef(null)];
   
   const handleChange = (index, value) => {
-    // Only allow numbers
     if (!/^\d*$/.test(value)) return;
     
     const newOtp = [...otp];
-    newOtp[index] = value.slice(0, 1); // Take only first digit
+    newOtp[index] = value.slice(0, 1); 
     setOtp(newOtp);
-    
-    // Auto-focus next input
+
     if (value && index < 5) {
       inputRefs[index + 1].current.focus();
     }
   };
   
   const handleKeyDown = (index, e) => {
-    // Move to previous input on backspace
     if (e.key === 'Backspace' && !otp[index] && index > 0) {
       inputRefs[index - 1].current.focus();
     }
@@ -29,8 +26,7 @@ const OtpInput = ({ onComplete, isLoading, error, setError }) => {
   const handlePaste = (e) => {
     e.preventDefault();
     const pastedData = e.clipboardData.getData('text/plain').trim();
-    
-    // Check if pasted content is a 6 digit number
+
     if (/^\d{6}$/.test(pastedData)) {
       const digits = pastedData.split('');
       setOtp(digits);
@@ -38,16 +34,21 @@ const OtpInput = ({ onComplete, isLoading, error, setError }) => {
     }
   };
   
-  useEffect(() => {
-    // Call onComplete when all 6 digits are entered
-    if (otp.every(digit => digit !== '')) {
-      onComplete(otp.join(''));
-    }
-  }, [otp, onComplete]);
-
-  // Clear error when OTP changes
+ 
   useEffect(() => {
     if (error && setError) {
+     
+      const timer = setTimeout(() => {
+        setError(null);
+      }, 3000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [error, setError]);
+
+  useEffect(() => {
+  
+    if (otp.some(digit => digit !== '') && error && setError) {
       setError(null);
     }
   }, [otp, error, setError]);
@@ -57,9 +58,9 @@ const OtpInput = ({ onComplete, isLoading, error, setError }) => {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="mb-6 relative"
+      className="mb-6 relative w-full max-w-md mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100"
     >
-      {/* Error Toast */}
+
       <AnimatePresence>
         {error && (
           <motion.div
@@ -73,7 +74,7 @@ const OtpInput = ({ onComplete, isLoading, error, setError }) => {
         )}
       </AnimatePresence>
 
-      <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md mx-auto">
+      <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md mx-auto px-8 pt-8 pb-6 bg-gradient-to-r from-red-50 to-orange-50">
         <div className="text-center mb-4">
           <h3 className="text-xl font-semibold text-headingColor">Enter Verification Code</h3>
           <p className="text-sm text-textColor mt-1">We've sent a 6-digit code to your email</p>

@@ -71,7 +71,7 @@ const Header = () => {
               About Us
             </li>
             <li className="text-lg text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer">
-              Service
+              Become a Seller
             </li>
           </motion.ul>
 
@@ -92,26 +92,15 @@ const Header = () => {
             </motion.div>
           </div>
 
-          {/* New Sign In Button with animation */}
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-2 px-4 py-2 rounded-full bg-transparent border border-headingColor text-headingColor hover:bg-headingColor hover:text-white transition-all duration-300 ease-in-out"
-            onClick={handleSignIn}
-          >
-            <User size={18} strokeWidth={2} />
-            <span>Sign In</span>
-          </motion.button>
 
-          {/* Become a Seller Button with animation */}
           <motion.button
             whileHover={{ scale: 1.05, backgroundColor: "rgba(40, 40, 40, 0.1)" }}
             whileTap={{ scale: 0.95 }}
             className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-transparent to-transparent border border-orange-500 text-orange-500 hover:text-white hover:bg-gradient-to-r hover:from-orange-500 hover:to-orange-600 transition-all duration-300 ease-in-out"
-            onClick={handleBecomeSeller}
+            onClick={handleSignIn}
           >
-            <Store size={18} strokeWidth={2} />
-            <span>Become a Seller</span>
+            <User size={18} strokeWidth={2} />
+            <span>Sign In</span>
           </motion.button>
         </div>
       </div>

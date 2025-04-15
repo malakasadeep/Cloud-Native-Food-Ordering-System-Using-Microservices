@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Phone, Mail, ChevronRight, User, Lock, AlertCircle, Chrome, Check } from 'lucide-react';
-
-// Import atom components
 import TextField from '../../atoms/TextField';
 import Button from '../../atoms/Button';
 import CountryCodeSelector from '../../atoms/CountryCodeSelector';
 
 const CustomerAuthForm = ({ onEmailSubmit, isLoading }) => {
   const [authType, setAuthType] = useState(() => {
-    // Try to get the last used auth type from localStorage
     return localStorage.getItem('preferredAuthType') || 'mobile';
   });
   const [mobileNumber, setMobileNumber] = useState('');
@@ -18,9 +15,8 @@ const CustomerAuthForm = ({ onEmailSubmit, isLoading }) => {
   const [errors, setErrors] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [emailError, setEmailError] = useState('');
-  const [internalLoading, setInternalLoading] = useState(false); // Added internal loading state
+  const [internalLoading, setInternalLoading] = useState(false); 
 
-  // Save preferred auth type to localStorage
   useEffect(() => {
     localStorage.setItem('preferredAuthType', authType);
   }, [authType]);
@@ -52,10 +48,9 @@ const CustomerAuthForm = ({ onEmailSubmit, isLoading }) => {
     
     if (!validateInputs()) return;
 
-    setInternalLoading(true); // Use internal loading state instead of setIsLoading
+    setInternalLoading(true); 
     
     try {
-      // Simulating API call with timeout
       await new Promise(resolve => setTimeout(resolve, 1500));
       
       console.log('Form submitted:', { 
@@ -66,7 +61,6 @@ const CustomerAuthForm = ({ onEmailSubmit, isLoading }) => {
       
       setIsSubmitted(true);
       
-      // Reset form after successful submission
       setTimeout(() => {
         setIsSubmitted(false);
         if (authType === 'mobile') {
@@ -80,16 +74,15 @@ const CustomerAuthForm = ({ onEmailSubmit, isLoading }) => {
       console.error('Auth error:', error);
       setErrors({ form: 'Authentication failed. Please try again.' });
     } finally {
-      setInternalLoading(false); // Use internal loading state
+      setInternalLoading(false);
     }
   };
 
   const toggleAuthType = (type) => {
     setAuthType(type);
-    setErrors({});  // Clear errors when switching
+    setErrors({});  
   };
 
-  // Format mobile number as user types
   const handleMobileChange = (e) => {
     const value = e.target.value.replace(/\D/g, '').substring(0, 10);
     setMobileNumber(value);
@@ -117,7 +110,6 @@ const CustomerAuthForm = ({ onEmailSubmit, isLoading }) => {
     onEmailSubmit(email);
   };
 
-  // Animation variants
   const formVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { 
@@ -143,7 +135,7 @@ const CustomerAuthForm = ({ onEmailSubmit, isLoading }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      {/* Decorative header accent */}
+
       <div className="h-2 bg-gradient-to-r from-cartNumBg to-red-500"></div>
       
       <div className="px-8 pt-8 pb-6 bg-gradient-to-r from-red-50 to-orange-50">
@@ -254,7 +246,7 @@ const CustomerAuthForm = ({ onEmailSubmit, isLoading }) => {
                   variant="primary" 
                   fullWidth 
                   icon={ChevronRight}
-                  disabled={isLoading || internalLoading} // Consider both loading states
+                  disabled={isLoading || internalLoading} 
                 >
                   {isLoading || internalLoading ? 'Please wait...' : 'Continue'}
                 </Button>

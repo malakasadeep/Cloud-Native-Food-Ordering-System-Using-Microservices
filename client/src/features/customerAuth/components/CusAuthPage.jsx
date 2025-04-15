@@ -7,7 +7,9 @@ import CustomerAuthForm from '../../../core/components/organisms/Customer/Cusrom
 import OtpInput from '../../../core/components/atoms/OtpInput/OtpInput';
 import foodDeliveryAnimation from '../../../assets/lottie/cus.json'; 
 import { sendEmailOtp, verifyEmailOtp } from '../actions/customerAction';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Header from '../../../core/components/organisms/Header';
 
 const CusAuthPage = () => {
   const dispatch = useDispatch();
@@ -16,8 +18,8 @@ const CusAuthPage = () => {
   const [loading, setLoading] = useState(false);
   const [verifyLoading, setVerifyLoading] = useState(false);
   const [userEmail, setUserEmail] = useState('');
+  const [otpError, setOtpError] = useState(null);
 
-  // Lottie animation options
   const defaultOptions = {
     loop: true,
     autoplay: true,
@@ -30,6 +32,7 @@ const CusAuthPage = () => {
   const handleEmailSubmit = async (email) => {
     setLoading(true);
     setUserEmail(email);
+
     
     try {
       const result = await dispatch(sendEmailOtp(email));
@@ -37,6 +40,8 @@ const CusAuthPage = () => {
       if (result.success) {
         setIsOtpSent(true);
         toast.success("Verification code sent to your email");
+        console.log("Verification code sent to email:", email);
+        
       } else {
         toast.error(result.message || "Failed to send verification code");
       }
@@ -49,29 +54,60 @@ const CusAuthPage = () => {
   };
 
   const handleVerifyOtp = async (otp) => {
+    if (!otp || verifyLoading) return; 
+    
     setVerifyLoading(true);
+    setOtpError(null); 
     
     try {
       const result = await dispatch(verifyEmailOtp({email: userEmail, otp}, navigate));
-      
-      if (result.success) {
+
+      if (result && result.success) {
         toast.success("Email verified successfully!");
-        // Navigation to home is handled in the action
       } else {
-        toast.error(result.message || "Invalid verification code");
+        const errorMsg = result && result.message ? result.message : "Invalid verification code";
+        setOtpError(errorMsg);
+        toast.error(errorMsg);
       }
     } catch (error) {
-      toast.error("Verification failed. Please try again.");
-      console.error(error);
+      console.error('Verification error:', error);
+      let errorMessage = "Verification failed. Please try again.";
+      
+      if (error.response && error.response.data) {
+        errorMessage = error.response.data.message || errorMessage;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      setOtpError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setVerifyLoading(false);
     }
   };
 
+  const handleBackToEmail = () => {
+    setIsOtpSent(false);
+    setVerifyLoading(false);
+  };
+
   return (
+    <>
+    <Header/>
     <div className="min-h-screen flex flex-col overflow-hidden relative">
-      {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none bg-gradient-to-br from-orange-50 to-red-50">
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+      
+      <div className="absolute inset-0 overflow-hidden pointer-events-none bg-primary">
         <motion.div 
           className="absolute top-0 left-0 w-96 h-96 bg-red-200 rounded-full filter blur-3xl opacity-20"
           animate={{
@@ -109,10 +145,8 @@ const CusAuthPage = () => {
         />
       </div>
 
-      {/* Main content container */}
-      <div className="flex-grow flex flex-col lg:flex-row items-center justify-center px-4 sm:px-6 lg:px-8 py-10 max-w-7xl mx-auto relative z-10">
-        
-        {/* Left column - Content and Animation (now first on all screen sizes) */}
+      <div className="flex-grow flex flex-col lg:flex-row items-center justify-center px-4 sm:px-6 mt-10 lg:px-8 py-10 max-w-7xl mx-auto relative z-10">
+
         <motion.div 
           className="lg:w-1/2 lg:pr-12 mb-10 lg:mb-0 text-center lg:text-left order-1"
           initial={{ opacity: 0, y: 20 }}
@@ -128,7 +162,6 @@ const CusAuthPage = () => {
             Discover the fastest and easiest way to get your favorite meals delivered right to your doorstep. Login now to explore thousands of restaurants!
           </p>
 
-          {/* Lottie Animation - Hidden on mobile, visible on sm screens and up */}
           <div className="w-full max-w-md mx-auto hidden sm:block lg:mx-0">
             <Lottie 
               options={defaultOptions}
@@ -138,22 +171,34 @@ const CusAuthPage = () => {
           </div>
         </motion.div>
         
-        {/* Right column - Auth Form or OTP Input */}
-        <div className="lg:w-1/2 w-full max-w-md lg:max-w-none order-2">
+        <div className="lg:w-1/2 w-full max-w-md lg:max-w-none order-2 mt-6">
           {isOtpSent ? (
-            <OtpInput 
-              onComplete={handleVerifyOtp} 
-              isLoading={verifyLoading} 
-            />
+            <div className="space-y-4">
+              <OtpInput 
+                onComplete={handleVerifyOtp} 
+                isLoading={verifyLoading}
+                error={otpError}
+                setError={setOtpError}
+              />
+              <button
+                onClick={handleBackToEmail}
+                disabled={verifyLoading}
+                className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out mt-4"
+              >
+                Back to Email
+              </button>
+            </div>
           ) : (
             <CustomerAuthForm 
               onEmailSubmit={handleEmailSubmit}
               isLoading={loading}
             />
+            
           )}
         </div>
       </div>
     </div>
+    </>
   );
 };
 

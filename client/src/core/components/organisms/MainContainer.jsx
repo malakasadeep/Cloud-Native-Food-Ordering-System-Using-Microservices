@@ -12,9 +12,8 @@ const MainContainer = () => {
   const [scrollValue, setScrollValue] = useState(0);
   
   return (
-    <div className="w-screen h-auto flex flex-col bg-primary overflow-x-hidden">
-      <Header />
-      <main  className="mt-14 md:mt-20 px-4 md:px-16 py-4 w-full">
+    
+      
     <div className="w-full h-auto flex flex-col items-center justify-center">
       <HomeContainer />
 
@@ -53,8 +52,8 @@ const MainContainer = () => {
       {/* CartContainer visibility is controlled by CartContext */}
       <CartContainer />
     </div>
-    </main>
-    </div>
+
+
   );
 };
 
