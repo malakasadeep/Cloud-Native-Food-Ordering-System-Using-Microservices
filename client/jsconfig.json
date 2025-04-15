@@ -1,11 +1,11 @@
-{
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "*": ["client/src/*"]
-    },
-    "jsx": "react",
-    "checkJs": true
-  },
-  "include": ["client/src/**/*"]
-}
+// {
+//   "compilerOptions": {
+//     "baseUrl": ".",
+//     "paths": {
+//       "*": ["src/*"]
+//     },
+//     "jsx": "react",
+//     "checkJs": true
+//   },
+//   "include": ["src/**/*"]
+// }

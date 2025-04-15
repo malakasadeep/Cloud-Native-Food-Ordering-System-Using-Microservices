@@ -67,7 +67,7 @@ export async function loginWithEmail(email) {
   }
 }
 
-export async function verifyEmailOTP(email, otp) {
+export async function verifyEmailOTP(email, otp, res) {
   try {
 
     const storedOTP = getOTP(`otp:email:${email}`);
@@ -83,7 +83,16 @@ export async function verifyEmailOTP(email, otp) {
     }
 
     const token = generateToken({ id: user._id, role: user.role });
-    return { token, user };
+    const { password, ...rest } = user._doc;
+    
+    if (res) {
+      res
+        .cookie("access_token", token, { httpOnly: true })
+        .status(200)
+        .json({ success: true, token, user: rest });
+    }
+    return { token, user: rest };
+
   } catch (error) {
     console.error('Error in verifyEmailOTP service:', error);
     if (error.message === 'Invalid OTP') {
