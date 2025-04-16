@@ -3,12 +3,13 @@ import { ChevronDown, Search } from 'lucide-react';
 import countries from 'i18n-iso-countries';
 import { getCountries, getCountryCallingCode } from 'react-phone-number-input/input';
 import en from 'i18n-iso-countries/langs/en.json';
+import ReactCountryFlag from 'react-country-flag'; // Add this import
 
 // Initialize the countries library
 countries.registerLocale(en);
 
 // Default fallback country to use before data loads
-const DEFAULT_COUNTRY = { code: '+94', flag: '🇱🇰', name: 'Sri Lanka', iso: 'LK' };
+const DEFAULT_COUNTRY = { code: '+94', name: 'Sri Lanka', iso: 'LK' };
 
 const CountryCodeSelector = ({ value, onChange }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,14 +32,7 @@ const CountryCodeSelector = ({ value, onChange }) => {
             code = '';
           }
           
-          // Get flag emoji by converting ISO country code to regional indicator symbols
-          const flag = country
-            .toUpperCase()
-            .replace(/./g, char => 
-              String.fromCodePoint(char.charCodeAt(0) + 127397)
-            );
-          
-          return { code, flag, name, iso: country };
+          return { code, name, iso: country };
         } catch (e) {
           // Skip this country if there's an error
           return null;
@@ -101,10 +95,20 @@ const CountryCodeSelector = ({ value, onChange }) => {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between w-full px-3 py-3 border border-gray-300 rounded-lg bg-white text-textColor hover:bg-gray-50"
+        className="flex items-center justify-between w-full h-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-textColor hover:bg-gray-50"
       >
         <div className="flex items-center">
-          <span className="mr-2">{selectedCountry?.flag || '🏳️'}</span>
+          <span className="mr-2" aria-label={`Flag of ${selectedCountry?.name || 'unknown country'}`}>
+            <ReactCountryFlag 
+              countryCode={selectedCountry?.iso || 'LK'} 
+              svg 
+              style={{
+                width: '1.5em',
+                height: '1.5em',
+              }}
+              title={selectedCountry?.name || 'Flag'}
+            />
+          </span>
           <span>{selectedCountry?.code || ''}</span>
         </div>
         <ChevronDown size={16} />
@@ -137,7 +141,17 @@ const CountryCodeSelector = ({ value, onChange }) => {
                 }}
                 className="flex items-center px-3 py-2 cursor-pointer hover:bg-gray-100"
               >
-                <span className="mr-2">{country.flag}</span>
+                <span className="mr-2">
+                  <ReactCountryFlag 
+                    countryCode={country.iso} 
+                    svg 
+                    style={{
+                      width: '1.2em',
+                      height: '1.2em',
+                    }}
+                    title={country.name}
+                  />
+                </span>
                 <span className="text-sm">{country.code}</span>
                 <span className="text-xs text-gray-500 ml-2">{country.name}</span>
               </div>

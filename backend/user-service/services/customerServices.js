@@ -102,15 +102,40 @@ export async function verifyEmailOTP(email, otp, res) {
   }
 }
 
-export async function completeProfile(userId, profileData) {
+export async function completeProfile(userId,profileData) {
   try {
     const user = await Customer.findById(userId);
     if (!user) {
       throw new Error('User not found');
     }
-    
+
+    if (profileData.paymentMethods && typeof profileData.paymentMethods === 'string') {
+      try {
+        profileData.paymentMethods = JSON.parse(profileData.paymentMethods);
+      } catch (e) {
+        profileData.paymentMethods = [];
+      }
+    }
+
+    if (profileData.secondaryAddresses && typeof profileData.secondaryAddresses === 'string') {
+      try {
+        profileData.secondaryAddresses = JSON.parse(profileData.secondaryAddresses);
+      } catch (e) {
+        profileData.secondaryAddresses = [];
+      }
+    }
+
     Object.assign(user, profileData);
-    if (user.name && user.mobile && user.email && user.postalCode && user.location?.lat && user.location?.lng) {
+
+    // Use latitude and longitude for location check
+    if (
+      user.name &&
+      user.mobile &&
+      user.email &&
+      user.postalCode &&
+      user.location?.latitude &&
+      user.location?.longitude
+    ) {
       user.isProfileCompleted = true;
     }
     await user.save();

@@ -6,7 +6,13 @@ import { useNavigate } from 'react-router-dom';
 import CustomerAuthForm from '../../../core/components/organisms/Customer/CusromerAuthForm';
 import OtpInput from '../../../core/components/atoms/OtpInput/OtpInput';
 import foodDeliveryAnimation from '../../../assets/lottie/cus.json'; 
-import { sendEmailOtp, verifyEmailOtp } from '../actions/customerAction';
+import { 
+  sendEmailOtp, 
+  verifyEmailOtp, 
+  // --- Mobile SMS OTP actions ---
+  sendSMSOtp,      // <-- send mobile SMS OTP action
+  verifySMSOtp     // <-- verify mobile SMS OTP action
+} from '../actions/customerAction';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Header from '../../../core/components/organisms/Header';
@@ -19,6 +25,9 @@ const CusAuthPage = () => {
   const [verifyLoading, setVerifyLoading] = useState(false);
   const [userEmail, setUserEmail] = useState('');
   const [otpError, setOtpError] = useState(null);
+  const [userMobile, setUserMobile] = useState('');
+  const [isMobileOtpSent, setIsMobileOtpSent] = useState(false);
+  const [mobileOtpError, setMobileOtpError] = useState(null);
 
   const defaultOptions = {
     loop: true,
@@ -88,6 +97,66 @@ const CusAuthPage = () => {
 
   const handleBackToEmail = () => {
     setIsOtpSent(false);
+    setVerifyLoading(false);
+  };
+
+  // Handler for sending mobile SMS OTP
+  const handleMobileSubmit = async (mobile, setMobileError) => {
+    setLoading(true);
+    setUserMobile(mobile);
+    setMobileOtpError(null);
+    if (setMobileError) setMobileError('');
+
+    try {
+      const result = await dispatch(sendSMSOtp(mobile));
+      if (result.success) {
+        setIsMobileOtpSent(true);
+        toast.success("Verification code sent to your mobile");
+        console.log("Verification code sent to mobile:", mobile);
+      } else {
+        toast.error(result.message || "Failed to send verification code");
+        if (setMobileError) setMobileError(result.message || "Failed to send verification code");
+      }
+    } catch (error) {
+      toast.error("Something went wrong. Please try again.");
+      if (setMobileError) setMobileError("Something went wrong. Please try again.");
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handler for verifying mobile OTP
+  const handleVerifyMobileOtp = async (otp) => {
+    if (!otp || verifyLoading) return;
+    setVerifyLoading(true);
+    setMobileOtpError(null);
+
+    try {
+      const result = await dispatch(verifySMSOtp({mobile: userMobile, otp}, navigate));
+      if (result && result.success) {
+        toast.success("Mobile verified successfully!");
+      } else {
+        const errorMsg = result && result.message ? result.message : "Invalid verification code";
+        setMobileOtpError(errorMsg);
+        toast.error(errorMsg);
+      }
+    } catch (error) {
+      let errorMessage = "Verification failed. Please try again.";
+      if (error.response && error.response.data) {
+        errorMessage = error.response.data.message || errorMessage;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      setMobileOtpError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setVerifyLoading(false);
+    }
+  };
+
+  const handleBackToMobile = () => {
+    setIsMobileOtpSent(false);
     setVerifyLoading(false);
   };
 
@@ -188,9 +257,26 @@ const CusAuthPage = () => {
                 Back to Email
               </button>
             </div>
+          ) : isMobileOtpSent ? (
+            <div className="space-y-4">
+              <OtpInput 
+                onComplete={handleVerifyMobileOtp}
+                isLoading={verifyLoading}
+                error={mobileOtpError}
+                setError={setMobileOtpError}
+              />
+              <button
+                onClick={handleBackToMobile}
+                disabled={verifyLoading}
+                className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out mt-4"
+              >
+                Back to Mobile
+              </button>
+            </div>
           ) : (
             <CustomerAuthForm 
               onEmailSubmit={handleEmailSubmit}
+              onMobileSubmit={handleMobileSubmit}
               isLoading={loading}
             />
             

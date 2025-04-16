@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { motion } from 'framer-motion';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import ProfileCompleteForm from '../../../core/components/organisms/Customer/ProfileCompleteForm';
+import { completeProfile } from '../actions/customerAction';
 
 const ProfileCompletePopup = ({ isOpen, onClose, user }) => {
   const dispatch = useDispatch();
@@ -13,7 +15,7 @@ const ProfileCompletePopup = ({ isOpen, onClose, user }) => {
     
     try {
       // Here you would call an API to update the user profile
-      // const result = await dispatch(updateUserProfile(formData));
+      const result = await dispatch(completeProfile(formData));
       
       // For now, let's just simulate success
       setTimeout(() => {
@@ -32,6 +34,17 @@ const ProfileCompletePopup = ({ isOpen, onClose, user }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4 overflow-y-auto">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}

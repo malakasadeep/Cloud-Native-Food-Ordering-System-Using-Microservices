@@ -106,3 +106,13 @@ export const verifyOTP = async (req, res, next) => {
     res.status(statusCode).json({ success: false, message: error.message || 'Failed to verify OTP' });
   }
 };
+
+export const signOut = (req, res) => {
+  try {
+    res.clearCookie("access_token");
+    res.status(200).json({ success: true, message: "Signed out successfully" });
+  } catch (error) {
+    console.error('Error in signOut:', error);
+    res.status(500).json({ success: false, message: error.message || 'Sign out failed' });
+  }
+};

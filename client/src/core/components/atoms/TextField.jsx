@@ -35,7 +35,7 @@ const TextField = ({
           placeholder={placeholder}
           whileFocus={{ scale: 1.01 }}
           className={`
-            w-full rounded-lg border ${error ? 'border-red-500' : 'border-gray-300'} 
+            w-full h-11 rounded-lg border ${error ? 'border-red-500' : 'border-gray-300'} 
             py-3 px-4 text-textColor focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500
             ${Icon ? 'pl-10' : ''}
             transition-all duration-200

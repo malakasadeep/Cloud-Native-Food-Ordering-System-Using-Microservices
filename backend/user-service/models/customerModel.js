@@ -7,14 +7,24 @@ const customerSchema = new mongoose.Schema({
   address: String,
   postalCode: String,
   location: {
-    lat: Number,
-    lng: Number,
+    latitude: Number,
+    longitude: Number,
   },
-  secondaryAddresses: [String],
-  paymentDetails: [
+  secondaryAddresses: [
     {
-      type: Map,
-      of: String, // could be customized for cards, PayPal etc.
+      id: Number,
+      name: String,
+      address: String,
+    }
+  ],
+  paymentMethods: [
+    {
+      id: Number,
+      type: String,
+      cardNumber: String,
+      cardName: String,
+      expiry: String,
+      cvv: String,
     }
   ],
   isProfileCompleted: { type: Boolean, default: false },

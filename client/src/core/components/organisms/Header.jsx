@@ -3,22 +3,29 @@ import { MdShoppingBasket } from "react-icons/md";
 import { motion } from "framer-motion";
 import Logo from "../../../assets/img/logo.png";
 import { Link } from "react-router-dom";
-import { User, Store, LogOut } from "lucide-react"; 
+import { User, Store, LogOut, Menu as MenuIcon } from "lucide-react"; 
 import { useCart } from "../../contexts/CartContext";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../../../features/customerAuth/actions/customerAction";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const [cartItems, setCartItems] = useState([]);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const userMenuRef = useRef(null);
   const { toggleCart } = useCart();
   const { user, isAuthenticated } = useSelector((state) => state.auth);
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const toggleUserMenu = () => {
     setIsUserMenuOpen(!isUserMenuOpen);
   };
 
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen((prev) => !prev);
+  };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -39,17 +46,14 @@ const Header = () => {
     setCartItems(storedCartItems);
   }, []);
 
-
   useEffect(() => {
     const updateCartItems = () => {
       const items = localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems')) : [];
       setCartItems(items);
     };
 
-
     window.addEventListener('cartUpdated', updateCartItems);
     
-
     updateCartItems();
     
     return () => {
@@ -57,13 +61,12 @@ const Header = () => {
     };
   }, []);
 
-
   const handleSignIn = () => {
-    console.log("Sign In clicked");
+    navigate("/customer-auth");
   };
 
   const handleSignOut = () => {
-    console.log("Sign Out clicked");
+    dispatch(logout(navigate));
     setIsUserMenuOpen(false);
   };
 
@@ -177,30 +180,60 @@ const Header = () => {
 
       {/* mobile */}
       <div className="flex items-center justify-between md:hidden w-full h-full">
-        <div className="relative flex items-center justify-center">
-          <motion.div
-            whileTap={{ scale: 0.6 }}
-            className="w-8 h-8 rounded-full bg-orange-300 flex items-center justify-center cursor-pointer hover:shadow-md"
-            onClick={toggleCart}
+        {/* Left: Menu button */}
+        <div className="flex items-center">
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            className="flex items-center p-2 rounded-full bg-transparent border border-headingColor text-headingColor"
+            onClick={toggleMobileMenu}
           >
-            <MdShoppingBasket className="text-white text-xl" />
-            {cartItems && cartItems.length > 0 && (
-              <div className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-cartNumBg flex items-center justify-center">
-                <p className="text-xs text-white font-semibold">
-                  {cartItems.length}
-                </p>
-              </div>
-            )}
-          </motion.div>
+            <MenuIcon size={22} strokeWidth={2} />
+          </motion.button>
+          {/* Mobile menu dropdown */}
+          {isMobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="absolute top-16 left-2 bg-white shadow-xl rounded-lg py-2 min-w-[160px] z-50"
+            >
+              <ul>
+                <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Home</li>
+                <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Menu</li>
+                <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">About Us</li>
+                <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Become a Seller</li>
+              </ul>
+            </motion.div>
+          )}
         </div>
 
+        {/* Center: Logo */}
         <Link to={"/"} className="flex items-center gap-2">
           <img src={Logo} className="w-8 object-cover" alt="logo" />
           <p className="text-headingColor text-xl font-bold"> City</p>
         </Link>
 
+        {/* Right: Cart and Profile */}
         <div className="flex items-center gap-2">
-          {/* Mobile sign in / profile button */}
+          {/* Cart button */}
+          <div className="relative flex items-center justify-center">
+            <motion.div
+              whileTap={{ scale: 0.6 }}
+              className="w-8 h-8 rounded-full bg-orange-300 flex items-center justify-center cursor-pointer hover:shadow-md"
+              onClick={toggleCart}
+            >
+              <MdShoppingBasket className="text-white text-xl" />
+              {cartItems && cartItems.length > 0 && (
+                <div className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-cartNumBg flex items-center justify-center">
+                  <p className="text-xs text-white font-semibold">
+                    {cartItems.length}
+                  </p>
+                </div>
+              )}
+            </motion.div>
+          </div>
+
+          {/* Profile button */}
           {!isAuthenticated ? (
             <motion.button
               whileTap={{ scale: 0.9 }}
@@ -216,8 +249,8 @@ const Header = () => {
                 className="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer overflow-hidden border-2 border-orange-500"
                 onClick={toggleUserMenu}
               >
-                {user?.photoURL ? (
-                  <img src={user.photoURL} alt="user profile" className="w-full h-full object-cover" />
+                {user?.avatar ? (
+                  <img src={user.avatar} alt="user profile" className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full bg-orange-300 flex items-center justify-center">
                     <span className="text-white font-bold text-sm">
@@ -252,15 +285,6 @@ const Header = () => {
               )}
             </div>
           )}
-
-          {/* Mobile Become a Seller Button */}
-          <motion.button
-            whileTap={{ scale: 0.9 }}
-            className="flex items-center p-2 rounded-full bg-transparent border border-orange-500 text-orange-500"
-            onClick={handleBecomeSeller}
-          >
-            <Store size={16} strokeWidth={2} />
-          </motion.button>
         </div>
       </div>
     </header>
