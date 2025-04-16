@@ -17,7 +17,6 @@ const mapContainerStyle = {
   position: "relative",
 };
 
-const defaultLocation = { lat: 6.9271, lng: 79.8612 };
 
 const ProfileCompleteForm = ({ initialData = {}, onSubmit, onSkip }) => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -26,6 +25,7 @@ const ProfileCompleteForm = ({ initialData = {}, onSubmit, onSkip }) => {
     email: initialData.email || '',
     countryCode: initialData.countryCode || '+94',
     phone: initialData.phone || '',
+    mobile: initialData.mobile || '',
     address: initialData.address || '',
     postalCode: initialData.postalCode || '',
     location: initialData.location || { latitude: 6.9271, longitude: 79.8612 }, 
@@ -203,8 +203,15 @@ const ProfileCompleteForm = ({ initialData = {}, onSubmit, onSkip }) => {
   };
       
   const handlePhoneChange = (e) => {
-    // Only allow numbers
+    
     const value = e.target.value.replace(/[^0-9]/g, '');
+    if (value.startsWith('0')) {
+      value = value.substring(1);
+    }
+    
+    if (value.length > 9) {
+      value = value.slice(0, 9);
+    }
     setFormData(prev => ({
 
       ...prev,
@@ -331,7 +338,13 @@ const ProfileCompleteForm = ({ initialData = {}, onSubmit, onSkip }) => {
     const newErrors = {};
     if (step === 0) {
       if (!formData.name) newErrors.name = 'Name is required';
-      if (!formData.phone) newErrors.phone = 'Phone number is required';
+      if (!formData.phone) {
+        newErrors.phone = 'Phone number is required';
+      } else if (formData.phone.length !== 9) {
+        newErrors.phone = 'Phone number must be exactly 9 digits';
+      } else if (formData.phone.startsWith('0')) {
+        newErrors.phone = 'Phone number should not start with 0';
+      }
       if (!formData.email) newErrors.email = 'Email is required';
       else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email is invalid';
       if (!formData.address) newErrors.address = 'Address is required';
@@ -677,9 +690,13 @@ const ProfileCompleteForm = ({ initialData = {}, onSubmit, onSkip }) => {
       if (validateStep(currentStep)) {
         console.log("Form submission initiated by user");
         setIsSubmitting(true); // Set submitting state to true
+        const submissionData = {
+          ...formData,
+          mobile: formData.countryCode.replace('+', '') + formData.phone // Format as "94740437570"
+        };
         // Use setTimeout to prevent immediate unmounting
         setTimeout(() => {
-          onSubmit(formData);
+          onSubmit(submissionData);
         }, 100);
       }
     } else {

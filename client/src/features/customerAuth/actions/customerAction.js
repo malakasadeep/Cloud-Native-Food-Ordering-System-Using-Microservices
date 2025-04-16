@@ -5,7 +5,46 @@ import {
   authFailure,
   logout as logoutAction,
   setCurrentUser,
+  completeUser,
 } from "../slices/customerSlice";
+
+
+export const sendEmailOtp = (email) => async (dispatch) => {
+  try {
+    const response = await customerService.sendEmailOtp(email);
+
+    if (response.success) {
+      return { success: true, message: response.message };
+    } else {
+      dispatch(authFailure(response.message));
+      return { success: false, message: response.message };
+    }
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Sending failed";
+    dispatch(authFailure(errorMessage));
+    return { success: false, message: errorMessage };
+  }
+};
+
+export const sendSMSOtp = (mobile) => async (dispatch) => {
+  try {
+    const response = await customerService.sendSMSOtp(mobile);
+
+    if (response.success) {
+      return { success: true, message: response.message };
+    } else {
+      dispatch(authFailure(response.message));
+      return { success: false, message: response.message };
+    }
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Sending failed";
+    dispatch(authFailure(errorMessage));
+    return { success: false, message: errorMessage };
+  }
+};
+
 
 export const verifyEmailOtp = ({email,otp}, navigate) => async (dispatch) => {
   dispatch(authStart());
@@ -39,6 +78,40 @@ export const verifyEmailOtp = ({email,otp}, navigate) => async (dispatch) => {
     return { success: false, message: errorMessage };
   }
 };
+export const verifySMSOtp = ({mobile,otp}, navigate) => async (dispatch) => {
+  dispatch(authStart());
+
+  try {
+    const response = await customerService.VerifiSMSOtp({mobile,otp});
+
+    if (response.success && response.user && response.token) {
+      dispatch(
+        loginSuccess({
+          user: response.user,
+          token: response.token,
+        })
+      );
+      
+      if (response.user.isProfileCompleted === false) {
+        navigate("/?showProfilePopup=true");
+      } else {
+        navigate("/");
+      }
+
+      return { success: true };
+    } else {
+      dispatch(authFailure(response.message));
+      return { success: false, message: response.message };
+    }
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "verification failed";
+    dispatch(authFailure(errorMessage));
+    return { success: false, message: errorMessage };
+  }
+};
+
+
 
 // export const loginWithGoogle = (navigate) => async (dispatch) => {
 //   dispatch(authStart());
@@ -68,39 +141,19 @@ export const verifyEmailOtp = ({email,otp}, navigate) => async (dispatch) => {
 //   }
 // };
 
-// export const loginWithFacebook = (navigate) => async (dispatch) => {
-//   dispatch(authStart());
 
-//   try {
-//     const response = await authService.loginWithFacebook();
-//     console.log(response);
+export const completeProfile = (profileData) => async (dispatch) => {
+  dispatch(authStart());
 
-//     if (response.success && response.user && response.token) {
-//       dispatch(
-//         loginSuccess({
-//           user: response.user,
-//           token: response.token,
-//         })
-//       );
-//       navigate("/");
-//       return { success: true };
-//     } else {
-//       dispatch(authFailure(response.message));
-//       return { success: false, message: response.message };
-//     }
-//   } catch (error) {
-//     const errorMessage =
-//       error instanceof Error ? error.message : "Facebook login failed";
-//     dispatch(authFailure(errorMessage));
-//     return { success: false, message: errorMessage };
-//   }
-// };
-
-export const sendEmailOtp = (email) => async (dispatch) => {
   try {
-    const response = await customerService.sendEmailOtp(email);
+    const response = await customerService.completeProfile(profileData);
+    console.log("user",response.user);
 
-    if (response.success) {
+    if (response.success && response.user) {
+      console.log("suceed");
+      
+      dispatch(completeUser(response.user));
+      dispatch(setCurrentUser(response.user)); 
       return { success: true, message: response.message };
     } else {
       dispatch(authFailure(response.message));
@@ -108,7 +161,7 @@ export const sendEmailOtp = (email) => async (dispatch) => {
     }
   } catch (error) {
     const errorMessage =
-      error instanceof Error ? error.message : "Sending failed";
+      error instanceof Error ? error.message : "Failed to update profile";
     dispatch(authFailure(errorMessage));
     return { success: false, message: errorMessage };
   }
@@ -116,14 +169,14 @@ export const sendEmailOtp = (email) => async (dispatch) => {
 
 export const logout = (navigate) => async (dispatch) => {
   try {
-    await authService.logout();
+    await customerService.logout();
     dispatch(logoutAction());
-    navigate("/signin");
+    navigate("/");
     return { success: true };
   } catch (error) {
     console.error("Logout error:", error);
     dispatch(logoutAction());
-    navigate("/signin");
+    navigate("/");
     return { success: true };
   }
 };

@@ -36,12 +36,74 @@ const customerService = {
       };
     }
   },
+  sendSMSOtp: async (mobile) => {
+    try {
+      const response = await client.post(API_CONSTANTS.SEND_MOBILE_OTP, { mobile });
+
+      return {
+        success: true,
+        message: response.data.message || "SMS sended successfully",
+      };
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.response?.data) {
+          console.error("Error sending SMS:", error.response.data);
+          return {
+            success: false,
+            message: error.response.data.message || "Failed to send SMS",
+          };
+        }
+      } else if (error instanceof Error) {
+        console.error("Error sending SMS:", error.message);
+        return {
+          success: false,
+          message: error.message,
+        };
+      }
+      console.error("Error Sending SMS:", error);
+      return {
+        success: false,
+        message: "An unknown error occurred",
+      };
+    }
+  },
 
   VerifiEmailOtp: async ({email,otp}) => {
     try {
       const response = await client.post(API_CONSTANTS.VERIFY_EMAIL_OTP, {email,otp});
 
-     
+      return {
+        success: true,
+        message: "Verification successful",
+        token: response.data.token,
+        user: response.data.user,
+      };
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.response?.data) {
+          console.error("Verification error:", error.response.data);
+          return {
+            success: false,
+            message: error.response.data.message || "Verification failed",
+          };
+        }
+      } else if (error instanceof Error) {
+        console.error("Verification error:", error.message);
+        return {
+          success: false,
+          message: error.message,
+        };
+      }
+      console.error("Verification error:", error);
+      return {
+        success: false,
+        message: "An unknown error occurred",
+      };
+    }
+  },
+  VerifiSMSOtp: async ({mobile,otp}) => {
+    try {
+      const response = await client.post(API_CONSTANTS.VERIFY_MOBILE_OTP, {mobile,otp});
 
       return {
         success: true,
@@ -76,16 +138,12 @@ const customerService = {
   logout: async () => {
     try {
       await client.get(API_CONSTANTS.LOGOUT);
-      localStorage.removeItem("token");
-
       return {
         success: true,
         message: "Logged out successfully",
       };
     } catch (error) {
       console.error("Logout error:", error);
-      localStorage.removeItem("token");
-
       return {
         success: true,
         message: "Logged out successfully",
@@ -100,6 +158,39 @@ const customerService = {
     } catch (error) {
       console.error("Error fetching current user:", error);
       return null;
+    }
+  },
+
+  completeProfile: async (profileData) => {
+    try {
+      const response = await client.post(API_CONSTANTS.COMPLETE_PROFILE, profileData);
+      
+      return {
+        success: true,
+        message: response.data.message || "Profile updated successfully",
+        user: response.data.user
+      };
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.response?.data) {
+          console.error("Profile update error:", error.response.data);
+          return {
+            success: false,
+            message: error.response.data.message || "Failed to update profile",
+          };
+        }
+      } else if (error instanceof Error) {
+        console.error("Profile update error:", error.message);
+        return {
+          success: false,
+          message: error.message,
+        };
+      }
+      console.error("Profile update error:", error);
+      return {
+        success: false,
+        message: "An unknown error occurred",
+      };
     }
   },
 

@@ -5,7 +5,7 @@ import TextField from '../../atoms/TextField';
 import Button from '../../atoms/Button';
 import CountryCodeSelector from '../../atoms/CountryCodeSelector';
 
-const CustomerAuthForm = ({ onEmailSubmit, isLoading }) => {
+const CustomerAuthForm = ({ onEmailSubmit, onMobileSubmit, isLoading }) => {
   const [authType, setAuthType] = useState(() => {
     return localStorage.getItem('preferredAuthType') || 'mobile';
   });
@@ -16,6 +16,7 @@ const CustomerAuthForm = ({ onEmailSubmit, isLoading }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [emailError, setEmailError] = useState('');
   const [internalLoading, setInternalLoading] = useState(false); 
+  const [mobileError, setMobileError] = useState('');
 
   useEffect(() => {
     localStorage.setItem('preferredAuthType', authType);
@@ -45,22 +46,21 @@ const CustomerAuthForm = ({ onEmailSubmit, isLoading }) => {
 
   const handleContinue = async (e) => {
     e.preventDefault();
-    
+    setMobileError('');
     if (!validateInputs()) return;
 
     setInternalLoading(true); 
     
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      console.log('Form submitted:', { 
-        authType,
-        mobileNumber: authType === 'mobile' ? countryCode + mobileNumber : null,
-        email: authType === 'email' ? email : null
-      });
-      
+      // Integrate sendSMSOtp for mobile authentication
+      if (authType === 'mobile') {
+        if (onMobileSubmit) {
+          await onMobileSubmit(countryCode + mobileNumber, setMobileError);
+        }
+      } else {
+        // fallback for email (shouldn't reach here)
+      }
       setIsSubmitted(true);
-      
       setTimeout(() => {
         setIsSubmitted(false);
         if (authType === 'mobile') {
@@ -69,9 +69,7 @@ const CustomerAuthForm = ({ onEmailSubmit, isLoading }) => {
           setEmail('');
         }
       }, 2000);
-      
     } catch (error) {
-      console.error('Auth error:', error);
       setErrors({ form: 'Authentication failed. Please try again.' });
     } finally {
       setInternalLoading(false);
@@ -195,10 +193,13 @@ const CustomerAuthForm = ({ onEmailSubmit, isLoading }) => {
                           icon={Phone}
                           value={mobileNumber}
                           onChange={handleMobileChange}
-                          error={errors.mobile}
+                          error={errors.mobile || mobileError}
                           required
                         />
                       </div>
+                      {mobileError && (
+                        <p className="mt-1 text-sm text-red-600">{mobileError}</p>
+                      )}
                     </div>
                   ) : (
                     <div className="space-y-4">
