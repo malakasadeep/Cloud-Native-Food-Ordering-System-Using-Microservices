@@ -1,9 +1,8 @@
 import React from "react";
-import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
+import {  BrowserRouter as Router, } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import { CartProvider } from './core/contexts/CartContext';
-import CusAuthPage from "./features/customerAuth/components/CusAuthPage";
-import HomePage from "./core/components/pages/HomePage";
+import AppRoutes from "./core/routes/Approutes";
 
 const App = () => {
   return (
@@ -11,10 +10,9 @@ const App = () => {
       <CartProvider>
         <AnimatePresence>
           <div className="overflow-x-hidden ">
-          <Routes>
-              <Route path="/*" element={<HomePage />} />
-              <Route path="/test" element={<CusAuthPage />} />
-          </Routes> 
+          
+              <AppRoutes/>
+          
           </div>
         </AnimatePresence>
       </CartProvider>

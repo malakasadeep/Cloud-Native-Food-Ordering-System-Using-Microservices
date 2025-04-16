@@ -5,7 +5,7 @@ import { useJsApiLoader } from '@react-google-maps/api';
 import Button from '../../atoms/Button';
 import CountryCodeSelector from '../../atoms/CountryCodeSelector';
 import MapComponent from '../../molecules/MapComponent';
-const GOOGLE_MAPS_API_KEY = "AIzaSyCUNJVymb9TyStgPqJSE5Ond4dZHn7fwZU";
+const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 const LIBRARIES = ["places"];
 
 const mapContainerStyle = {
@@ -358,7 +358,7 @@ const ProfileCompleteForm = ({ initialData = {}, onSubmit, onSkip }) => {
               value={formData.name}
               onChange={handleChange}
               placeholder="Enter your full name"
-              className="w-full h-12 px-2 py-1.5 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cartNumBg focus:border-cartNumBg"
+              className="w-full h-11 px-2 py-1.5 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cartNumBg focus:border-cartNumBg"
             />
             {errors.name && <p className="mt-0.5 text-xs text-red-600">{errors.name}</p>}
           </div>
@@ -368,7 +368,7 @@ const ProfileCompleteForm = ({ initialData = {}, onSubmit, onSkip }) => {
               Phone Number <span className="text-cartNumBg">*</span>
             </label>
             <div className="flex gap-1">
-              <div className="w-20">
+              <div className="w-32 h-11">
                 <CountryCodeSelector 
                   value={formData.countryCode}
                   onChange={handleCountryCodeChange}
@@ -381,7 +381,7 @@ const ProfileCompleteForm = ({ initialData = {}, onSubmit, onSkip }) => {
                   value={formData.phone}
                   onChange={handlePhoneChange}
                   placeholder="Phone number"
-                  className="w-full h-12 px-2 py-1.5 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cartNumBg focus:border-cartNumBg"
+                  className="w-full h-11 px-2 py-1.5 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cartNumBg focus:border-cartNumBg"
                 />
                 {errors.phone && <p className="mt-0.5 text-xs text-red-600">{errors.phone}</p>}
               </div>
@@ -398,7 +398,7 @@ const ProfileCompleteForm = ({ initialData = {}, onSubmit, onSkip }) => {
               value={formData.email}
               onChange={handleChange}
               placeholder="Enter your email"
-              className="w-full h-12 px-2 py-1.5 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cartNumBg focus:border-cartNumBg"
+              className="w-full h-11 px-2 py-1.5 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cartNumBg focus:border-cartNumBg"
             />
             {errors.email && <p className="mt-0.5 text-xs text-red-600">{errors.email}</p>}
           </div>
@@ -414,7 +414,7 @@ const ProfileCompleteForm = ({ initialData = {}, onSubmit, onSkip }) => {
                 value={formData.address}
                 onChange={handleChange}
                 placeholder="Enter your address"
-                className="w-full h-12 px-2 py-1.5 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cartNumBg focus:border-cartNumBg"
+                className="w-full h-11 px-2 py-1.5 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cartNumBg focus:border-cartNumBg"
               />
               {errors.address && <p className="mt-0.5 text-xs text-red-600">{errors.address}</p>}
             </div>
@@ -429,7 +429,7 @@ const ProfileCompleteForm = ({ initialData = {}, onSubmit, onSkip }) => {
                 value={formData.postalCode}
                 onChange={handleChange}
                 placeholder="Postal code"
-                className="w-full h-12 px-2 py-1.5 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cartNumBg focus:border-cartNumBg"
+                className="w-full h-11 px-2 py-1.5 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cartNumBg focus:border-cartNumBg"
               />
               {errors.postalCode && <p className="mt-0.5 text-xs text-red-600">{errors.postalCode}</p>}
             </div>

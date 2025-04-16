@@ -183,7 +183,7 @@ const CustomerAuthForm = ({ onEmailSubmit, isLoading }) => {
                   {authType === 'mobile' ? (
                     <div className="space-y-4">
                       <div className="flex gap-2">
-                        <div className="w-24">
+                        <div className="w-32">
                           <CountryCodeSelector 
                             value={countryCode} 
                             onChange={setCountryCode} 

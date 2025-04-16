@@ -96,11 +96,59 @@ const MapComponent = ({
             {isLocating ? "Locating..." : "Current Location"}
           </button>
         </div>
+        
+        {/* Center Pointer - fixed in the middle of the map */}
+        <div
+          style={{
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%, -100%)",
+            zIndex: 99,
+            pointerEvents: "none"
+          }}
+        >
+          <div
+            style={{
+              width: "24px",
+              height: "24px",
+              borderRadius: "50% 50% 50% 0",
+              background: "#FF5722",
+              transform: "rotate(-45deg)",
+              boxShadow: "0 2px 5px rgba(0,0,0,0.3)"
+            }}
+          />
+          <div
+            style={{
+              width: "12px",
+              height: "12px",
+              borderRadius: "50%",
+              background: "white",
+              position: "absolute",
+              top: "6px", 
+              left: "6px",
+              transform: "rotate(45deg)"
+            }}
+          />
+        </div>
+        
         <GoogleMap
           mapContainerStyle={mapContainerStyle}
           center={mapCenter}
           zoom={15}
           onClick={handleMapClick}
+          onIdle={(map) => {
+            // Update marker position to map center when map stops moving
+            const newCenter = map.getCenter();
+            if (newCenter) {
+              const newPos = { 
+                lat: newCenter.lat(), 
+                lng: newCenter.lng() 
+              };
+              setMarkerPosition(newPos);
+              setMapCenter(newPos);
+            }
+          }}
           options={{
             mapTypeControl: true,
             streetViewControl: false,
@@ -108,11 +156,12 @@ const MapComponent = ({
             gestureHandling: 'greedy',
           }}
         >
-          <Marker
+          {/* Hide the draggable marker since we're using the center pointer */}
+          {/* <Marker
             position={markerPosition}
             draggable
             onDragEnd={handleMarkerDragEnd}
-          />
+          /> */}
         </GoogleMap>
       </>
     )}
