@@ -1,4 +1,3 @@
-
 import customerService from "../services/customerServices";
 import {
   authStart,
@@ -21,7 +20,12 @@ export const verifyEmailOtp = ({email,otp}, navigate) => async (dispatch) => {
           token: response.token,
         })
       );
-    navigate("/");
+      
+      if (response.user.isProfileCompleted === false) {
+        navigate("/?showProfilePopup=true");
+      } else {
+        navigate("/");
+      }
 
       return { success: true };
     } else {

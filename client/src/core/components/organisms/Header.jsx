@@ -1,32 +1,55 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { MdShoppingBasket } from "react-icons/md";
 import { motion } from "framer-motion";
 import Logo from "../../../assets/img/logo.png";
 import { Link } from "react-router-dom";
-import { User, Store } from "lucide-react"; // Import Lucide React icons
+import { User, Store, LogOut } from "lucide-react"; 
 import { useCart } from "../../contexts/CartContext";
+import { useSelector } from "react-redux";
 
 const Header = () => {
   const [cartItems, setCartItems] = useState([]);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const userMenuRef = useRef(null);
   const { toggleCart } = useCart();
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
+
+
+  const toggleUserMenu = () => {
+    setIsUserMenuOpen(!isUserMenuOpen);
+  };
+
 
   useEffect(() => {
-    // Get cart items from localStorage
+    const handleClickOutside = (event) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setIsUserMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    
     const storedCartItems = localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems')) : [];
     setCartItems(storedCartItems);
   }, []);
 
-  // Listen for cart updates
+
   useEffect(() => {
     const updateCartItems = () => {
       const items = localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems')) : [];
       setCartItems(items);
     };
 
-    // Listen for cart updates
+
     window.addEventListener('cartUpdated', updateCartItems);
     
-    // Initial load
+
     updateCartItems();
     
     return () => {
@@ -34,15 +57,18 @@ const Header = () => {
     };
   }, []);
 
-  // Handlers for new buttons
+
   const handleSignIn = () => {
     console.log("Sign In clicked");
-    // Add sign in logic here
+  };
+
+  const handleSignOut = () => {
+    console.log("Sign Out clicked");
+    setIsUserMenuOpen(false);
   };
 
   const handleBecomeSeller = () => {
     console.log("Become a Seller clicked");
-    // Add become a seller logic here
   };
 
   return (
@@ -92,16 +118,60 @@ const Header = () => {
             </motion.div>
           </div>
 
+          {/* Conditional rendering based on authentication status */}
+          {!isAuthenticated ? (
+            <motion.button
+              whileHover={{ scale: 1.05, backgroundColor: "rgba(40, 40, 40, 0.1)" }}
+              whileTap={{ scale: 0.95 }}
+              className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-transparent to-transparent border border-orange-500 text-orange-500 hover:text-white hover:bg-gradient-to-r hover:from-orange-500 hover:to-orange-600 transition-all duration-300 ease-in-out"
+              onClick={handleSignIn}
+            >
+              <User size={18} strokeWidth={2} />
+              <span>Sign In</span>
+            </motion.button>
+          ) : (
+            <div className="relative" ref={userMenuRef}>
+              <motion.div
+                whileTap={{ scale: 0.9 }}
+                className="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer overflow-hidden border-2 border-orange-500"
+                onClick={toggleUserMenu}
+              >
+                {user?.avatar ? (
+                  <img src={user.avatar} alt="user profile" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-orange-300 flex items-center justify-center">
+                    <span className="text-white font-bold text-lg">
+                      {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+                    </span>
+                  </div>
+                )}
+              </motion.div>
 
-          <motion.button
-            whileHover={{ scale: 1.05, backgroundColor: "rgba(40, 40, 40, 0.1)" }}
-            whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-transparent to-transparent border border-orange-500 text-orange-500 hover:text-white hover:bg-gradient-to-r hover:from-orange-500 hover:to-orange-600 transition-all duration-300 ease-in-out"
-            onClick={handleSignIn}
-          >
-            <User size={18} strokeWidth={2} />
-            <span>Sign In</span>
-          </motion.button>
+              {/* User dropdown menu */}
+              {isUserMenuOpen && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  className="absolute top-12 right-0 bg-white shadow-xl rounded-lg py-2 min-w-[180px] z-50"
+                >
+                  <ul>
+                    <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2">
+                      <User size={16} strokeWidth={2} />
+                      <span>Profile</span>
+                    </li>
+                    <li 
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2 text-red-500"
+                      onClick={handleSignOut}
+                    >
+                      <LogOut size={16} strokeWidth={2} />
+                      <span>Sign Out</span>
+                    </li>
+                  </ul>
+                </motion.div>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
@@ -130,14 +200,58 @@ const Header = () => {
         </Link>
 
         <div className="flex items-center gap-2">
-          {/* Mobile Sign In Button */}
-          <motion.button
-            whileTap={{ scale: 0.9 }}
-            className="flex items-center p-2 rounded-full bg-transparent border border-headingColor text-headingColor"
-            onClick={handleSignIn}
-          >
-            <User size={16} strokeWidth={2} />
-          </motion.button>
+          {/* Mobile sign in / profile button */}
+          {!isAuthenticated ? (
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              className="flex items-center p-2 rounded-full bg-transparent border border-headingColor text-headingColor"
+              onClick={handleSignIn}
+            >
+              <User size={16} strokeWidth={2} />
+            </motion.button>
+          ) : (
+            <div className="relative" ref={userMenuRef}>
+              <motion.div
+                whileTap={{ scale: 0.9 }}
+                className="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer overflow-hidden border-2 border-orange-500"
+                onClick={toggleUserMenu}
+              >
+                {user?.photoURL ? (
+                  <img src={user.photoURL} alt="user profile" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-orange-300 flex items-center justify-center">
+                    <span className="text-white font-bold text-sm">
+                      {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+                    </span>
+                  </div>
+                )}
+              </motion.div>
+
+              {/* Mobile user dropdown menu */}
+              {isUserMenuOpen && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  className="absolute top-10 right-0 bg-white shadow-xl rounded-lg py-2 min-w-[150px] z-50"
+                >
+                  <ul>
+                    <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2">
+                      <User size={14} strokeWidth={2} />
+                      <span>Profile</span>
+                    </li>
+                    <li 
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2 text-red-500"
+                      onClick={handleSignOut}
+                    >
+                      <LogOut size={14} strokeWidth={2} />
+                      <span>Sign Out</span>
+                    </li>
+                  </ul>
+                </motion.div>
+              )}
+            </div>
+          )}
 
           {/* Mobile Become a Seller Button */}
           <motion.button
