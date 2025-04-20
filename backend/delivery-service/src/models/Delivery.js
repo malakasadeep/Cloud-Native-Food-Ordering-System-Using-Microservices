@@ -13,14 +13,14 @@ const DeliverySchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    shop: {
+    resturent: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Restaurant",
+      ref: "User",
       required: true,
     },
     driver: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Driver",
+      ref: "User",
       default: null,
     },
     delivery_status: {
