@@ -3,12 +3,14 @@ import { Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoutes";
 import CusAuthPage from "../../features/customerAuth/components/CusAuthPage";
 import HomePage from "../components/pages/HomePage";
+import RegistrationForm from "../components/organisms/User/RegistrationForm";
 
 function AppRoutes() {
   return (
     <Routes>
     <Route path="/" element={<HomePage />} />
     <Route path="/customer-auth" element={<CusAuthPage />} />
+    <Route path="/test" element={<RegistrationForm />} />
       <Route
         path="/customer/*"
         element={

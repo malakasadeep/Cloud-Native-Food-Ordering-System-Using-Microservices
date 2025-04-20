@@ -4,6 +4,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import customerRoutes from "./routes/customerRoute.js";
+import userRoutes from "./routes/userRoute.js";
 import http from "http";
 
 dotenv.config();
@@ -23,6 +24,7 @@ const DEFAULT_PORT = process.env.PORT || 5001;
 const FALLBACK_PORT = 7001;
 
 app.use("/api/v1/customer", customerRoutes);
+app.use("/api/v1/user", userRoutes);
 
 const startServer = (port) => {
   const server = http.createServer(app);
@@ -36,7 +38,7 @@ const startServer = (port) => {
       console.log(
         `Port ${port} is already in use. Trying port ${FALLBACK_PORT}...`
       );
-      startServer(FALLBACK_PORT); // Retry with fallback port
+      startServer(FALLBACK_PORT);
     } else {
       console.error("Server error:", err);
     }
