@@ -7,5 +7,9 @@ const API_CONSTANTS = {
     COMPLETE_PROFILE: "/api/v1/customer/complete-profile",
     LOGOUT: "/api/v1/customer/signout",
     GET_CURRENT_USER: "/api/v1/customer/me",
+
+    //partners
+    LOGIN: "/api/v1/user/login",
+    SIGNUP: "/api/v1/partners/signup",
   };
   export default API_CONSTANTS;

@@ -8,9 +8,9 @@ import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/
 import { app } from '../../../utils/firebaseFunctions';
 
 // Import custom components
-import Button from '../../../components/atoms/Button';
-import CountryCodeSelector from '../../../components/atoms/CountryCodeSelector';
-import MapComponent from '../../../components/molecules/MapComponent';
+import Button from '../../atoms/Button';
+import CountryCodeSelector from '../../atoms/CountryCodeSelector';
+import MapComponent from '../../molecules/MapComponent';
 
 // Define the libraries for Google Maps
 const libraries = ['places'];
