@@ -1,14 +1,16 @@
-// In your routes file
 import { Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoutes";
 import CusAuthPage from "../../features/customerAuth/components/CusAuthPage";
 import HomePage from "../components/pages/HomePage";
+import LoginPage from "../../features/partnersManagement/components/LoginPage";
+import AdminPage from "../components/pages/AdminPage";
 
 function AppRoutes() {
   return (
     <Routes>
     <Route path="/" element={<HomePage />} />
     <Route path="/customer-auth" element={<CusAuthPage />} />
+    <Route path="/test" element={<LoginPage />} />
       <Route
         path="/customer/*"
         element={
@@ -25,7 +27,7 @@ function AppRoutes() {
         element={
           <ProtectedRoute allowedRoles={["admin"]}>
             <Routes>
-              {/* <Route path="/*" element={<DashboardLayout />} /> */}
+               <Route path="/*" element={<AdminPage />} />
             </Routes>
           </ProtectedRoute>
         }
