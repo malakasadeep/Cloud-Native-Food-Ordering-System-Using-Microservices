@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import Lottie from 'react-lottie';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -98,6 +98,15 @@ const LoginPage = () => {
           >
             <p>Access your account to manage orders, track deliveries, and grow your business with our platform.</p>
           </motion.div>
+          <div className="mt-6">
+            <p className="text-white text-opacity-90">Didn't have an account?</p>
+            <Link 
+              to="/registration" 
+              className="inline-block mt-2 px-6 py-2 bg-white text-red-600 font-medium rounded-md hover:bg-gray-100 transition-colors duration-300"
+            >
+              Register Here
+            </Link>
+          </div>
         </div>
         
         {/* Animation - Now at bottom */}

@@ -10,6 +10,6 @@ const API_CONSTANTS = {
 
     //partners
     LOGIN: "/api/v1/user/login",
-    SIGNUP: "/api/v1/partners/signup",
+    REGISTER: "/api/v1/user/register",
   };
   export default API_CONSTANTS;

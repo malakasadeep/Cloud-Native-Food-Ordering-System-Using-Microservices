@@ -3,9 +3,9 @@ import client from "../../../core/network/axiosClient";
 import API_CONSTANTS from "../../../core/constants/apiConstents";
 
 const partnerService = {
-  signup: async (userData) => {
+  register: async (userData) => {
     try {
-      const response = await client.post(API_CONSTANTS.SIGNUP, userData);
+      const response = await client.post(API_CONSTANTS.REGISTER, userData);
 
       return {
         success: true,

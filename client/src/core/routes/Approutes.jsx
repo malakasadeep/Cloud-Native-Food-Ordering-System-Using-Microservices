@@ -4,13 +4,15 @@ import CusAuthPage from "../../features/customerAuth/components/CusAuthPage";
 import HomePage from "../components/pages/HomePage";
 import LoginPage from "../../features/partnersManagement/components/LoginPage";
 import AdminPage from "../components/pages/AdminPage";
+import RegistrationPage from "../../features/partnersManagement/components/RegistrationPage";
 
 function AppRoutes() {
   return (
     <Routes>
     <Route path="/" element={<HomePage />} />
     <Route path="/customer-auth" element={<CusAuthPage />} />
-    <Route path="/test" element={<LoginPage />} />
+    <Route path="/login" element={<LoginPage />} />
+    <Route path="/registration" element={<RegistrationPage />} />
       <Route
         path="/customer/*"
         element={
