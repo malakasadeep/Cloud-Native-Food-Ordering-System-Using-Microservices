@@ -1,6 +1,5 @@
 import Order from "../models/orderModel.js";
 import { createStripePayment } from "../controllers/paymentController.js";
-import { sendEmail } from "../controllers/notificationController.js";
 
 export const createPaymentIntent = async (req, res) => {
   try {
@@ -43,20 +42,14 @@ export const placeOrder = async (req, res) => {
     const newOrder = await Order.create(orderData);
 
     // === Notification Part ===
-    const user = await User.findById(customerId);
-    if (user) {
-      await sendEmail(
-        user.email,
-        "Order Confirmation",
-        `Hi ${user.name}, your order (ID: ${newOrder._id}) has been placed successfully!`
-      );
-
-      // await sendSMS(
-      //   user.phone,
-      //   `Order placed successfully! Order ID: ${newOrder._id}`
-      // );
-    }
-
+    // const user = await User.findById(customerId);
+    // if (user) {
+    //   await sendEmail(
+    //     user.email,
+    //     "Order Confirmation",
+    //     `Hi ${user.name}, your order (ID: ${newOrder._id}) has been placed successfully!`
+    //   );
+    
     // Simulated delivery notification
     // await sendEmail(
     //   "deliveryguy@email.com",
