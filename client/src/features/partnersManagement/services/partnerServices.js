@@ -3,9 +3,9 @@ import client from "../../../core/network/axiosClient";
 import API_CONSTANTS from "../../../core/constants/apiConstents";
 
 const partnerService = {
-  signup: async (userData) => {
+  register: async (userData) => {
     try {
-      const response = await client.post(API_CONSTANTS.SIGNUP, userData);
+      const response = await client.post(API_CONSTANTS.REGISTER, userData);
 
       return {
         success: true,
@@ -38,16 +38,10 @@ const partnerService = {
   login: async (credentials) => {
     try {
       const response = await client.post(API_CONSTANTS.LOGIN, credentials);
-
-      if (response.data.token) {
-        localStorage.setItem("token", response.data.token);
-      }
-
       return {
         success: true,
         message: "Login successful",
-        token: response.data.token,
-        user: response.data.user,
+        user: response.data.data.user,
       };
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -72,6 +66,82 @@ const partnerService = {
       };
     }
   },
+
+  getAllPartners: async () => {
+    try {
+      const response = await client.get(API_CONSTANTS.GET_ALL);
+      return {
+        success: true,
+        data: response.data.data,
+      };
+    } catch (error) {
+      console.error("Error fetching all partners:", error);
+      return {
+        success: false,
+        message: "Failed to fetch partners",
+      };
+    }
+  },
+  
+  getPendingPartners: async () => {
+    try {
+      const response = await client.get(API_CONSTANTS.GET_ALL);
+      const pendingPartners = response.data.data.filter(
+        partner => partner.status && partner.status.toLowerCase() === 'pending'
+      );
+      
+      return {
+        success: true,
+        data: pendingPartners,
+      };
+    } catch (error) {
+      console.error("Error fetching pending partners:", error);
+      return {
+        success: false,
+        message: "Failed to fetch pending partners",
+      };
+    }
+  },
+
+  updatePartnerStatus: async (partnerId, status, reason = null) => {
+    try {
+      const requestBody = { status };
+      
+      if (reason) {
+        requestBody.reason = reason;
+      }
+      
+      const response = await client.patch(`${API_CONSTANTS.GET_ALL}/${partnerId}/status`, requestBody);
+      
+      return {
+        success: true,
+        message: `Partner successfully ${status}`,
+        data: response.data.data
+      };
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.response?.data) {
+          console.error(`Error updating partner status:`, error.response.data);
+          return {
+            success: false,
+            message: error.response.data.message || `Failed to update partner status`,
+          };
+        }
+      } else if (error instanceof Error) {
+        console.error(`Error updating partner status:`, error.message);
+        return {
+          success: false,
+          message: error.message,
+        };
+      }
+      console.error(`Error updating partner status:`, error);
+      return {
+        success: false,
+        message: "An unknown error occurred while updating partner status",
+      };
+    }
+  },
+
   logout: async () => {
     try {
       await client.get(API_CONSTANTS.LOGOUT);

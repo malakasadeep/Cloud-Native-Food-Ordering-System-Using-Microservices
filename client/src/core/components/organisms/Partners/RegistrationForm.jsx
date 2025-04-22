@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Check, ChevronLeft, ChevronRight, Clock, Image, Mail, MapPin, Phone, User, X } from 'lucide-react';
+import { Bike, Check, ChevronLeft, ChevronRight, Clock, Image, Mail, MapPin, Phone, Store, User, X } from 'lucide-react';
 import { useLoadScript } from '@react-google-maps/api';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 
@@ -15,7 +15,7 @@ import MapComponent from '../../molecules/MapComponent';
 // Define the libraries for Google Maps
 const libraries = ['places'];
 
-const RegistrationForm = () => {
+const RegistrationForm = ({ onSubmit, isLoading }) => {
   // Form state
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -282,7 +282,17 @@ const RegistrationForm = () => {
       if (!personalDetails.lastName.trim()) newErrors.lastName = 'Last name is required';
       if (!personalDetails.email.trim()) newErrors.email = 'Email is required';
       else if (!/\S+@\S+\.\S+/.test(personalDetails.email)) newErrors.email = 'Email is invalid';
-      if (!personalDetails.mobile.trim()) newErrors.mobile = 'Mobile number is required';
+      
+      // Updated mobile validation
+      if (!personalDetails.mobile.trim()) {
+        newErrors.mobile = 'Mobile number is required';
+      } else {
+        const mobileRegex = /^[1-9]\d{8}$/;  // 9 digits, not starting with 0
+        if (!mobileRegex.test(personalDetails.mobile)) {
+          newErrors.mobile = 'Mobile number must be 9 digits and not start with 0';
+        }
+      }
+      
       if (!personalDetails.nic.trim()) newErrors.nic = 'NIC is required';
     } 
     else if (currentStep === 3) {
@@ -348,9 +358,13 @@ const RegistrationForm = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateStep()) return;
+    if (!validateStep()) {
+      console.log("Form validation failed");
+      return;
+    }
     
     setIsSubmitting(true);
+    console.log("Form validation passed, submitting...");
     
     // Prepare data for submission
     const formData = {
@@ -362,23 +376,28 @@ const RegistrationForm = () => {
     };
     
     try {
-      // Submit to backend (this is a placeholder for actual API call)
-      console.log('Form submitted:', formData);
-      // TODO: Make API call to backend
-      // await api.post('/register', formData);
+      // If onSubmit prop is provided, call it with the form data
+      if (typeof onSubmit === 'function') {
+        console.log("Calling provided onSubmit function");
+        await onSubmit(formData);
+        console.log("onSubmit function completed");
+        // No alerts, no navigation, no step changes
+      } else {
+        // Fallback for direct submission if no onSubmit prop
+        console.log("No onSubmit function provided, form data:", formData);
+        // No alerts, no navigation, no step changes
+      }
       
-      // Show success and reset form or redirect
-      alert('Registration successful!');
-      // Reset form or redirect
+      // Set submitting to false regardless
+      setIsSubmitting(false);
       
     } catch (error) {
       console.error('Error submitting form:', error);
-      alert('Registration failed. Please try again.');
-    } finally {
+      // No alerts, just log the error
       setIsSubmitting(false);
     }
   };
-  
+
   // Stepper animation variants
   const stepperVariants = {
     active: { scale: 1.1, backgroundColor: '#F57C00' },
@@ -473,11 +492,7 @@ const RegistrationForm = () => {
         >
           <div className={`w-24 h-24 rounded-full flex items-center justify-center mb-4 
             ${userType === 'restaurant' ? 'bg-cartNumBg text-white' : 'bg-gray-100'}`}>
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 110-12 6 6 0 010 12z" clipRule="evenodd"/>
-              <path fillRule="evenodd" d="M10 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 6z" clipRule="evenodd"/>
-              <path fillRule="evenodd" d="M10 11a.75.75 0 01.75.75v.5a.75.75 0 01-1.5 0v-.5A.75.75 0 0110 11z" clipRule="evenodd"/>
-            </svg>
+            <Store className="h-12 w-12" />
           </div>
           <h3 className="text-xl font-medium mb-2">Restaurant Owner</h3>
           <p className="text-gray-500 text-center">Register your restaurant and start receiving orders</p>
@@ -490,10 +505,7 @@ const RegistrationForm = () => {
         >
           <div className={`w-24 h-24 rounded-full flex items-center justify-center mb-4
             ${userType === 'rider' ? 'bg-cartNumBg text-white' : 'bg-gray-100'}`}>
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
-              <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3zM14 7h1a1 1 0 011 1v6.05A2.5 2.5 0 0115 16.5a2.5 2.5 0 01-2-1H8a2.5 2.5 0 01-2 1 2.5 2.5 0 01-2-1H3a1 1 0 01-1-1V5a1 1 0 011-1h11a1 1 0 011 1v2z" />
-            </svg>
+            <Bike className="h-12 w-12" />
           </div>
           <h3 className="text-xl font-medium mb-2">Delivery Rider</h3>
           <p className="text-gray-500 text-center">Join as a delivery rider and start earning</p>
@@ -991,7 +1003,7 @@ const RegistrationForm = () => {
     </motion.div>
   );
   
-  // Step 5: Completion
+  // Step 5: Completion - Updated to remove navigation
   const renderCompletionStep = () => (
     <motion.div 
       className="w-full text-center"
@@ -1008,20 +1020,11 @@ const RegistrationForm = () => {
           </div>
         </div>
         <h3 className="text-2xl font-bold mt-4 mb-2">Registration Complete!</h3>
-        <p className="text-gray-600">
-          Thank you for registering with our food delivery platform.
-          Your account is now being reviewed and you will receive a confirmation email soon.
+        <p className="text-gray-600 mb-4">
+          Your registration has been submitted successfully.
         </p>
+        {/* Login button removed */}
       </div>
-      
-      <Button 
-        type="button"
-        variant="primary"
-        onClick={() => window.location.href = '/login'}
-        className="px-8"
-      >
-        Go to Login
-      </Button>
     </motion.div>
   );
   
@@ -1072,11 +1075,11 @@ const RegistrationForm = () => {
             disabled={
               (currentStep === 3 && userType === 'restaurant' && restaurantDetails.isUploading) || 
               (currentStep === 3 && userType === 'rider' && riderDetails.isUploading) ||
-              isSubmitting
+              isSubmitting || isLoading
             }
             icon={currentStep === 4 ? null : ChevronRight}
           >
-            {currentStep === 4 ? (isSubmitting ? 'Submitting...' : 'Submit') : 'Next'}
+            {currentStep === 4 ? (isSubmitting || isLoading ? 'Submitting...' : 'Submit') : 'Next'}
           </Button>
         ) : null}
       </div>
@@ -1097,6 +1100,11 @@ const RegistrationForm = () => {
       </div>
     </div>
   );
+};
+
+RegistrationForm.defaultProps = {
+  onSubmit: null,
+  isLoading: false
 };
 
 export default RegistrationForm;

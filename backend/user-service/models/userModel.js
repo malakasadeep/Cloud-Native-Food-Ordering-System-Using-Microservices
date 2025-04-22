@@ -23,10 +23,11 @@ const currentLocationSchema = new Schema({
 
 const userSchema = new Schema({
   email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  password: { type: String },
   role: { type: String, enum: ['admin', 'restaurant_owner', 'delivery_rider'], required: true },
 
-  name: { type: String },
+  firstname: { type: String },
+  lasttname: { type: String },
   mobile: { type: String },
   nic: { type: String },
   status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },

@@ -3,6 +3,7 @@ import AdminHeader from '../organisms/AdminHeader';
 import AdminSidebar from '../organisms/AdminSidebar';
 import MainMap from '../molecules/MainMap';
 import { FiUsers, FiShoppingBag, FiSettings, FiActivity } from 'react-icons/fi';
+import PendingRequests from '../../../features/partnersManagement/components/PendingRequests';
 
 const AdminPage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -84,16 +85,11 @@ const DashboardContent = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow-sm h-80">
-          <h3 className="text-lg font-medium mb-4 text-gray-700">Recent Orders</h3>
-          <div className="animate-pulse">
-            <div className="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
-            <div className="h-6 bg-gray-200 rounded w-full mb-4"></div>
-            <div className="h-6 bg-gray-200 rounded w-5/6 mb-4"></div>
-            <div className="h-6 bg-gray-200 rounded w-4/5"></div>
-          </div>
+        <div className=" p-6  h-80">
+        <h3 className="text-lg font-medium mb-4 text-gray-700">Pending Partner Requests</h3>
+          <PendingRequests/>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow-sm h-80">
+        <div className=" p-6  h-[580px]">
           <h3 className="text-lg font-medium mb-4 text-gray-700">Map Overview</h3>
           <MainMap />
         </div>
