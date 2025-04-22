@@ -12,6 +12,7 @@ import deliveryAnimation from '../../../assets/lottie/del.json';
 
 const RegistrationPage = () => {
   const [loading, setLoading] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const defaultOptions = {
     loop: true,
@@ -66,7 +67,11 @@ const RegistrationPage = () => {
       const response = await partnerService.register(userData);
       
       if (response.success) {
-        toast.success(response.message || 'Registration successful! Please check your email for verification.', {
+        // Show modal instead of just a toast
+        setShowSuccessModal(true);
+        
+        // Still show toast for additional notification
+        toast.success('Registration submitted successfully!', {
           position: "top-right",
           autoClose: 2000,
           hideProgressBar: false,
@@ -100,10 +105,48 @@ const RegistrationPage = () => {
     }
   };
 
+  // Success Modal Component
+  const SuccessModal = () => (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+      <motion.div
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        className="bg-white rounded-lg p-6 max-w-md w-full shadow-xl"
+      >
+        <div className="text-center">
+          <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+            <svg className="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Thank You for Registering!</h3>
+          <div className="mt-3">
+            <p className="text-sm text-gray-600 mb-2">
+              Your request has been submitted successfully.
+            </p>
+            <p className="text-sm text-gray-600 mb-4">
+              Our admin team will validate your details, and once approved, 
+              you will receive your login password via email.
+            </p>
+            <button
+              onClick={() => setShowSuccessModal(false)}
+              className="w-full inline-flex justify-center rounded-md border border-transparent px-4 py-2 bg-red-600 text-white text-base font-medium hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  );
+
   return (
     <div className="flex flex-col lg:flex-row min-h-screen">
      
       <ToastContainer />
+      
+      {/* Show success modal if registration is successful */}
+      {showSuccessModal && <SuccessModal />}
       
       <motion.div 
         initial={{ opacity: 0, x: -20 }}

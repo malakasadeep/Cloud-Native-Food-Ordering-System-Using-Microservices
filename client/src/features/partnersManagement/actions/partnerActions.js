@@ -6,12 +6,13 @@ export const login = (credentials, navigate) => async (dispatch) => {
   
     try {
       const response = await partnerService.login(credentials);
+      console.log("Login response action:", response);
+      
   
-      if (response.success && response.user && response.token) {
+      if (response.success && response.user) {
         dispatch(
           loginSuccess({
             user: response.user,
-            token: response.token,
           })
         );
   

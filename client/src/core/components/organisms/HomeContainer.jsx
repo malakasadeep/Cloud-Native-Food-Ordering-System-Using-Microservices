@@ -11,7 +11,7 @@ const HomeContainer = () => {
       className="grid grid-cols-1 md:grid-cols-2 gap-2 w-full relative"
       id="home"
     >
-      <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none opacity-40 md:mr-12 md:mb-10 ">
+      <div className="absolute left-[-18%] top-0 bottom-0 w-[40%] z-0 flex items-center justify-center pointer-events-none opacity-40 mb-12">
         <Lottie 
           animationData={animationData} 
           className="w-full h-full"

@@ -99,9 +99,11 @@ const Header = () => {
             <li className="text-lg text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer">
               About Us
             </li>
+            <Link to={"/login"}>
             <li className="text-lg text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer">
               Become a Seller
             </li>
+            </Link>
           </motion.ul>
 
           <div className="relative flex items-center justify-center">
@@ -157,19 +159,28 @@ const Header = () => {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   className="absolute top-12 right-0 bg-white shadow-xl rounded-lg py-2 min-w-[180px] z-50"
+                  onClick={(e) => e.stopPropagation()}
                 >
                   <ul>
                     <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2">
                       <User size={16} strokeWidth={2} />
                       <span>Profile</span>
                     </li>
-                    <li 
+                    <div 
                       className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2 text-red-500"
-                      onClick={handleSignOut}
+                      onClick={() => {
+                        try {
+                          dispatch(logout(navigate));
+                          setIsUserMenuOpen(false);
+                          console.log("Logout dispatched");
+                        } catch (error) {
+                          console.error("Error during logout:", error);
+                        }
+                      }}
                     >
                       <LogOut size={16} strokeWidth={2} />
                       <span>Sign Out</span>
-                    </li>
+                    </div>
                   </ul>
                 </motion.div>
               )}
