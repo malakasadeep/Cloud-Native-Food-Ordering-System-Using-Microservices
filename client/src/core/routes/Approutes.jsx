@@ -5,6 +5,7 @@ import HomePage from "../components/pages/HomePage";
 import LoginPage from "../../features/partnersManagement/components/LoginPage";
 import AdminPage from "../components/pages/AdminPage";
 import RegistrationPage from "../../features/partnersManagement/components/RegistrationPage";
+import RestaurantPage from "../components/pages/RestaurantPage";
 
 function AppRoutes() {
   return (
@@ -23,11 +24,30 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
-        
       <Route
         path="/admin/*"
         element={
           <ProtectedRoute allowedRoles={["admin"]}>
+            <Routes>
+               <Route path="/*" element={<AdminPage />} />
+            </Routes>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/restaurant/*"
+        element={
+          <ProtectedRoute allowedRoles={["restaurant_owner"]}>
+            <Routes>
+               <Route path="/*" element={<RestaurantPage />} />
+            </Routes>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/delivery/*"
+        element={
+          <ProtectedRoute allowedRoles={["delivery_rider"]}>
             <Routes>
                <Route path="/*" element={<AdminPage />} />
             </Routes>

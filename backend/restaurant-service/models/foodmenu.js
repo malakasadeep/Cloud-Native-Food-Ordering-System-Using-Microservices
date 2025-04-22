@@ -24,7 +24,12 @@ const foodMenuSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
-});
+  imageUrl: {
+    type: String,
+  },
+},{
+  timestamps: true,
+  });
 
 const FoodMenu = mongoose.model("FoodMenu", foodMenuSchema);
 export default FoodMenu;
