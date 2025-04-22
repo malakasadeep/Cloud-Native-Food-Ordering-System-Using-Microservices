@@ -14,10 +14,10 @@ const ProtectedRoute = ({ children, allowedRoles = [] }) => {
 
     if (user.role === "admin") {
       return <Navigate to="/admin" replace />;
-    } else if (user.role === "restourent") {
-      return <Navigate to="/restourent" replace />;
-    } else if (user.role === "delever") {
-      return <Navigate to="/delever" replace />;
+    } else if (user.role === "restaurant_owner") {
+      return <Navigate to="/restaurant" replace />;
+    } else if (user.role === "delivery_rider") {
+      return <Navigate to="/delivery" replace />;
     } else {
       return <Navigate to="/" replace />;
     }

@@ -18,8 +18,10 @@ export const login = (credentials, navigate) => async (dispatch) => {
   
         if (response.user.role === "admin") {
           navigate("/admin");
-        } else {
-          navigate("/");
+        } else if (response.user.role === "restaurant_owner")  {
+          navigate("/restaurant");
+        }else if (response.user.role === "delivery_rider"){
+          navigate("/delivery");
         }
   
         return { success: true };

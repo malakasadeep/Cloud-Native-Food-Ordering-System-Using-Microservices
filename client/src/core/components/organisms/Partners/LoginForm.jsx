@@ -25,6 +25,9 @@ const LoginForm = ({ onSubmit, title = "Business Login" }) => {
 
   // Form validity state
   const [isFormValid, setIsFormValid] = useState(false);
+  
+  // Loading state
+  const [isLoading, setIsLoading] = useState(false);
 
   // Handle input changes
   const handleInputChange = (e) => {
@@ -90,7 +93,7 @@ const LoginForm = ({ onSubmit, title = "Business Login" }) => {
   }, [formData, touched]);
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     // Mark all fields as touched for validation
@@ -105,7 +108,14 @@ const LoginForm = ({ onSubmit, title = "Business Login" }) => {
     
     if (!emailError && !passwordError) {
       console.log('Form submitted with:', formData);
-      onSubmit && onSubmit(formData);
+      setIsLoading(true);
+      try {
+        await onSubmit(formData);
+      } catch (error) {
+        console.error("Login failed:", error);
+      } finally {
+        setIsLoading(false);
+      }
     } else {
       setErrors({
         email: emailError,
@@ -198,9 +208,10 @@ const LoginForm = ({ onSubmit, title = "Business Login" }) => {
           <Button 
             type="submit" 
             fullWidth 
-            disabled={!isFormValid}
+            disabled={!isFormValid || isLoading}
+            loading={isLoading}
           >
-            Sign In
+            {isLoading ? 'Signing In...' : 'Sign In'}
           </Button>
         </div>
         
@@ -214,6 +225,7 @@ const LoginForm = ({ onSubmit, title = "Business Login" }) => {
           fullWidth
           icon={FaGoogle}
           onClick={() => console.log("Google sign-in")}
+          disabled={isLoading}
         >
           Sign in with Google
         </Button>
