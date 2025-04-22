@@ -1,4 +1,4 @@
-import * as UserService from '../services/userServices.js';
+import * as UserService from "../services/userServices.js";
 
 export const register = async (req, res) => {
   try {
@@ -117,6 +117,7 @@ export const getById = async (req, res) => {
 };
 
 export const remove = async (req, res) => {
+<<<<<<< HEAD
   try {
     const deleted = await UserService.deleteUser(req.params.id);
     
@@ -190,6 +191,18 @@ export const changeStatus = async (req, res) => {
       error: process.env.NODE_ENV === 'development' ? err.message : undefined
     });
   }
+=======
+  await UserService.deleteProvider(req.params.id);
+  res.json({ message: "Deleted successfully" });
+};
+
+export const changeStatus = async (req, res) => {
+  const updated = await UserService.updateStatus(
+    req.params.id,
+    req.body.status
+  );
+  res.json(updated);
+>>>>>>> 41b8520 (add new route to get filtered user by the role)
 };
 
 export const update = async (req, res) => {
@@ -226,210 +239,7 @@ export const update = async (req, res) => {
   }
 };
 
-export const getRestaurantById = async (req, res) => {
-  try {
-    const restaurant = await UserService.getRestaurantById(req.params.id);
-    
-    res.status(200).json({
-      success: true,
-      data: restaurant
-    });
-  } catch (err) {
-    console.error('Error fetching restaurant by ID:', err);
-    
-    if (err.message.includes('not found')) {
-      return res.status(404).json({
-        success: false,
-        message: err.message
-      });
-    }
-    
-    if (err.name === 'CastError' || err.message.includes('Invalid ID format')) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid restaurant ID format'
-      });
-    }
-    
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch restaurant',
-      error: process.env.NODE_ENV === 'development' ? err.message : undefined
-    });
-  }
-};
-
-export const getRiderById = async (req, res) => {
-  try {
-    const rider = await UserService.getRiderById(req.params.id);
-    
-    res.status(200).json({
-      success: true,
-      data: rider
-    });
-  } catch (err) {
-    console.error('Error fetching rider by ID:', err);
-    
-    if (err.message.includes('not found')) {
-      return res.status(404).json({
-        success: false,
-        message: err.message
-      });
-    }
-    
-    if (err.name === 'CastError' || err.message.includes('Invalid ID format')) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid rider ID format'
-      });
-    }
-    
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch rider',
-      error: process.env.NODE_ENV === 'development' ? err.message : undefined
-    });
-  }
-};
-
-export const updateRestaurantAvailability = async (req, res) => {
-  try {
-    const { isAvailable } = req.body;
-    
-    if (isAvailable === undefined) {
-      return res.status(400).json({
-        success: false,
-        message: 'isAvailable field is required'
-      });
-    }
-    
-    // Convert to boolean if needed
-    const availabilityStatus = Boolean(isAvailable);
-    
-    const updatedRestaurant = await UserService.changeRestaurantAvailability(
-      req.params.id, 
-      availabilityStatus
-    );
-    
-    res.status(200).json({
-      success: true,
-      data: updatedRestaurant,
-      message: `Restaurant availability has been ${availabilityStatus ? 'enabled' : 'disabled'}`
-    });
-  } catch (err) {
-    console.error('Error updating restaurant availability:', err);
-    
-    if (err.message.includes('not found')) {
-      return res.status(404).json({
-        success: false,
-        message: err.message
-      });
-    }
-    
-    if (err.name === 'CastError' || err.message.includes('Invalid ID format')) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid restaurant ID format'
-      });
-    }
-    
-    res.status(500).json({
-      success: false,
-      message: 'Failed to update restaurant availability',
-      error: process.env.NODE_ENV === 'development' ? err.message : undefined
-    });
-  }
-};
-
-export const updateRiderLocation = async (req, res) => {
-  try {
-    const { lat, lng } = req.body;
-    
-    if (lat === undefined || lng === undefined) {
-      return res.status(400).json({
-        success: false,
-        message: 'Latitude and longitude are required'
-      });
-    }
-    
-    const updatedRider = await UserService.updateRiderLocation(
-      req.params.id, 
-      { lat: Number(lat), lng: Number(lng) }
-    );
-    
-    res.status(200).json({
-      success: true,
-      data: updatedRider,
-      message: 'Rider location updated successfully'
-    });
-  } catch (err) {
-    console.error('Error updating rider location:', err);
-    
-    if (err.message.includes('not found')) {
-      return res.status(404).json({
-        success: false,
-        message: err.message
-      });
-    }
-    
-    if (err.name === 'CastError' || err.message.includes('Invalid ID format')) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid rider ID format'
-      });
-    }
-    
-    if (err.message.includes('Invalid location data')) {
-      return res.status(400).json({
-        success: false,
-        message: err.message
-      });
-    }
-    
-    res.status(500).json({
-      success: false,
-      message: 'Failed to update rider location',
-      error: process.env.NODE_ENV === 'development' ? err.message : undefined
-    });
-  }
-};
-
-export const getAllRestaurants = async (req, res) => {
-  try {
-    const restaurants = await UserService.getAllRestaurants();
-    
-    res.status(200).json({
-      success: true,
-      data: restaurants,
-      count: restaurants.length
-    });
-  } catch (err) {
-    console.error('Error fetching all restaurants:', err);
-    
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch restaurants',
-      error: process.env.NODE_ENV === 'development' ? err.message : undefined
-    });
-  }
-};
-
-export const getAllRiders = async (req, res) => {
-  try {
-    const riders = await UserService.getAllRiders();
-    
-    res.status(200).json({
-      success: true,
-      data: riders,
-      count: riders.length
-    });
-  } catch (err) {
-    console.error('Error fetching all delivery riders:', err);
-    
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch delivery riders',
-      error: process.env.NODE_ENV === 'development' ? err.message : undefined
-    });
-  }
+export const getByRole = async (req, res) => {
+  const users = await UserService.getUserByRole(req.params.role);
+  res.json(users);
 };
