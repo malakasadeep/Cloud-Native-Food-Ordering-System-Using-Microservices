@@ -1,13 +1,15 @@
 import { AxiosError } from "axios";
-import client from "../../../core/network/axiosClient";
+import client, { createServiceClient } from "../../../core/network/axiosClient";
 import API_CONSTANTS from "../../../core/constants/apiConstents";
 // import { signInWithPopup } from "firebase/auth";
 // import { auth, googleProvider, facebookProvider } from "../../firebase";
 
+const userClient = createServiceClient('user');
+
 const customerService = {
   sendEmailOtp: async (email) => {
     try {
-      const response = await client.post(API_CONSTANTS.SEND_EMAIL_OTP, { email });
+      const response = await userClient.post(API_CONSTANTS.SEND_EMAIL_OTP, { email });
 
       return {
         success: true,
@@ -38,7 +40,7 @@ const customerService = {
   },
   sendSMSOtp: async (mobile) => {
     try {
-      const response = await client.post(API_CONSTANTS.SEND_MOBILE_OTP, { mobile });
+      const response = await userClient.post(API_CONSTANTS.SEND_MOBILE_OTP, { mobile });
 
       return {
         success: true,
@@ -70,7 +72,7 @@ const customerService = {
 
   VerifiEmailOtp: async ({email,otp}) => {
     try {
-      const response = await client.post(API_CONSTANTS.VERIFY_EMAIL_OTP, {email,otp});
+      const response = await userClient.post(API_CONSTANTS.VERIFY_EMAIL_OTP, {email,otp});
 
       return {
         success: true,
@@ -103,7 +105,7 @@ const customerService = {
   },
   VerifiSMSOtp: async ({mobile,otp}) => {
     try {
-      const response = await client.post(API_CONSTANTS.VERIFY_MOBILE_OTP, {mobile,otp});
+      const response = await userClient.post(API_CONSTANTS.VERIFY_MOBILE_OTP, {mobile,otp});
 
       return {
         success: true,
@@ -137,7 +139,7 @@ const customerService = {
 
   logout: async () => {
     try {
-      await client.get(API_CONSTANTS.LOGOUT);
+      await userClient.get(API_CONSTANTS.LOGOUT);
       return {
         success: true,
         message: "Logged out successfully",
@@ -153,7 +155,7 @@ const customerService = {
 
   getCurrentUser: async () => {
     try {
-      const response = await client.get(API_CONSTANTS.GET_CURRENT_USER);
+      const response = await userClient.get(API_CONSTANTS.GET_CURRENT_USER);
       return response.data.user;
     } catch (error) {
       console.error("Error fetching current user:", error);
@@ -163,7 +165,7 @@ const customerService = {
 
   completeProfile: async (profileData) => {
     try {
-      const response = await client.post(API_CONSTANTS.COMPLETE_PROFILE, profileData);
+      const response = await userClient.post(API_CONSTANTS.COMPLETE_PROFILE, profileData);
       
       return {
         success: true,

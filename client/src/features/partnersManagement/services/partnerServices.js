@@ -1,11 +1,14 @@
 import { AxiosError } from "axios";
-import client from "../../../core/network/axiosClient";
+import client, { createServiceClient } from "../../../core/network/axiosClient";
 import API_CONSTANTS from "../../../core/constants/apiConstents";
+
+// Create a client specifically for user service
+const userClient = createServiceClient('user');
 
 const partnerService = {
   register: async (userData) => {
     try {
-      const response = await client.post(API_CONSTANTS.REGISTER, userData);
+      const response = await userClient.post(API_CONSTANTS.REGISTER, userData);
 
       return {
         success: true,
@@ -37,7 +40,7 @@ const partnerService = {
 
   login: async (credentials) => {
     try {
-      const response = await client.post(API_CONSTANTS.LOGIN, credentials);
+      const response = await userClient.post(API_CONSTANTS.LOGIN, credentials);
       return {
         success: true,
         message: "Login successful",
@@ -69,7 +72,7 @@ const partnerService = {
 
   getAllPartners: async () => {
     try {
-      const response = await client.get(API_CONSTANTS.GET_ALL);
+      const response = await userClient.get(API_CONSTANTS.GET_ALL);
       return {
         success: true,
         data: response.data.data,
@@ -85,7 +88,7 @@ const partnerService = {
   
   getPendingPartners: async () => {
     try {
-      const response = await client.get(API_CONSTANTS.GET_ALL);
+      const response = await userClient.get(API_CONSTANTS.GET_ALL);
       const pendingPartners = response.data.data.filter(
         partner => partner.status && partner.status.toLowerCase() === 'pending'
       );
@@ -111,7 +114,7 @@ const partnerService = {
         requestBody.reason = reason;
       }
       
-      const response = await client.patch(`${API_CONSTANTS.GET_ALL}/${partnerId}/status`, requestBody);
+      const response = await userClient.patch(`${API_CONSTANTS.GET_ALL}/${partnerId}/status`, requestBody);
       
       return {
         success: true,
@@ -144,7 +147,7 @@ const partnerService = {
 
   logout: async () => {
     try {
-      await client.get(API_CONSTANTS.LOGOUT);
+      await userClient.get(API_CONSTANTS.LOGOUT);
       localStorage.removeItem("token");
 
       return {
@@ -161,8 +164,6 @@ const partnerService = {
       };
     }
   },
-
-
 };
 
 export default partnerService;
