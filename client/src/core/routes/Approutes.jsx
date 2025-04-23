@@ -22,7 +22,10 @@ function AppRoutes() {
       <Route path="/registration" element={<RegistrationPage />} />
       <Route path="/restaurants" element={<AllRestaurants />} />
 
-      <Route path="/restaurant-details/:id" element={<RestaurantDetailsPage />} />
+      <Route
+        path="/restaurant-details/:id"
+        element={<RestaurantDetailsPage />}
+      />
       <Route
         path="/customer/*"
         element={
@@ -45,6 +48,29 @@ function AppRoutes() {
         element={
           <ProtectedRoute allowedRoles={["admin"]}>
             <Routes>
+              <Route path="/*" element={<AdminPage />} />
+              <Route path="/*" element={<AdminPage />} />
+            </Routes>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/restaurant/*"
+        element={
+          <ProtectedRoute allowedRoles={["restaurant_owner"]}>
+            <Routes>
+              <Route path="/*" element={<RestaurantPage />} />
+              <Route path="/*" element={<RestaurantPage />} />
+            </Routes>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/delivery/*"
+        element={
+          <ProtectedRoute allowedRoles={["delivery_rider"]}>
+            <Routes>
+              <Route path="/*" element={<AdminPage />} />
               <Route path="/*" element={<AdminPage />} />
             </Routes>
           </ProtectedRoute>

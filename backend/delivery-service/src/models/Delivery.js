@@ -3,29 +3,38 @@ const mongoose = require("mongoose");
 
 const DeliverySchema = new mongoose.Schema(
   {
-    order: {
+    orderId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Order",
       required: true,
     },
-    customer: {
+    customerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    resturent: {
+    resturentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    driver: {
+    driverId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       default: null,
     },
     delivery_status: {
       type: String,
-      enum: ["pending", "assigned", "picked_up", "delivered", "failed"],
+      enum: [
+        "pending",
+        "assigned",
+        "accepted",
+        "picked_up",
+        "on_delivery",
+        "delivered",
+        "time_out",
+        "failed",
+      ],
       default: "pending",
     },
     pickup_location: {
