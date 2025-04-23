@@ -5,24 +5,18 @@ import mongoose from "mongoose";
 // Add a new food menu
 export const addFoodMenu = async (req, res) => {
   try {
-    const { restaurantId, categoryId, name, price, description, availability } =
+    const { restaurantId, categoryName, name, price, description, availability, imageUrl } =
       req.body;
 
-    if (!mongoose.Types.ObjectId.isValid(categoryId)) {
-      return res.status(400).json({ error: "Invalid categoryId" });
-    }
-    const existingCategory = await Category.findById(categoryId);
-    if (!existingCategory) {
-      return res.status(404).json({ message: "Category not found" });
-    }
 
     const newFoodMenu = new FoodMenu({
       restaurantId,
-      categoryId,
+      categoryName,
       name,
       price,
       description,
       availability,
+      imageUrl
     });
     await newFoodMenu.save();
 
@@ -119,6 +113,20 @@ export const getFoodMenusByCategory = async (req, res) => {
     res
       .status(500)
       .json({ message: "Error fetching food menus", error: error.message });
+  }
+};
+
+// Get food menus by restaurant ID
+export const getFoodMenusByRestaurantId = async (req, res) => {
+  try {
+    const { restaurantId } = req.params;
+    const foodMenus = await FoodMenu.find(restaurantId);
+
+    res.status(200).json(foodMenus);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error fetching restaurant menus", error: error.message });
   }
 };
 

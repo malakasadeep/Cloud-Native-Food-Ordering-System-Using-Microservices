@@ -35,3 +35,23 @@ export const removeCategory = async (req, res) => {
       .json({ message: "Error removing category", error: error.message });
   }
 };
+
+
+export const getAllCategories = async (req, res) => {
+  try {
+    const restaurantId = req.params.restaurantId || req.query.restaurantId;
+    
+    let categories;
+    if (restaurantId) {
+      categories = await Category.find({ restaurantId });
+    } else {
+      categories = await Category.find();
+    }
+    
+    res.status(200).json({ categories });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error retrieving categories", error: error.message });
+  }
+};

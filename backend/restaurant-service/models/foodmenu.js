@@ -16,7 +16,7 @@ const foodMenuSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  categoryId: {
+  categoryName: {
     type: String,
     required: true,
   },

@@ -12,5 +12,13 @@ const API_CONSTANTS = {
     LOGIN: "/api/v1/user/login",
     REGISTER: "/api/v1/user/register",
     GET_ALL: "/api/v1/user",
+
+
+    // restaurant
+    CREATE_CATEGORY: "/api/v1/restaurant/category",
+    GET_CATEGORIES: "/api/v1/restaurant/category",
+    CREATE_MENU: "/api/v1/restaurant/foodMenu",
+    GET_MENU_BY_RESTAURANT_ID: "/api/v1/restaurant/foodMenu",
+
   };
   export default API_CONSTANTS;
