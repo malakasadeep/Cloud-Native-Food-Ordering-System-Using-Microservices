@@ -8,15 +8,17 @@ import Menus from './restaurant/Menus';
 import Orders from './restaurant/Orders';
 import Delivery from './restaurant/Delivery';
 import Profile from './restaurant/Profile';
+import { logout } from '../../../features/customerAuth/actions/customerAction';
+import { useDispatch } from 'react-redux';
 
 const RestaurantPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch(); 
   
   const handleSignOut = () => {
-    // Implement sign out logic here
-    localStorage.removeItem('restaurantToken');
-    navigate('/login');
-  };
+      dispatch(logout(navigate));
+      
+    };
 
   return (
     <div className="flex min-h-screen bg-gray-100">

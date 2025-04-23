@@ -5,13 +5,15 @@ import { motion } from "framer-motion";
 import EmptyCart from "../../../assets/img/emptyCart.svg";
 import CartItem from "./../molecules/CartItem";
 import { useCart } from "../../contexts/CartContext";
+import { useSelector } from "react-redux";
+import { Link, Navigate } from "react-router-dom";
 
 const CartContainer = () => {
   const { isCartOpen, toggleCart } = useCart();
   const [cartItems, setCartItems] = useState([]);
   const [flag, setFlag] = useState(1);
   const [tot, setTot] = useState(0);
-  const [user, setUser] = useState(null);
+  const { user } = useSelector((state) => state.auth);
 
   // Load initial cart items and user
   useEffect(() => {
@@ -20,10 +22,6 @@ const CartContainer = () => {
       : [];
     setCartItems(items);
     
-    const userData = localStorage.getItem('user')
-      ? JSON.parse(localStorage.getItem('user'))
-      : null;
-    setUser(userData);
   }, []);
 
   // Listen for cart updates from other components
@@ -112,11 +110,11 @@ const CartContainer = () => {
           <div className="w-full flex-1 bg-cartTotal rounded-t-[2rem] flex flex-col items-center justify-evenly px-8 py-2">
             <div className="w-full flex items-center justify-between">
               <p className="text-gray-400 text-lg">Sub Total</p>
-              <p className="text-gray-400 text-lg">$ {tot}</p>
+              <p className="text-gray-400 text-lg">Rs. {tot}</p>
             </div>
             <div className="w-full flex items-center justify-between">
               <p className="text-gray-400 text-lg">Delivery</p>
-              <p className="text-gray-400 text-lg">$ 2.5</p>
+              <p className="text-gray-400 text-lg">Rs. 250</p>
             </div>
 
             <div className="w-full border-b border-gray-600 my-2"></div>
@@ -124,7 +122,7 @@ const CartContainer = () => {
             <div className="w-full flex items-center justify-between">
               <p className="text-gray-200 text-xl font-semibold">Total</p>
               <p className="text-gray-200 text-xl font-semibold">
-                ${tot + 2.5}
+                Rs.{tot + 250}
               </p>
             </div>
 
@@ -137,13 +135,18 @@ const CartContainer = () => {
                 Check Out
               </motion.button>
             ) : (
+              
               <motion.button
                 whileTap={{ scale: 0.8 }}
                 type="button"
+                
                 className="w-full p-2 rounded-full bg-gradient-to-tr from-orange-400 to-orange-600 text-gray-50 text-lg my-2 hover:shadow-lg"
               >
+               <Link to={"/customer-auth"}>
                 Login to check out
+                </Link>
               </motion.button>
+              
             )}
           </div>
         </div>

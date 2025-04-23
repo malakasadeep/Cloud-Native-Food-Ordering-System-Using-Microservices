@@ -139,7 +139,8 @@ const Header = () => {
               <motion.div
                 whileTap={{ scale: 0.9 }}
                 className="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer overflow-hidden border-2 border-orange-500"
-                onClick={toggleUserMenu}
+                //onClick={toggleUserMenu}
+                onClick={handleSignOut}
               >
                 {user?.avatar ? (
                   <img src={user.avatar} alt="user profile" className="w-full h-full object-cover" />
@@ -159,28 +160,20 @@ const Header = () => {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   className="absolute top-12 right-0 bg-white shadow-xl rounded-lg py-2 min-w-[180px] z-50"
-                  onClick={(e) => e.stopPropagation()}
+                  
                 >
                   <ul>
                     <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2">
                       <User size={16} strokeWidth={2} />
                       <span>Profile</span>
                     </li>
-                    <div 
+                    <li 
                       className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2 text-red-500"
-                      onClick={() => {
-                        try {
-                          dispatch(logout(navigate));
-                          setIsUserMenuOpen(false);
-                          console.log("Logout dispatched");
-                        } catch (error) {
-                          console.error("Error during logout:", error);
-                        }
-                      }}
+                      onClick={handleSignOut}
                     >
                       <LogOut size={16} strokeWidth={2} />
                       <span>Sign Out</span>
-                    </div>
+                    </li>
                   </ul>
                 </motion.div>
               )}

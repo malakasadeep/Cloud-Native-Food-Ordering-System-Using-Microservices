@@ -1,12 +1,52 @@
 import React, { useRef, useEffect, useState } from "react";
-import { MdShoppingBasket } from "react-icons/md";
-import { motion } from "framer-motion";
 import NotFound from "../../../assets/img/NotFound.svg";
+import FoodCard from "../molecules/FoodCard";
+import menuService from "../../../features/restaurentManageent/services/menuservice";
 
-const RowContainer = ({ flag, data, scrollValue }) => {
+const RowContainer = ({ flag, scrollValue, filter }) => {
   const rowContainer = useRef();
   const [items, setItems] = useState([]);
+  const [foodItems, setFoodItems] = useState([]);
+  const [filteredItems, setFilteredItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const fetchFoodItems = async () => {
+      setLoading(true);
+      try {
+        const response = await menuService.getAllMenus();
+        if (response.success) {
+          setFoodItems(response.data);
+        } else {
+          console.error("Failed to fetch menu items:", response.message);
+        }
+      } catch (error) {
+        console.error("Error fetching menu items:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFoodItems();
+  }, []);
+
+  // Filter food items when either foodItems or filter changes
+  useEffect(() => {
+    if (filter && foodItems.length > 0) {
+      if (filter.toLowerCase() === "all") {
+        // If filter is "All", show all food items
+        setFilteredItems(foodItems);
+      } else {
+        // Otherwise filter by category
+        const filtered = foodItems.filter(
+          (item) => item && item.categoryName && item.categoryName.toLowerCase() === filter.toLowerCase()
+        );
+        setFilteredItems(filtered);
+      }
+    } else {
+      setFilteredItems(foodItems);
+    }
+  }, [foodItems, filter]);
 
   useEffect(() => {
     const cartItems = localStorage.getItem('cartItems') 
@@ -16,12 +56,11 @@ const RowContainer = ({ flag, data, scrollValue }) => {
   }, []);
 
   const addToCart = (item) => {
-
     const cartItems = localStorage.getItem('cartItems') 
       ? JSON.parse(localStorage.getItem('cartItems')) 
       : [];
 
-    const existingItemIndex = cartItems.findIndex(cartItem => cartItem.id === item.id);
+    const existingItemIndex = cartItems.findIndex(cartItem => cartItem.id === item._id);
     
     let updatedItems;
     if (existingItemIndex !== -1) {
@@ -50,46 +89,11 @@ const RowContainer = ({ flag, data, scrollValue }) => {
           : "overflow-x-hidden flex-wrap justify-center"
       }`}
     >
-      {data && data.length > 0 ? (
-        data.map((item) => (
-          <div
-            key={item?.id}
-            className="w-275 h-[175px] min-w-[275px] md:w-300 md:min-w-[300px]  bg-cardOverlay rounded-lg py-2 px-4  my-12 backdrop-blur-lg hover:drop-shadow-lg flex flex-col items-center justify-evenly relative"
-          >
-            <div className="w-full flex items-center justify-between">
-              <motion.div
-                className="w-40 h-40 -mt-8 drop-shadow-2xl"
-                whileHover={{ scale: 1.2 }}
-              >
-                <img
-                  src={item?.imageURL}
-                  alt=""
-                  className="w-full h-full object-contain"
-                />
-              </motion.div>
-              <motion.div
-                whileTap={{ scale: 0.75 }}
-                className="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center cursor-pointer hover:shadow-md -mt-8"
-                onClick={() => addToCart(item)}
-              >
-                <MdShoppingBasket className="text-white" />
-              </motion.div>
-            </div>
-
-            <div className="w-full flex flex-col items-end justify-end -mt-8">
-              <p className="text-textColor font-semibold text-base md:text-lg">
-                {item?.title}
-              </p>
-              <p className="mt-1 text-sm text-gray-500">
-                {item?.calories} Calories
-              </p>
-              <div className="flex items-center gap-8">
-                <p className="text-lg text-headingColor font-semibold">
-                  <span className="text-sm text-red-500">$</span> {item?.price}
-                </p>
-              </div>
-            </div>
-          </div>
+      {loading ? (
+        <p className="text-xl text-headingColor font-semibold my-2">Loading...</p>
+      ) : filteredItems && filteredItems.length > 0 ? (
+        filteredItems.map((item) => (
+          <FoodCard key={item?._id} item={item} addToCart={addToCart} />
         ))
       ) : (
         <div className="w-full flex flex-col items-center justify-center">
