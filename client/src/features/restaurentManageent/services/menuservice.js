@@ -43,7 +43,7 @@ const menuService = {
       const response = await restaurantClient.get(API_CONSTANTS.GET_CATEGORIES);
       return {
         success: true,
-        data: response.data.data,
+        data: response.data,
       };
     } catch (error) {
       console.error("Error fetching categories:", error);
@@ -108,7 +108,7 @@ const menuService = {
       const response = await restaurantClient.get(API_CONSTANTS.GET_MENUS);
       return {
         success: true,
-        data: response.data.data,
+        data: response.data,
       };
     } catch (error) {
       console.error("Error fetching menus:", error);

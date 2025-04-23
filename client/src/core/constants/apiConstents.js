@@ -19,6 +19,7 @@ const API_CONSTANTS = {
     GET_CATEGORIES: "/api/v1/restaurant/category",
     CREATE_MENU: "/api/v1/restaurant/foodMenu",
     GET_MENU_BY_RESTAURANT_ID: "/api/v1/restaurant/foodMenu",
+    GET_MENUS: "/api/v1/restaurant/foodMenu",
 
   };
   export default API_CONSTANTS;

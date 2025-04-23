@@ -1,12 +1,39 @@
-import React, { useState } from "react";
-import { IoFastFood } from "react-icons/io5";
-import { categories } from "../../utils/data";
-import { motion } from "framer-motion";
+import React, { useState, useEffect } from "react";
 import RowContainer from "./RowContainer";
 import { foodItems } from "../../utils/foodData";
+import CategoryCard from "../molecules/CategoryCard";
+import menuService from "../../../features/restaurentManageent/services/menuservice";
 
 const MenuContainer = () => {
-  const [filter, setFilter] = useState("chicken");
+  const [filter, setFilter] = useState("All");
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const response = await menuService.getAllCategories();
+      console.log("Full response:", response);
+      
+      if (response.success) {
+        // Check if categories are nested in response.data.categories
+        const categoriesData = response.data.categories || response.data;
+        console.log("Categories data to be used:", categoriesData);
+        
+        if (categoriesData && categoriesData.length > 0) {
+          // Add the "All" category
+          const allCategories = [
+            { _id: "all", categoryName: "All" },
+            ...categoriesData
+          ];
+          setCategories(allCategories);
+          // Keep "All" as default filter
+          setFilter("All");
+          console.log("Default filter set to: All");
+        }
+      }
+    };
+
+    fetchCategories();
+  }, []);
   
   return (
     <section className="w-full my-6" id="menu">
@@ -16,48 +43,26 @@ const MenuContainer = () => {
       </p>
 
       <div className="w-full flex items-center justify-start lg:justify-center gap-8 py-6 overflow-x-scroll scrollbar-none">
-        {categories &&
+        {categories && categories.length > 0 &&
           categories.map((category) => (
-            <motion.div
-              whileTap={{ scale: 0.75 }}
-              key={category.id}
-              className={`group ${
-                filter === category.urlParamName ? "bg-cartNumBg" : "bg-card"
-              } w-24 min-w-[94px] h-28 cursor-pointer rounded-lg drop-shadow-xl flex flex-col gap-3 items-center justify-center hover:bg-cartNumBg `}
-              onClick={() => setFilter(category.urlParamName)}
-            >
-              <div
-                className={`w-10 h-10 rounded-full shadow-lg ${
-                  filter === category.urlParamName
-                    ? "bg-white"
-                    : "bg-cartNumBg"
-                } group-hover:bg-white flex items-center justify-center`}
-              >
-                <IoFastFood
-                  className={`${
-                    filter === category.urlParamName
-                      ? "text-textColor"
-                      : "text-white"
-                  } group-hover:text-textColor text-lg`}
-                />
-              </div>
-              <p
-                className={`text-sm ${
-                  filter === category.urlParamName
-                    ? "text-white"
-                    : "text-textColor"
-                } group-hover:text-white`}
-              >
-                {category.name}
-              </p>
-            </motion.div>
+            <CategoryCard 
+              key={category._id}
+              category={{
+                ...category,
+                name: category.categoryName,
+                urlParamName: category.categoryName.toLowerCase()
+              }}
+              filter={filter}
+              setFilter={setFilter} 
+            />
           ))}
       </div>
 
       <div className="w-full">
         <RowContainer
           flag={false}
-          data={foodItems?.filter((n) => n.category == filter)}
+          filter={filter}
+          data={filter === "All" ? foodItems : foodItems?.filter((n) => n.category.toLowerCase() === filter.toLowerCase())}
         />
       </div>
     </div>
