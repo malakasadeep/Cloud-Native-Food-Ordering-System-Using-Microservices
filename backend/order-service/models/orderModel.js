@@ -2,10 +2,12 @@ import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema(
   {
-    customerId: { type: mongoose.Schema.Types.ObjectId, required: true },
+    // customerId: { type: mongoose.Schema.Types.ObjectId, required: true },
+    customerId: { type: String, required: true },
     items: [
       {
-        itemId: { type: mongoose.Schema.Types.ObjectId, required: true },
+        // itemId: { type: mongoose.Schema.Types.ObjectId, required: true },
+        itemId: { type: String, required: true },
         itemName: { type: String, required: true },
         unitPrice: { type: Number, required: true },
         qty: { type: Number, required: true },
@@ -13,11 +15,6 @@ const orderSchema = new mongoose.Schema(
     ],
     totalAmount: { type: Number, required: true },
     paymentMethod: { type: String, enum: ["Cash", "Card"], required: true },
-    cardInfo: {
-      cardNumber: { type: String },
-      expiryDate: { type: String },
-      cvv: { type: String },
-    },
     paymentStatus: {
       type: String,
       enum: ["PENDING", "PAID"],
