@@ -11,6 +11,28 @@ services:
       - JWT_SECRET=576520617265204465764372616674732e206465766372616674732e746f70
     restart: unless-stopped
 
+  restaurant-service:
+    image: malakasadeep/fds-restaurent-service:latest
+    container_name: restaurant-service
+    ports:
+      - "5002:5002"
+    environment:
+      - PORT=5002
+      - MONGO_URL=mongodb+srv://pgmsadeep:1234@cluster0.phudmlq.mongodb.net/FoodDelevery_DB?retryWrites=true&w=majority
+      - JWT_SECRET=576520617265204465764372616674732e206465766372616674732e746f70
+    restart: unless-stopped
+
+  notification-service:
+    image: malakasadeep/fds-notification-service:latest
+    container_name: notification-service
+    ports:
+      - "5005:5005"
+    environment:
+      - PORT=5005
+      - MONGO_URL=mongodb+srv://pgmsadeep:1234@cluster0.phudmlq.mongodb.net/FoodDelevery_DB?retryWrites=true&w=majority
+      - JWT_SECRET=576520617265204465764372616674732e206465766372616674732e746f70
+    restart: unless-stopped
+
   api-gateway:
     image: malakasadeep/fds-gateway:latest
     container_name: api-gateway
@@ -18,7 +40,8 @@ services:
       - "80:80"
     depends_on:
       - user-service
-      # - restaurant-service
+      - restaurant-service
+      - notification-service
       # - order-service
       # - delivery-service
     restart: unless-stopped
