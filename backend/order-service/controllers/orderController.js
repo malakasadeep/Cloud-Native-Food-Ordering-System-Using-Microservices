@@ -1,16 +1,36 @@
+import Stripe from "stripe";
 import Order from "../models/orderModel.js";
-import { createStripePayment } from "../controllers/paymentController.js";
+
+import dotenv from "dotenv";
+dotenv.config();
+
+// const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export const createPaymentIntent = async (req, res) => {
+  const { cartItems } = req.body;
   try {
-    const { totalAmount } = req.body;
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: cartItems.map((item) => ({
+        price_data: {
+          currency: "usd",
+          product_data: {
+            name: item.title,
+          },
+          unit_amount: item.price * 100,
+        },
+        quantity: item.qty,
+      })),
+      mode: "payment",
+      success_url: `http://localhost:5173/customer/order/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: "http://localhost:5173/cancel",
+      metadata: {
+        cartItems: JSON.stringify(cartItems),
+      },
+    });
 
-    if (!totalAmount || totalAmount <= 0) {
-      return res.status(400).json({ message: "Invalid amount" });
-    }
-
-    const payment = await createStripePayment(totalAmount);
-    res.status(200).json(payment); // clientSecret is used by frontend
+    res.json({ id: session.id });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -19,25 +39,38 @@ export const createPaymentIntent = async (req, res) => {
 // Place a New Order
 export const placeOrder = async (req, res) => {
   try {
-    const {
-      customerId,
-      items,
-      totalAmount,
-      paymentMethod,
-      cardInfo,
-      deliveryAddress,
-    } = req.body;
+    const { sessionId } = req.body;
 
-    // Handle card info only if payment method is "Card"
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+    const cartItemsRaw = session.metadata.cartItems
+      ? JSON.parse(session.metadata.cartItems)
+      : [];
+    // console.log(cartItemsRaw);
+
+    const cartItemsFormatted = cartItemsRaw.map((item) => ({
+      itemName: item.title,
+      itemId: item.id,
+      unitPrice: item.price,
+      qty: item.qty,
+    }));
     const orderData = {
-      customerId,
-      items,
-      totalAmount,
-      paymentMethod,
-      deliveryAddress,
-      paymentStatus: paymentMethod === "Card" ? "PAID" : "PENDING",
-      cardInfo: paymentMethod === "Card" ? cardInfo : undefined,
+      customerId:
+        session.client_reference_id ??
+        Math.random().toString(36).substring(2, 15),
+      items: cartItemsFormatted,
+      totalAmount: cartItemsFormatted.reduce(
+        (acc, item) => acc + (item.price ?? 0) * (item.qty ?? 0),
+        0
+      ),
+      paymentMethod: "Card",
+      deliveryAddress: "address",
+      paymentStatus: "PAID",
+      // cardInfo: paymentMethod === "Card" ? cardInfo : undefined,
     };
+
+    if (session.payment_status === "paid") {
+    }
 
     const newOrder = await Order.create(orderData);
 
@@ -49,7 +82,7 @@ export const placeOrder = async (req, res) => {
     //     "Order Confirmation",
     //     `Hi ${user.name}, your order (ID: ${newOrder._id}) has been placed successfully!`
     //   );
-    
+
     // Simulated delivery notification
     // await sendEmail(
     //   "deliveryguy@email.com",
