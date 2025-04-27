@@ -27,7 +27,6 @@ const DeliverySchema = new mongoose.Schema(
       type: String,
       enum: [
         "pending",
-        "assigned",
         "accepted",
         "picked_up",
         "on_delivery",
