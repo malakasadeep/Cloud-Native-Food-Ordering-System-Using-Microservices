@@ -16,6 +16,7 @@ const HomeContainer = () => {
           animationData={animationData} 
           className="w-full h-full"
           loop={true}
+          reversed={true}
         />
       </div>
       
@@ -33,7 +34,7 @@ const HomeContainer = () => {
           </div>
         </div>
 
-        <p className="text-[2.5rem] lg:text-[4.5rem] font-bold tracking-wide text-headingColor">
+        <p className="text-[2.5rem] lg:text-[4.5rem] font-bold  text-headingColor">
           The Fastest Delivery in
           <span className="text-orange-600 text-[3rem] lg:text-[5rem]">
             Your City
@@ -41,10 +42,7 @@ const HomeContainer = () => {
         </p>
 
         <p className="text-base text-textColor text-center md:text-left md:w-[80%]">
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Minima velit
-          eaque fugit distinctio est nam voluptatum architecto, porro iusto
-          deserunt recusandae ipsa minus eos sunt, dolores illo repellat facere
-          suscipit!
+          Experience the ultimate convenience with our lightning-fast food delivery service. Choose from hundreds of local restaurants and cuisines, all delivered to your doorstep with just a few taps. Our reliable drivers ensure your food arrives fresh, hot, and exactly when you want it. Enjoy special discounts and zero delivery fees on your favorite meals!
         </p>
 
         <button
