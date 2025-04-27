@@ -5,9 +5,15 @@ import mongoose from "mongoose";
 // Add a new food menu
 export const addFoodMenu = async (req, res) => {
   try {
-    const { restaurantId, categoryName, name, price, description, availability, imageUrl } =
-      req.body;
-
+    const {
+      restaurantId,
+      categoryName,
+      name,
+      price,
+      description,
+      availability,
+      imageUrl,
+    } = req.body;
 
     const newFoodMenu = new FoodMenu({
       restaurantId,
@@ -16,7 +22,7 @@ export const addFoodMenu = async (req, res) => {
       price,
       description,
       availability,
-      imageUrl
+      imageUrl,
     });
     await newFoodMenu.save();
 
@@ -120,13 +126,16 @@ export const getFoodMenusByCategory = async (req, res) => {
 export const getFoodMenusByRestaurantId = async (req, res) => {
   try {
     const { restaurantId } = req.params;
-    const foodMenus = await FoodMenu.find(restaurantId);
+    const foodMenus = await FoodMenu.find({ restaurantId });
 
     res.status(200).json(foodMenus);
   } catch (error) {
     res
       .status(500)
-      .json({ message: "Error fetching restaurant menus", error: error.message });
+      .json({
+        message: "Error fetching restaurant menus",
+        error: error.message,
+      });
   }
 };
 
