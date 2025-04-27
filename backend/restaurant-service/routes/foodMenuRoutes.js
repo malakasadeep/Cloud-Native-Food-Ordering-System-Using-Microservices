@@ -1,5 +1,14 @@
 import express from "express";
-import {addFoodMenu, updateFoodMenu, deleteFoodMenu, getAllFoodMenus, getFoodMenuById, getFoodMenusByCategory, searchFoodMenus, getFoodMenusByRestaurantId} from "../controllers/foodMenuController.js";
+import {
+  addFoodMenu,
+  updateFoodMenu,
+  deleteFoodMenu,
+  getAllFoodMenus,
+  getFoodMenuById,
+  getFoodMenusByCategory,
+  searchFoodMenus,
+  getFoodMenusByRestaurantId,
+} from "../controllers/foodMenuController.js";
 
 const menuRouter = express.Router();
 
@@ -7,15 +16,15 @@ const menuRouter = express.Router();
 menuRouter.post("/", addFoodMenu);
 
 //updateFoodMenu
-menuRouter.put("/update/:foodMenuId", updateFoodMenu);
+menuRouter.put("/:foodMenuId", updateFoodMenu);
 
 //deleteFoodMenu
-menuRouter.delete("/delete/:foodMenuId", deleteFoodMenu);
+menuRouter.delete("/:foodMenuId", deleteFoodMenu);
 
 //getAllFoodMenu
 menuRouter.get("/", getAllFoodMenus);
 
-menuRouter.get("/:id", getFoodMenusByRestaurantId);
+menuRouter.get("/:restaurantId", getFoodMenusByRestaurantId);
 
 //getFoodMenuById
 menuRouter.get("/:foodMneuId", getFoodMenuById);
