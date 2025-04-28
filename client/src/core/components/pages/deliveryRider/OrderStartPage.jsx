@@ -25,7 +25,7 @@ import {
   LocalShipping,
   CheckCircle,
 } from "@mui/icons-material";
-import io from "socket.io-client"; // Import Socket.IO client
+import io from "socket.io-client";
 import deliverService from "../../../../features/partnersManagement/services/deliverServices";
 
 // Libraries for Google Maps
