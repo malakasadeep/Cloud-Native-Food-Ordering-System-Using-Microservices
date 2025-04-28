@@ -16,7 +16,7 @@ export const createPaymentIntent = async (req, res) => {
         price_data: {
           currency: "usd",
           product_data: {
-            name: item.title,
+            name: item.name,
           },
           unit_amount: item.price * 100,
         },
@@ -26,7 +26,15 @@ export const createPaymentIntent = async (req, res) => {
       success_url: `http://localhost:5173/customer/order/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: "http://localhost:5173/cancel",
       metadata: {
-        cartItems: JSON.stringify(cartItems),
+        cartItems: JSON.stringify(
+          cartItems.map((item) => ({
+            id: item._id,
+            restaurantId: item.restaurantId,
+            name: item.name,
+            price: item.price,
+            qty: item.qty,
+          }))
+        ),
       },
     });
 
@@ -54,15 +62,18 @@ export const placeOrder = async (req, res) => {
       unitPrice: item.price,
       qty: item.qty,
     }));
+
+    const totalAmount = cartItemsFormatted.reduce(
+      (sum, item) => sum + item.unitPrice * item.qty,
+      0
+    );
+    
     const orderData = {
       customerId:
         session.client_reference_id ??
         Math.random().toString(36).substring(2, 15),
       items: cartItemsFormatted,
-      totalAmount: cartItemsFormatted.reduce(
-        (acc, item) => acc + (item.price ?? 0) * (item.qty ?? 0),
-        0
-      ),
+      totalAmount: totalAmount,
       paymentMethod: "Card",
       deliveryAddress: "address",
       paymentStatus: "PAID",
