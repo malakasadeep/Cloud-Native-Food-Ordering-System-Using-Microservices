@@ -1,18 +1,19 @@
 import axios from "axios";
 
-const defaultBaseURL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5001";
+const gatewayBaseURL = import.meta.env.VITE_API_GATEWAY_URL;
 
-const serviceURLs = {
-  default: defaultBaseURL,
-  user: import.meta.env.VITE_AUTH_SERVICE_URL || "http://localhost:5001",
-  restaurant: import.meta.env.VITE_ORDER_SERVICE_URL || "http://localhost:5002",
-  order: import.meta.env.VITE_PAYMENT_SERVICE_URL || "http://localhost:5003",
-  delever: import.meta.env.VITE_CATALOG_SERVICE_URL || "http://localhost:5004",
-  
+const servicePaths = {
+  default: "",
+  user: "/api/users",
+  restaurant: "/api/restaurants",
+  notification: "/api/notification",
+  order: "/api/orders",
+  delivery: "/api/delivery"
 };
 
 const createServiceClient = (serviceName) => {
-  const baseURL = serviceURLs[serviceName] || defaultBaseURL;
+  const baseURL = gatewayBaseURL;
+  const servicePath = servicePaths[serviceName] || "";
   
   const serviceClient = axios.create({
     withCredentials: true,
@@ -25,6 +26,10 @@ const createServiceClient = (serviceName) => {
   serviceClient.interceptors.request.use(
     async (config) => {
       config.timeout = 120000;
+      // Prepend the service path to the request URL
+      if (servicePath && !config.url.startsWith(servicePath)) {
+        config.url = `${servicePath}${config.url}`;
+      }
       return config;
     },
     async (error) => {
@@ -46,10 +51,7 @@ const createServiceClient = (serviceName) => {
 
   return serviceClient;
 };
-
-// Create the default client (for backward compatibility)
 const client = createServiceClient('default');
 
-// Export the service client factory and the default client
 export { createServiceClient };
 export default client;

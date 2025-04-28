@@ -9,6 +9,7 @@ services:
       - PORT=5001
       - MONGO_URL=mongodb+srv://pgmsadeep:1234@cluster0.phudmlq.mongodb.net/FoodDelevery_DB?retryWrites=true&w=majority
       - JWT_SECRET=576520617265204465764372616674732e206465766372616674732e746f70
+      - NOTIFICATION_SERVICE_URL=http://notification-service:5005
     restart: unless-stopped
 
   restaurant-service:
@@ -31,6 +32,10 @@ services:
       - PORT=5005
       - MONGO_URL=mongodb+srv://pgmsadeep:1234@cluster0.phudmlq.mongodb.net/FoodDelevery_DB?retryWrites=true&w=majority
       - JWT_SECRET=576520617265204465764372616674732e206465766372616674732e746f70
+      - EMAIL_SERVICE = gmail
+      - EMAIL_USER = sadeepmalaka2@gmail.com
+      - EMAIL_PASSWORD = bfxr wzmt jalb grxp
+      - SMS_API_KEY = d97962ed12ebccd0870087ab1b3fc066-e50be66a-ad92-4cf5-9747-b77f9d89e1b2
     restart: unless-stopped
 
   api-gateway:
