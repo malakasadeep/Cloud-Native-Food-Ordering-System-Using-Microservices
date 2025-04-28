@@ -72,6 +72,7 @@ function AppRoutes() {
             <Routes>
               <Route path="/*" element={<AdminPage />} />
               <Route path="/orders" element={<Orders />} />
+              <Route path="/orders/start" element={<OrderStartPage />} />
             </Routes>
           </ProtectedRoute>
         }

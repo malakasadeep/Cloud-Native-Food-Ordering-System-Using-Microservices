@@ -28,6 +28,7 @@ const DeliverySchema = new mongoose.Schema(
       enum: [
         "pending",
         "accepted",
+        "started",
         "picked_up",
         "on_delivery",
         "delivered",

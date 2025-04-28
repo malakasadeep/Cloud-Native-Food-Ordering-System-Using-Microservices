@@ -1,24 +1,36 @@
 import React, { useEffect, useState } from "react";
 import deliverService from "../../../../features/partnersManagement/services/deliverServices";
-import { CircularProgress, Card, CardContent, Typography } from "@mui/material";
+import {
+  CircularProgress,
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  Divider,
+} from "@mui/material";
 
 const Orders = () => {
   const [loading, setLoading] = useState(true);
-  const [orders, setOrders] = useState([]);
+  const [assignedOrders, setAssignedOrders] = useState([]);
+  const [acceptedOrders, setAcceptedOrders] = useState([]);
+  const [ongoingOrder, setOngoingOrder] = useState();
+  const [deliveredOrders, setDeliveredOrders] = useState([]);
   const [error, setError] = useState("");
 
   useEffect(() => {
     fetchRiderAssignedOrders();
+    fetchRiderAcceptedOrders();
   }, []);
 
   const fetchRiderAssignedOrders = async () => {
+    setLoading(true);
     try {
       const res = await deliverService.getRiderAssignedOrders(
         "68079119955e8db805bf2471"
       );
       console.log(res);
       if (res.success) {
-        setOrders(res.data || []);
+        setAssignedOrders(res.data || []);
       } else {
         setError(res.message);
       }
@@ -27,6 +39,38 @@ const Orders = () => {
       setError("Failed to load orders.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchRiderAcceptedOrders = async () => {
+    try {
+      const response = await deliverService.getRiderOrderByStatus(
+        "68079119955e8db805bf2471",
+        "accepted"
+      );
+
+      setAcceptedOrders(response.data);
+    } catch (error) {}
+  };
+
+  const handleAccept = async (orderId) => {
+    try {
+      await deliverService.riderAcceptOrder(
+        "68079119955e8db805bf2471",
+        orderId
+      );
+      await fetchRiderAssignedOrders();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleStart = async (orderId) => {
+    try {
+      await deliverService.riderStartDelivery(orderId);
+      await fetchRiderAssignedOrders();
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -50,42 +94,61 @@ const Orders = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-800 mb-8">
+      {/* Assigned Orders Section */}
+      <div className="mb-8">
+        <Typography variant="h5" className="mb-4">
           Assigned Orders
-        </h1>
-
-        {orders.length === 0 ? (
-          <Typography variant="body1" className="text-gray-600">
-            No assigned orders found.
-          </Typography>
+        </Typography>
+        {assignedOrders.length > 0 ? (
+          assignedOrders.map((order) => (
+            <Card key={order._id} className="mb-4">
+              <CardContent>
+                <Typography variant="h6">{order.customerName}</Typography>
+                <Typography variant="body2" color="textSecondary">
+                  {order.deliveryAddress}
+                </Typography>
+                <Divider className="my-2" />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => handleAccept(order._id)}
+                >
+                  Accept Order
+                </Button>
+              </CardContent>
+            </Card>
+          ))
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {orders.map((order, index) => (
-              <Card
-                key={index}
-                className="shadow-md hover:shadow-lg transition duration-300"
-              >
-                <CardContent>
-                  <Typography variant="h6" className="mb-2 text-blue-600">
-                    Order ID: {order.orderId}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    Pickup: {order.pickup_location?.address || "N/A"}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    Drop-off: {order.dropoff_location?.address || "N/A"}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    Status:{" "}
-                    <span className="font-semibold">
-                      {order.delivery_status}
-                    </span>
-                  </Typography>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          <Typography>No assigned orders available.</Typography>
+        )}
+      </div>
+
+      {/* Accepted Orders Section */}
+      <div>
+        <Typography variant="h5" className="mb-4">
+          Accepted Orders
+        </Typography>
+        {acceptedOrders.length > 0 ? (
+          acceptedOrders.map((order) => (
+            <Card key={order._id} className="mb-4">
+              <CardContent>
+                <Typography variant="h6">{order.customerName}</Typography>
+                <Typography variant="body2" color="textSecondary">
+                  {order.deliveryAddress}
+                </Typography>
+                <Divider className="my-2" />
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={() => handleStart(order._id)}
+                >
+                  Start Delivery
+                </Button>
+              </CardContent>
+            </Card>
+          ))
+        ) : (
+          <Typography>No accepted orders available.</Typography>
         )}
       </div>
     </div>

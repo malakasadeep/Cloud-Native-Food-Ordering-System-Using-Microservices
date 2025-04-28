@@ -36,5 +36,9 @@ const API_CONSTANTS = {
 
   //deliver-services
   GET_RIDER_ASSIGNED_ORDERS: `api/delivery-requests/`,
+  GET_RIDER_ACCEPT_ORDER_BY_STATUS: `api/delivery/driver/`,
+  GET_RIDER_ONGOING_DELIVERY: `api/delivery/ongoing/driver/`,
+  RIDER_ACCEPT_ORDER: `api/delivery/accept/driver/`,
+  RIDER_START_DELIVERY: `api/delivery/start/order/`,
 };
 export default API_CONSTANTS;
