@@ -1,7 +1,7 @@
 #version: "3.8"
 services:
   user-service:
-    image: malakasadeep/fds-user-service-v3:latest
+    build: ./user-service
     container_name: user-service
     ports:
       - "5001:5001"
@@ -13,7 +13,7 @@ services:
     restart: unless-stopped
 
   restaurant-service:
-    image: malakasadeep/fds-restaurent-service:latest
+    build: ./restaurant-service
     container_name: restaurant-service
     ports:
       - "5002:5002"
@@ -24,7 +24,7 @@ services:
     restart: unless-stopped
 
   notification-service:
-    image: malakasadeep/fds-notification-service-v2:latest
+    build: ./notification-service
     container_name: notification-service
     ports:
       - "5005:5005"
@@ -32,10 +32,16 @@ services:
       - PORT=5005
       - MONGO_URL=mongodb+srv://pgmsadeep:1234@cluster0.phudmlq.mongodb.net/FoodDelevery_DB?retryWrites=true&w=majority
       - JWT_SECRET=576520617265204465764372616674732e206465766372616674732e746f70
-      - EMAIL_SERVICE=gmail
-      - EMAIL_USER=sadeepmalaka2@gmail.com
-      - EMAIL_PASSWORD=bfxr wzmt jalb grxp
-      - SMS_API_KEY=d97962ed12ebccd0870087ab1b3fc066-e50be66a-ad92-4cf5-9747-b77f9d89e1b2
+    restart: unless-stopped
+
+  delivery-service:
+    build: ./delivery-service
+    container_name: delivery-service
+    ports:
+      - "8090:8090"
+    environment:
+      - PORT=8090
+      - MONGO_URL=mongodb+srv://pgmsadeep:1234@cluster0.phudmlq.mongodb.net/FoodDelevery_DB?retryWrites=true&w=majority
     restart: unless-stopped
 
   order-service:
@@ -50,7 +56,7 @@ services:
     restart: unless-stopped
 
   api-gateway:
-    image: malakasadeep/fds-gateway-v2:latest
+    build: ./api-gateway
     container_name: api-gateway
     ports:
       - "80:80"
@@ -58,4 +64,6 @@ services:
       - user-service
       - restaurant-service
       - notification-service
+      # - order-service
+      - delivery-service
     restart: unless-stopped
