@@ -46,8 +46,7 @@ const debounce = (func, wait) => {
   };
 };
 
-// Socket.IO server URL (replace with your server URL)
-const SOCKET_SERVER_URL = "http://localhost:8090"; // Update with your server URL
+const SOCKET_SERVER_URL = "http://localhost:8090";
 
 const OrderStartPage = () => {
   const [loading, setLoading] = useState(true);
@@ -59,15 +58,14 @@ const OrderStartPage = () => {
     lng: 79.8612,
   });
   const [routeInfo, setRouteInfo] = useState(null);
-  const mapRef = useRef(null); // Reference to GoogleMap instance
-  const socketRef = useRef(null); // Reference to Socket.IO instance
+  const mapRef = useRef(null);
+  const socketRef = useRef(null);
 
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: "AIzaSyCUNJVymb9TyStgPqJSE5Ond4dZHn7fwZU",
     libraries,
   });
 
-  // Hardcoded driverId (replace with dynamic value if needed)
   const driverId = "68079119955e8db805bf2471";
 
   // Format distance and duration
@@ -162,7 +160,7 @@ const OrderStartPage = () => {
     // Handle connection
     socketRef.current.on("connect", () => {
       console.log("🟢 Connected to Socket.IO server");
-      // Register driver with userId (driverId)
+
       socketRef.current.emit("register", { userId: driverId });
     });
 
