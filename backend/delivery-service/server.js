@@ -10,11 +10,16 @@ const http = require("http");
 const { handleError } = require("./src/middlewares/errorMiddleware");
 const setupDriverSocket = require("./src/sockets/driverSocket");
 const deliveryRoutes = require("./src/routes/DeliveryRoutes.js");
-
+const deliveryRequestRoutes = require("./src/routes/DeliveryRequestRoutes.js");
 const app = express();
 const server = http.createServer(app);
 
-app.use(cors({ origin: "*" }));
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 app.use(helmet());
 app.use(cookieParser());
 app.use(morgan("dev"));
@@ -31,6 +36,7 @@ const io = new Server(server, {
 setupDriverSocket(io);
 
 app.use("/api/delivery", deliveryRoutes);
+app.use("/api/delivery-requests", deliveryRequestRoutes);
 
 app.get("/", (req, res) => {
   res.send("Delivery service is running!");

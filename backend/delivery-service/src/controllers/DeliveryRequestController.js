@@ -6,8 +6,9 @@ class DeliveryRequestController {
     try {
       const { riderId } = req.params;
 
-      const deliveryRequests = await DeliveryRequest.findAll({
+      const deliveryRequests = await DeliveryRequest.find({
         driverId: riderId,
+        status: "pending",
       });
 
       if (!deliveryRequests) {
