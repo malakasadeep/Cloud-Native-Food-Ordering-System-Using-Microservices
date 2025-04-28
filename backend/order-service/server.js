@@ -14,7 +14,7 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
-const DEFAULT_PORT = process.env.PORT || 5002;
+const DEFAULT_PORT = process.env.PORT || 5003;
 const FALLBACK_PORT = 7002;
 
 app.use("/api/orders", orderRoutes);
