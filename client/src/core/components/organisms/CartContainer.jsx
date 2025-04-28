@@ -7,6 +7,10 @@ import CartItem from "./../molecules/CartItem";
 import { useCart } from "../../contexts/CartContext";
 import { useSelector } from "react-redux";
 import { Link, Navigate } from "react-router-dom";
+import { loadStripe } from '@stripe/stripe-js';
+import axios from 'axios';
+
+const stripePromise = loadStripe('pk_test_51RD6tEGd3xGfzgsURpAHakH87YSP2ed1ncxqHAWGJVLfPT5uMXNks1BvvRDRwZG18xu03dSQv8PPZP1FBTiONntb00ns5UWWHU');
 
 const CartContainer = () => {
   const { isCartOpen, toggleCart } = useCart();
@@ -63,6 +67,22 @@ const CartContainer = () => {
       : [];
     setCartItems(items);
   }, [flag]);
+
+  const handleCheckout = async () => {
+    const stripe = await stripePromise;
+
+    // Send cart items to backend
+    const response = await axios.post('http://localhost:5003/api/orders/create-checkout-session', { cartItems });
+
+    // Redirect user to Stripe Checkout page
+    const result = await stripe.redirectToCheckout({
+      sessionId: response.data.id,
+    });
+
+    if (result.error) {
+      alert(result.error.message);
+    }
+  };
 
   // Using isCartOpen from context for visibility
   return (
@@ -131,6 +151,7 @@ const CartContainer = () => {
                 whileTap={{ scale: 0.8 }}
                 type="button"
                 className="w-full p-2 rounded-full bg-gradient-to-tr from-orange-400 to-orange-600 text-gray-50 text-lg my-2 hover:shadow-lg"
+                onClick={handleCheckout} //Navigate to checkout page
               >
                 Check Out
               </motion.button>
