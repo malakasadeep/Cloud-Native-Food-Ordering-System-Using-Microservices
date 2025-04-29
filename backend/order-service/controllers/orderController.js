@@ -8,13 +8,13 @@ dotenv.config();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export const createPaymentIntent = async (req, res) => {
-  const { cartItems } = req.body;
+  const { cartItems, deliveryAddress } = req.body;
   try {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: cartItems.map((item) => ({
         price_data: {
-          currency: "usd",
+          currency: "lkr",
           product_data: {
             name: item.name,
           },
@@ -35,6 +35,7 @@ export const createPaymentIntent = async (req, res) => {
             qty: item.qty,
           }))
         ),
+        deliveryAddress: deliveryAddress || "Not provided",
       },
     });
 
@@ -54,6 +55,8 @@ export const placeOrder = async (req, res) => {
     const cartItemsRaw = session.metadata.cartItems
       ? JSON.parse(session.metadata.cartItems)
       : [];
+
+    const deliveryAddress = session.metadata.deliveryAddress || "Not available";
     // console.log(cartItemsRaw);
 
     const cartItemsFormatted = cartItemsRaw.map((item) => ({
@@ -67,7 +70,7 @@ export const placeOrder = async (req, res) => {
       (sum, item) => sum + item.unitPrice * item.qty,
       0
     );
-    
+
     const orderData = {
       customerId:
         session.client_reference_id ??
@@ -75,8 +78,9 @@ export const placeOrder = async (req, res) => {
       items: cartItemsFormatted,
       totalAmount: totalAmount,
       paymentMethod: "Card",
-      deliveryAddress: "address",
+      deliveryAddress: deliveryAddress,
       paymentStatus: "PAID",
+      orderStatus: "PLACED", // default status
       // cardInfo: paymentMethod === "Card" ? cardInfo : undefined,
     };
 
@@ -84,24 +88,6 @@ export const placeOrder = async (req, res) => {
     }
 
     const newOrder = await Order.create(orderData);
-
-    // === Notification Part ===
-    // const user = await User.findById(customerId);
-    // if (user) {
-    //   await sendEmail(
-    //     user.email,
-    //     "Order Confirmation",
-    //     `Hi ${user.name}, your order (ID: ${newOrder._id}) has been placed successfully!`
-    //   );
-
-    // Simulated delivery notification
-    // await sendEmail(
-    //   "deliveryguy@email.com",
-    //   "New Order Assigned",
-    //   `New order (ID: ${newOrder._id}) is ready for delivery to ${newOrder.deliveryAddress}.`
-    // );
-
-    // === End Notification ===
 
     res.status(201).json({
       message: "Order placed successfully",
@@ -123,6 +109,47 @@ export const getAllOrders = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+};
+
+// Update Order Status
+export const updateOrderStatus = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { newStatus } = req.body;
+
+    const validStatuses = ["PLACED", "PROCESSING", "COMPLETED", "CANCELLED"];
+    if (!validStatuses.includes(newStatus)) {
+      return res.status(400).json({ message: "Invalid status value." });
+    }
+
+    const updatedOrder = await Order.findByIdAndUpdate(
+      orderId,
+      { orderStatus: newStatus },
+      { new: true }
+    );
+
+    if (!updatedOrder) {
+      return res.status(404).json({ message: "Order not found." });
+    }
+
+    res.status(200).json({ message: "Order status updated", order: updatedOrder });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// GET: Get Order by ID
+export const getOrderById = async (req, res) => {
+  try {
+    const orderId = req.params.id;
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    res.status(200).json({ order });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
