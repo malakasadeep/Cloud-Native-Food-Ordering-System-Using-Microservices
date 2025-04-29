@@ -1,58 +1,86 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useSearchParams, useNavigate } from "react-router-dom";
 
 const SuccessPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
+  const [showSuccess, setShowSuccess] = useState(false);
   const [error, setError] = useState(false);
+  const calledRef = useRef(false);
 
   const createOrder = async () => {
-    const sessionId = searchParams.get("session_id"); // Stripe attaches session_id in success_url
+    const sessionId = searchParams.get("session_id");
 
     try {
-      await axios.post("http://localhost:5003/api/orders", { sessionId });
-      setLoading(false);
+      const res = await axios.post(
+        "http://localhost:80/api/orders/api/v1/orders",
+        {
+          sessionId,
+        }
+      );
+
+      const orderId = res.data?.data?.order?._id;
+
+      // After 2 seconds, show the success message
       setTimeout(() => {
-        navigate("/order-confirmation"); // Go to order confirmation after delay
-      }, 2000); // 2 seconds wait after successful order creation
+        setShowSuccess(true);
+      }, 1000);
+
+      // Commented: we don’t want to navigate away
+      // setTimeout(() => {
+      //   navigate(`/customer/order/confirmation?orderId=${orderId}`);
+      // }, 4000);
     } catch (err) {
       console.error("Error creating order:", err);
-      setLoading(false);
       setError(true);
       setTimeout(() => {
-        navigate("/cart"); 
-      }, 2000); // Redirect to cart to retry
+        navigate("/cart");
+      }, 2000);
     }
   };
 
   useEffect(() => {
-    createOrder();
+    if (!calledRef.current) {
+      calledRef.current = true;
+      createOrder();
+    }
   }, []);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-green-100">
-      {loading ? (
-        <>
-          <h1 className="text-4xl font-bold text-green-700 mb-4 animate-pulse">
-            Processing your order...
-          </h1>
-          <p className="text-lg text-green-600">Please wait, this won't take long.</p>
-        </>
-      ) : error ? (
+      {error ? (
         <>
           <h1 className="text-4xl font-bold text-red-700 mb-4">
             Order Failed!
           </h1>
-          <p className="text-lg text-red-600">Redirecting you to retry payment...</p>
+          <p className="text-lg text-red-600">
+            Redirecting you to retry payment...
+          </p>
         </>
-      ) : (
+      ) : showSuccess ? (
         <>
           <h1 className="text-4xl font-bold text-green-700 mb-4">
             Payment Successful!
           </h1>
-          <p className="text-lg text-green-600">Redirecting to order confirmation...</p>
+          <p className="text-lg text-green-600">
+            Thank you for your order. We are preparing it for delivery!
+          </p>
+          <button
+            onClick={() => navigate(`/customer/order/track`)}
+            className="px-6 py-2 mt-8 bg-green-700 text-white rounded-lg hover:bg-green-800 transition"
+          >
+            Track Your Order
+          </button>
+        </>
+      ) : (
+        <>
+          <h1 className="text-4xl font-bold text-green-700 mb-4 animate-pulse">
+            Processing your order...
+          </h1>
+          <p className="text-lg text-green-600">
+            Please wait, this won't take long.
+          </p>
         </>
       )}
     </div>
