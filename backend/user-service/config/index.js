@@ -3,7 +3,8 @@ const config = {
   env: process.env.NODE_ENV || 'development',
   services: {
     notification: {
-      baseUrl: process.env.NOTIFICATION_SERVICE_URL || 'http://localhost:5005'
+      baseUrl: process.env.NOTIFICATION_SERVICE_URL 
+      //|| 'http://localhost:5005'
     }
   },
 
