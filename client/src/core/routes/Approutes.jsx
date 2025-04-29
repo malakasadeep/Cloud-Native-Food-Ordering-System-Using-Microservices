@@ -6,20 +6,24 @@ import LoginPage from "../../features/partnersManagement/components/LoginPage";
 import AdminPage from "../components/pages/AdminPage";
 import RegistrationPage from "../../features/partnersManagement/components/RegistrationPage";
 import RestaurantPage from "../components/pages/RestaurantPage";
+// import CheckoutPage from '../components/pages/CheckoutPage';
+import SuccessPage from "../components/pages/SuccessPage";
 
 function AppRoutes() {
   return (
     <Routes>
-    <Route path="/" element={<HomePage />} />
-    <Route path="/customer-auth" element={<CusAuthPage />} />
-    <Route path="/login" element={<LoginPage />} />
-    <Route path="/registration" element={<RegistrationPage />} />
+      <Route path="/" element={<HomePage />} />
+      <Route path="/customer-auth" element={<CusAuthPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/registration" element={<RegistrationPage />} />
       <Route
         path="/customer/*"
         element={
           <ProtectedRoute allowedRoles={["customer"]}>
             <Routes>
               {/* <Route path="/profile" element={<ProfilePage />} /> */}
+              {/* <Route path="/checkout" element={<CheckoutPage />} /> */}
+              <Route path="order/success" element={<SuccessPage />} />
             </Routes>
           </ProtectedRoute>
         }
@@ -29,7 +33,7 @@ function AppRoutes() {
         element={
           <ProtectedRoute allowedRoles={["admin"]}>
             <Routes>
-               <Route path="/*" element={<AdminPage />} />
+              <Route path="/*" element={<AdminPage />} />
             </Routes>
           </ProtectedRoute>
         }
@@ -39,7 +43,7 @@ function AppRoutes() {
         element={
           <ProtectedRoute allowedRoles={["restaurant_owner"]}>
             <Routes>
-               <Route path="/*" element={<RestaurantPage />} />
+              <Route path="/*" element={<RestaurantPage />} />
             </Routes>
           </ProtectedRoute>
         }
@@ -49,7 +53,7 @@ function AppRoutes() {
         element={
           <ProtectedRoute allowedRoles={["delivery_rider"]}>
             <Routes>
-               <Route path="/*" element={<AdminPage />} />
+              <Route path="/*" element={<AdminPage />} />
             </Routes>
           </ProtectedRoute>
         }
