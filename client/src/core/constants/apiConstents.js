@@ -40,5 +40,8 @@ const API_CONSTANTS = {
   GET_RIDER_ONGOING_DELIVERY: `/api/delivery/ongoing/driver/`,
   RIDER_ACCEPT_ORDER: `/api/delivery/accept/driver/`,
   RIDER_START_DELIVERY: `/api/delivery/start/order/`,
+
+  //orders
+  GET_ORDERS_BELONGS_TO_RESTURENT: `/api/orders/`,
 };
 export default API_CONSTANTS;
