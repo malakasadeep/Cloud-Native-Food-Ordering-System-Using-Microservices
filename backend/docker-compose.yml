@@ -12,7 +12,7 @@ services:
     restart: unless-stopped
 
   restaurant-service:
-    image: malakasadeep/fds-restaurent-service:latest
+    image: shadini2001/fds-restaurent-service:latest
     container_name: restaurant-service
     ports:
       - "5002:5002"

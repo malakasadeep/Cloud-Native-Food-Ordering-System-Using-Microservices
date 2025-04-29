@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import menuService from "../services/menuservice";
 
-const MenuTable = ({ restaurantId, onEdit, onDelete }) => {
+const MenuTable = ({ restaurantId, onEdit, onDelete, refreshTrigger  }) => {
   const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -67,7 +67,7 @@ const MenuTable = ({ restaurantId, onEdit, onDelete }) => {
     if (restaurantId) {
       fetchData();
     }
-  }, [restaurantId]);
+  }, [restaurantId, refreshTrigger ]);
 
   // Function to get category name from categoryId
   const getCategoryName = (categoryId) => {
