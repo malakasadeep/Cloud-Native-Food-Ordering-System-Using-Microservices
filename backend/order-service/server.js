@@ -10,14 +10,20 @@ import cartRoutes from "./routes/cartRoute.js";
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
 
 const DEFAULT_PORT = process.env.PORT || 5003;
 const FALLBACK_PORT = 7002;
 
-app.use("/api/orders", orderRoutes);
+app.use("/api/v1/orders", orderRoutes);
 app.use("/api/cart", cartRoutes);
 
 const startServer = (port) => {
