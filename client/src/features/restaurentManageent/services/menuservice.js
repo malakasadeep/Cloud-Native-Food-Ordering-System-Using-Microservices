@@ -159,16 +159,39 @@ const menuService = {
         updatedData
       );
 
-      return {
-        success: true,
-        message: response.data.message || "Menu item updated successfully",
-        data: response.data.data,
-      };
+      // Return success only if the response indicates success
+      if (response.status === 200 && response.data?.success) {
+        return {
+          success: true,
+          message: response.data.message || "Menu item updated successfully",
+          data: response.data.foodMenu || null,
+        };
+      } else {
+        // Handle cases where the response does not indicate success
+        return {
+          success: false,
+          message: response.data?.message || "Failed to update menu item",
+        };
+      }
     } catch (error) {
+      // If AxiosError, use its response details
+      if (error instanceof AxiosError && error.response?.data) {
+        console.error(
+          `Error updating menu item ${menuId}:`,
+          error.response.data
+        );
+        return {
+          success: false,
+          message:
+            error.response?.data?.message || "Failed to update menu item",
+        };
+      }
+
+      // For other types of errors (non-Axios)
       console.error(`Error updating menu item ${menuId}:`, error);
       return {
         success: false,
-        message: error?.response?.data?.message || "Failed to update menu item",
+        message: error.message || "An unknown error occurred",
       };
     }
   },
