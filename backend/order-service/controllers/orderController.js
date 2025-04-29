@@ -112,6 +112,21 @@ export const placeOrder = async (req, res) => {
   }
 };
 
+// Get All Orders
+export const getAllOrders = async (req, res) => {
+  try {
+    const orders = await Order.find().sort({ createdAt: -1 }); // Newest orders first
+
+    res.status(200).json({
+      message: "Orders fetched successfully",
+      orders,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
 // Update Order Before Confirmation
 export const updateOrder = async (req, res) => {
   try {
