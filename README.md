@@ -12,50 +12,18 @@ This guide provides step-by-step instructions to deploy the Food Delivery System
 
 ## Deployment Steps
 
-### 1. Build Docker Images
+### 1. Start Services with Docker Compose
 
-Navigate to the `backend` folder and build Docker images for each service:
+Navigate to the `backend` folder and start all services using Docker Compose:
 
 ```bash
 cd backend
-
-# Build API Gateway
-cd api-gateway
-docker build -t api-gateway .
-
-# Build Notification Service
-cd ../notification-service
-docker build -t notification-service .
-
-# Build Restaurant Service
-cd ../restaurant-service
-docker build -t restaurant-service .
-
-# Build User Service
-cd ../user-service
-docker build -t user-service .
+docker-compose up -d
 ```
 
-### 2. Push Docker Images to a Registry
+This command will build and start all the services defined in the `docker-compose.yml` file.
 
-Push the built images to a Docker registry (e.g., Docker Hub or a private registry):
-
-```bash
-docker tag api-gateway <your-registry>/api-gateway
-docker push <your-registry>/api-gateway
-
-# Repeat for other services
-docker tag notification-service <your-registry>/notification-service
-docker push <your-registry>/notification-service
-
-docker tag restaurant-service <your-registry>/restaurant-service
-docker push <your-registry>/restaurant-service
-
-docker tag user-service <your-registry>/user-service
-docker push <your-registry>/user-service
-```
-
-### 3. Deploy to Kubernetes
+### 2. Deploy to Kubernetes
 
 Navigate to the `k8s` folder and apply the Kubernetes manifests:
 
@@ -66,7 +34,7 @@ kubectl apply -f .
 
 This will deploy all services, including their configurations, to the Kubernetes cluster.
 
-### 4. Verify Deployment
+### 3. Verify Deployment
 
 Check the status of the pods to ensure all services are running:
 
@@ -74,7 +42,7 @@ Check the status of the pods to ensure all services are running:
 kubectl get pods
 ```
 
-### 5. Access the Application
+### 4. Access the Application
 
 - Use the Kubernetes service to expose the API Gateway.
 - Retrieve the external IP of the API Gateway service:
