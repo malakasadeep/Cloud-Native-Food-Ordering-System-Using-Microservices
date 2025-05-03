@@ -142,7 +142,7 @@ const Orders = () => {
           mb={1}
         >
           <Typography variant="h6" fontWeight="bold">
-            Order #{order.orderId}
+            Order #{order.deliveryId}
           </Typography>
           <Chip
             label={order?.status}
@@ -179,7 +179,7 @@ const Orders = () => {
               variant="contained"
               color="primary"
               startIcon={<CheckCircle />}
-              onClick={() => handleAccept(order._id)}
+              onClick={() => handleAccept(order.deliveryId)}
             >
               Accept
             </Button>

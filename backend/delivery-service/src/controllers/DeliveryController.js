@@ -105,7 +105,12 @@ class DeliveryController {
     try {
       const { driverId, deliveryId } = req.params;
 
+      console.log(driverId, deliveryId);
+
       const delivery = await Delivery.findById(deliveryId);
+      if (!delivery) {
+        return res.status(400).json({ message: "Delivery not found" });
+      }
 
       // if (delivery.delivery_status === "accepted") {
       //   return res.status(400).json({ message: "Delivery already accepted" });

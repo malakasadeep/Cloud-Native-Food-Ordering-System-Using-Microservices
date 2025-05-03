@@ -31,7 +31,7 @@ services:
     environment:
       - PORT=5003
       - MONGODB_URL=mongodb+srv://dewnijayasuriya123:event123@cluster0.r3uz9qa.mongodb.net/food_ordering_system?retryWrites=true&w=majority
-      - STRIPE_SECRET_KEY=***REMOVED***
+      - STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
     restart: unless-stopped
 
   notification-service:
@@ -53,9 +53,9 @@ services:
     build: ./delivery-service
     container_name: delivery-service
     ports:
-      - "8090:8090"
+      - "5004:5004"
     environment:
-      - PORT=8090
+      - PORT=5004
       - MONGO_URL=mongodb+srv://pgmsadeep:1234@cluster0.phudmlq.mongodb.net/FoodDelevery_DB?retryWrites=true&w=majority
     restart: unless-stopped
 

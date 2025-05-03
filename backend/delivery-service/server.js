@@ -43,7 +43,7 @@ app.get("/", (req, res) => {
   res.send("Delivery service is running!");
 });
 
-const PORT = process.env.PORT || 8090;
+const PORT = process.env.PORT || 5004;
 
 const startServer = async () => {
   try {
