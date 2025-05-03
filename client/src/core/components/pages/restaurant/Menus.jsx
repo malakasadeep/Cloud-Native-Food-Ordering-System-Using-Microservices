@@ -20,6 +20,12 @@ function Menus() {
   const [refreshTrigger, setRefreshTrigger] = useState(0); // Add refresh trigger state
   const { user } = useSelector((state) => state.auth);
 
+  const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
+const [itemToDelete, setItemToDelete] = useState(null);
+const [isDeleteSuccessOpen, setIsDeleteSuccessOpen] = useState(false);
+const [isEditSuccessOpen, setIsEditSuccessOpen] = useState(false); // ✅ New state for edit success
+
+
   const handleAddMenuItem = async (menuItem) => {
     try {
       setLoading(true);
@@ -66,53 +72,56 @@ function Menus() {
       );
 
       if (response.success) {
-        showNotification("success", "Menu item updated successfully");
-        setIsEditMenuOpen(false); // Close edit popup
-        setRefreshTrigger((prev) => prev + 1); // Refresh after editing
+        setIsEditMenuOpen(false); 
+        setIsEditSuccessOpen(true); // ✅ Show edit success popup
+        setRefreshTrigger((prev) => prev + 1);
       } else {
-        showNotification(
-          "error",
-          response.message || "Failed to update menu item"
-        );
+        showNotification("error", response.message || "Failed to update menu item");
       }
     } catch (error) {
       console.error("Error updating menu item:", error);
-      showNotification(
-        "error",
-        "An error occurred while updating the menu item"
-      );
+      showNotification("error", "An error occurred while updating the menu item");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDeleteMenuItem = async (itemId) => {
-    if (window.confirm("Are you sure you want to delete this menu item?")) {
-      try {
-        setLoading(true);
+  // When user clicks delete button
+const handleDeleteMenuItem = (itemId) => {
+  setItemToDelete(itemId);
+  setIsConfirmDeleteOpen(true); // Open the confirm popup
+};
 
-        const response = await menuService.deleteMenu(itemId);
+const handleConfirmDelete = async () => {
+  try {
+    setLoading(true);
 
-        if (response.success) {
-          showNotification("success", "Menu item deleted successfully");
-          setRefreshTrigger((prev) => prev + 1); // Refresh after deletion
-        } else {
-          showNotification(
-            "error",
-            response.message || "Failed to delete menu item"
-          );
-        }
-      } catch (error) {
-        console.error("Error deleting menu item:", error);
-        showNotification(
-          "error",
-          "An error occurred while deleting the menu item"
-        );
-      } finally {
-        setLoading(false);
-      }
+    const response = await menuService.deleteMenu(itemToDelete);
+
+    if (response.success) {
+      setIsConfirmDeleteOpen(false);
+      setIsDeleteSuccessOpen(true); // Show success popup
+      setRefreshTrigger((prev) => prev + 1); // Refresh table
+    } else {
+      showNotification(
+        "error",
+        response.message || "Failed to delete menu item"
+      );
+      setIsConfirmDeleteOpen(false);
     }
-  };
+  } catch (error) {
+    console.error("Error deleting menu item:", error);
+    showNotification(
+      "error",
+      "An error occurred while deleting the menu item"
+    );
+    setIsConfirmDeleteOpen(false);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   const showNotification = (type, message) => {
     setNotification({
@@ -189,6 +198,84 @@ function Menus() {
         onUpdate={handleEditMenuItem}
         restaurantId={user?._id}
       />
+
+      {/* Confirm Delete Popup */}
+<AnimatePresence>
+  {isConfirmDeleteOpen && (
+    <motion.div
+      className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+        <h2 className="text-lg font-bold mb-4">Confirm Deletion</h2>
+        <p className="mb-6">Are you sure you want to delete this menu item?</p>
+        <div className="flex justify-end gap-4">
+          <button
+            onClick={() => setIsConfirmDeleteOpen(false)}
+            className="px-4 py-2 rounded-md bg-gray-300 hover:bg-gray-400"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleConfirmDelete}
+            className="px-4 py-2 rounded-md bg-red-500 hover:bg-red-600 text-white"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </motion.div>
+  )}
+</AnimatePresence>
+
+{/* Delete Success Popup */}
+<AnimatePresence>
+  {isDeleteSuccessOpen && (
+    <motion.div
+      className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <div className="bg-green-100 p-6 rounded-lg shadow-lg w-80 text-center">
+        <CheckCircle className="mx-auto mb-4 text-green-600" size={40} />
+        <h2 className="text-lg font-bold mb-2">Deleted Successfully!</h2>
+        <button
+          onClick={() => setIsDeleteSuccessOpen(false)}
+          className="mt-4 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md"
+        >
+          OK
+        </button>
+      </div>
+    </motion.div>
+  )}
+</AnimatePresence>
+
+{/* Edit Success Popup ✅ */}
+<AnimatePresence>
+        {isEditSuccessOpen && (
+          <motion.div
+            className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <div className="bg-green-100 p-6 rounded-lg shadow-lg w-80 text-center">
+              <CheckCircle className="mx-auto mb-4 text-green-600" size={40} />
+              <h2 className="text-lg font-bold mb-2">Updated Successfully!</h2>
+              <button
+                onClick={() => setIsEditSuccessOpen(false)}
+                className="mt-4 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md"
+              >
+                OK
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </div>
   );
 }
