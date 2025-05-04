@@ -20,17 +20,15 @@ const SuccessPage = () => {
         }
       );
 
-      const orderId = res.data?.data?.order?._id;
+      const orderId = res.data?.order?._id;
 
       // After 2 seconds, show the success message
       setTimeout(() => {
         setShowSuccess(true);
       }, 1000);
-
-      // Commented: we don’t want to navigate away
-      // setTimeout(() => {
-      //   navigate(`/customer/order/confirmation?orderId=${orderId}`);
-      // }, 4000);
+      setTimeout(() => {
+        navigate(`/customer/order/confirmation?orderId=${orderId}`);
+      }, 4000);
     } catch (err) {
       console.error("Error creating order:", err);
       setError(true);
