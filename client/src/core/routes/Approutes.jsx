@@ -8,6 +8,7 @@ import RegistrationPage from "../../features/partnersManagement/components/Regis
 import RestaurantPage from "../components/pages/RestaurantPage";
 // import CheckoutPage from '../components/pages/CheckoutPage';
 import SuccessPage from "../components/pages/SuccessPage";
+import OrderConfirmation from "../components/pages/OrderConfirmation";
 
 function AppRoutes() {
   return (
@@ -24,6 +25,10 @@ function AppRoutes() {
               {/* <Route path="/profile" element={<ProfilePage />} /> */}
               {/* <Route path="/checkout" element={<CheckoutPage />} /> */}
               <Route path="order/success" element={<SuccessPage />} />
+              <Route
+                path="order/confirmation"
+                element={<OrderConfirmation />}
+              />
             </Routes>
           </ProtectedRoute>
         }
