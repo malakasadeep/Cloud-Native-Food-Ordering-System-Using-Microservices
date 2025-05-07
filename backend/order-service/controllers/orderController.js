@@ -9,6 +9,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export const createPaymentIntent = async (req, res) => {
   const { cartItems, deliveryAddress } = req.body;
+
   try {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -22,6 +23,22 @@ export const createPaymentIntent = async (req, res) => {
         },
         quantity: item.qty,
       })),
+      shipping_options: [
+        {
+          shipping_rate_data: {
+            type: "fixed_amount",
+            fixed_amount: {
+              amount: 250 * 100, // $5.00 shipping
+              currency: "lkr",
+            },
+            display_name: "Standard Shipping",
+            delivery_estimate: {
+              minimum: { unit: "business_day", value: 1 },
+              maximum: { unit: "business_day", value: 1 },
+            },
+          },
+        },
+      ],
       mode: "payment",
       success_url: `http://localhost:5173/customer/order/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: "http://localhost:5173/cancel",
@@ -60,7 +77,7 @@ export const placeOrder = async (req, res) => {
     // console.log(cartItemsRaw);
 
     const cartItemsFormatted = cartItemsRaw.map((item) => ({
-      itemName: item.title,
+      itemName: item.name,
       itemId: item.id,
       unitPrice: item.price,
       qty: item.qty,
@@ -133,7 +150,9 @@ export const updateOrderStatus = async (req, res) => {
       return res.status(404).json({ message: "Order not found." });
     }
 
-    res.status(200).json({ message: "Order status updated", order: updatedOrder });
+    res
+      .status(200)
+      .json({ message: "Order status updated", order: updatedOrder });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -152,7 +171,6 @@ export const getOrderById = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 // Update Order Before Confirmation
 export const updateOrder = async (req, res) => {
