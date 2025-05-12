@@ -31,7 +31,7 @@ services:
     environment:
       - PORT=5003
       - MONGODB_URL=mongodb+srv://dewnijayasuriya123:event123@cluster0.r3uz9qa.mongodb.net/food_ordering_system?retryWrites=true&w=majority
-      - STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
     restart: unless-stopped
 
   notification-service:

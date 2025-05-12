@@ -3,8 +3,7 @@ import client, { createServiceClient } from "../../../core/network/axiosClient";
 import API_CONSTANTS from "../../../core/constants/apiConstents";
 
 // Create a client specifically for user service
-const userClient = createServiceClient('user');
-
+const userClient = createServiceClient("user");
 const partnerService = {
   register: async (userData) => {
     try {
@@ -85,14 +84,15 @@ const partnerService = {
       };
     }
   },
-  
+
   getPendingPartners: async () => {
     try {
       const response = await userClient.get(API_CONSTANTS.GET_ALL);
       const pendingPartners = response.data.data.filter(
-        partner => partner.status && partner.status.toLowerCase() === 'pending'
+        (partner) =>
+          partner.status && partner.status.toLowerCase() === "pending"
       );
-      
+
       return {
         success: true,
         data: pendingPartners,
@@ -109,17 +109,20 @@ const partnerService = {
   updatePartnerStatus: async (partnerId, status, reason = null) => {
     try {
       const requestBody = { status };
-      
+
       if (reason) {
         requestBody.reason = reason;
       }
-      
-      const response = await userClient.patch(`${API_CONSTANTS.GET_ALL}/${partnerId}/status`, requestBody);
-      
+
+      const response = await userClient.patch(
+        `${API_CONSTANTS.GET_ALL}/${partnerId}/status`,
+        requestBody
+      );
+
       return {
         success: true,
         message: `Partner successfully ${status}`,
-        data: response.data.data
+        data: response.data.data,
       };
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -127,7 +130,8 @@ const partnerService = {
           console.error(`Error updating partner status:`, error.response.data);
           return {
             success: false,
-            message: error.response.data.message || `Failed to update partner status`,
+            message:
+              error.response.data.message || `Failed to update partner status`,
           };
         }
       } else if (error instanceof Error) {

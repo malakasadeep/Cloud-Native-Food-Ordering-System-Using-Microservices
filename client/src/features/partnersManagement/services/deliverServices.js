@@ -1,13 +1,14 @@
 import { AxiosError } from "axios";
-import client, { createServiceClient } from "../../../core/network/axiosClient";
+import { createServiceClient } from "../../../core/network/axiosClient";
 import API_CONSTANTS from "../../../core/constants/apiConstents";
 
-// Create a client specifically for user service
-const deliverClient = createServiceClient("deliver");
+// Create a client specifically for delivery service
+const deliverClient = createServiceClient("delivery");
 
 const deliverService = {
   getRiderAssignedOrders: async (riderId) => {
     try {
+      console.log(deliverClient);
       const response = await deliverClient.get(
         `${API_CONSTANTS.GET_RIDER_ASSIGNED_ORDERS}${riderId}`
       );
