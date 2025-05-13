@@ -3,7 +3,7 @@ const DeliveryController = require("../controllers/DeliveryController");
 
 const router = express.Router();
 
-router.post("/start", DeliveryController.startToDelivery);
+router.post("/assign", DeliveryController.startToDelivery);
 router.get(
   "/driver/:driverId",
   DeliveryController.getDeliverOrderBelongsToDriver

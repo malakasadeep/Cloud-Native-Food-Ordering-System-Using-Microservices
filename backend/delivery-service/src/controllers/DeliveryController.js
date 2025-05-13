@@ -6,20 +6,14 @@ class DeliveryController {
   //after order payment created this will call
   static async startToDelivery(req, res, next) {
     try {
-      const {
-        orderId,
-        customerId,
-        resturentId,
-        pickup_location,
-        dropoff_location,
-      } = req.body;
+      const { orderId, customerId, resturentId } = req.body;
+
+      console.log(req.body);
 
       const rider = await assignRider({
         orderId,
         customerId,
         resturentId,
-        pickup_location,
-        dropoff_location,
       });
 
       if (!rider) {

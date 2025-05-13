@@ -1,4 +1,5 @@
 import * as authService from "../services/customerServices.js";
+import Customer from "../models/customerModel.js";
 
 export const sendMobileOTP = async (req, res) => {
   try {
@@ -20,17 +21,32 @@ export const sendMobileOTP = async (req, res) => {
   }
 };
 
+export const getCustomerById = async (req, res) => {
+  try {
+    const customerId = req.params.id;
+
+    const customer = await Customer.findById(customerId);
+
+    if (!customer) {
+      return res.status(404).json({ message: "Customer not found" });
+    }
+
+    res.status(200).json(customer);
+  } catch (error) {
+    console.error("Error fetching customer by ID:", error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 export const verifyMobileOTP = async (req, res) => {
   try {
     const { mobile, otp } = req.body;
 
     if (!mobile || !otp) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "Mobile number and OTP are required",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "Mobile number and OTP are required",
+      });
     }
 
     await authService.verifyMobileOTP(mobile, otp, res);
@@ -38,12 +54,10 @@ export const verifyMobileOTP = async (req, res) => {
   } catch (error) {
     console.error("Error in verifyMobileOTP:", error);
     const statusCode = error.message === "Invalid OTP" ? 400 : 500;
-    res
-      .status(statusCode)
-      .json({
-        success: false,
-        message: error.message || "Failed to verify OTP",
-      });
+    res.status(statusCode).json({
+      success: false,
+      message: error.message || "Failed to verify OTP",
+    });
   }
 };
 
@@ -82,12 +96,10 @@ export const verifyEmailOTP = async (req, res) => {
   } catch (error) {
     console.error("Error in verifyEmailOTP:", error);
     const statusCode = error.message === "Invalid OTP" ? 400 : 500;
-    res
-      .status(statusCode)
-      .json({
-        success: false,
-        message: error.message || "Failed to verify OTP",
-      });
+    res.status(statusCode).json({
+      success: false,
+      message: error.message || "Failed to verify OTP",
+    });
   }
 };
 
@@ -97,12 +109,10 @@ export const googleLogin = async (req, res) => {
     res.json({ success: true, ...result });
   } catch (error) {
     console.error("Error in googleLogin:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: error.message || "Google login failed",
-      });
+    res.status(500).json({
+      success: false,
+      message: error.message || "Google login failed",
+    });
   }
 };
 
@@ -116,12 +126,10 @@ export const completeProfile = async (req, res) => {
     res.json({ success: true, user });
   } catch (error) {
     console.error("Error in completeProfile:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: error.message || "Failed to update profile",
-      });
+    res.status(500).json({
+      success: false,
+      message: error.message || "Failed to update profile",
+    });
   }
 };
 
@@ -130,24 +138,20 @@ export const verifyOTP = async (req, res, next) => {
     const { mobile, otp } = req.body;
 
     if (!mobile || !otp) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "Mobile number and OTP are required",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "Mobile number and OTP are required",
+      });
     }
 
     await authService.verifyMobileOTP(mobile, otp, res);
   } catch (error) {
     console.error("Error in verifyOTP:", error);
     const statusCode = error.message === "Invalid OTP" ? 400 : 500;
-    res
-      .status(statusCode)
-      .json({
-        success: false,
-        message: error.message || "Failed to verify OTP",
-      });
+    res.status(statusCode).json({
+      success: false,
+      message: error.message || "Failed to verify OTP",
+    });
   }
 };
 

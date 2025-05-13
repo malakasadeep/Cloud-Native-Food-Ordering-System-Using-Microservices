@@ -181,6 +181,42 @@ const deliverService = {
       };
     }
   },
+
+  assignRiderToDelivery: async (data) => {
+    try {
+      const response = await deliverClient.post(
+        `${API_CONSTANTS.RIDER_ASSIGN_TO_DELIVERY}`,
+        data
+      );
+
+      return {
+        success: true,
+        message: response.data.message || "Account created successfully",
+        data: response.data.data,
+      };
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.response?.data) {
+          console.error("Error creating account:", error.response.data);
+          return {
+            success: false,
+            message: error.response.data.message || "Failed to create account",
+          };
+        }
+      } else if (error instanceof Error) {
+        console.error("Error creating account:", error.message);
+        return {
+          success: false,
+          message: error.message,
+        };
+      }
+      console.error("Error creating account:", error);
+      return {
+        success: false,
+        message: "An unknown error occurred",
+      };
+    }
+  },
 };
 
 export default deliverService;

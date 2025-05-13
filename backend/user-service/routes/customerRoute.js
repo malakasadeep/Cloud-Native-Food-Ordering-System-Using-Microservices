@@ -14,5 +14,6 @@ router.post(
   authenticate,
   customerController.completeProfile
 );
+router.get("/:id", customerController.getCustomerById);
 
 export default router;

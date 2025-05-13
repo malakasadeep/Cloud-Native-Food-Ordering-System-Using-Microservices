@@ -6,7 +6,7 @@ const simulateDriverResponse = require("../utils/driverResponse");
 
 async function getNearbyRiders(location, maxDistance = 100) {
   const { data } = await axios.get(
-    `http://localhost:5001/api/v1/user/role/delivery_rider`
+    `http://user-service:5001/api/v1/user/role/delivery_rider`
   );
   return data
     .filter((r) => r.currentLocation)
@@ -18,20 +18,35 @@ async function getNearbyRiders(location, maxDistance = 100) {
     .sort((a, b) => a.distance - b.distance);
 }
 
-async function assignRider({
-  orderId,
-  customerId,
-  resturentId,
-  pickup_location,
-  dropoff_location,
-}) {
-  const res = await axios.get(
-    `http://localhost:5001/api/v1/user/${resturentId}`
-  );
+async function assignRider({ orderId, customerId, resturentId }) {
+  let customer;
+  let resturent;
 
-  console.log(res.data.data.restaurant);
+  try {
+    resturent = await axios.get(
+      `http://user-service:5001/api/v1/user/${resturentId}`
+    );
+  } catch (error) {
+    console.error("Failed to fetch customer:", error.message);
+    throw error;
+  }
 
-  const restaurantLocation = res.data.data.restaurant.location;
+  try {
+    customer = await axios.get(
+      `http://user-service:5001/api/v1/customer/${customerId}`
+    );
+  } catch (error) {
+    console.error("Failed to fetch customer:", error.message);
+    throw error;
+  }
+
+  console.log(resturent.data.data.restaurant);
+  console.log(customer.data);
+
+  const restaurantLocation = resturent.data.data.restaurant.location;
+  const customerLocation = customer.data.location;
+
+  console.log(customerLocation);
 
   const riders = await getNearbyRiders(restaurantLocation);
 
@@ -41,8 +56,11 @@ async function assignRider({
     orderId,
     customerId,
     resturentId,
-    pickup_location,
-    dropoff_location,
+    pickup_location: restaurantLocation,
+    dropoff_location: {
+      lat: customerLocation.latitude,
+      lng: customerLocation.longitude,
+    },
     delivery_status: "pending",
   }).save();
 
