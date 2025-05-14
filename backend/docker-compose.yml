@@ -38,6 +38,17 @@ services:
       - SMS_API_KEY=d97962ed12ebccd0870087ab1b3fc066-e50be66a-ad92-4cf5-9747-b77f9d89e1b2
     restart: unless-stopped
 
+  order-service:
+    image: malakasadeep/fds-order-service:latest
+    container_name: order-service
+    ports:
+      - "5003:5003"
+    environment:
+      - PORT=5003
+      - MONGO_URL=mongodb+srv://dewnijayasuriya123:event123@cluster0.r3uz9qa.mongodb.net/food_ordering_system?retryWrites=true&w=majority
+      - STRIPE_SECRET_KEY=sk_test_51RD6tEGd3xGfzgsU9V5WTckVrBOAVFHBBatfWTDtUrQUYLPX098vDQZKNF9mOBGSzGHH0aSAi4wukOjxDJxgLsoQ00zD6FdivY
+    restart: unless-stopped
+
   api-gateway:
     image: malakasadeep/fds-gateway-v2:latest
     container_name: api-gateway
