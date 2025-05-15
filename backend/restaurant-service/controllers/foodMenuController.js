@@ -131,12 +131,26 @@ export const getFoodMenusByCategory = async (req, res) => {
 // Get food menus by restaurant ID
 export const getFoodMenusByRestaurantId = async (req, res) => {
   try {
-    const { restaurantId } = req.params;
+    // Check for restaurantId in both params and query to be flexible
+    const restaurantId = req.params.restaurantId || req.query.restaurantId;
+    
+    if (!restaurantId) {
+      return res.status(400).json({ 
+        success: false,
+        message: "Restaurant ID is required" 
+      });
+    }
+    
     const foodMenus = await FoodMenu.find({ restaurantId });
 
-    res.status(200).json(foodMenus);
+    res.status(200).json({
+      success: true,
+      count: foodMenus.length,
+      data: foodMenus
+    });
   } catch (error) {
     res.status(500).json({
+      success: false,
       message: "Error fetching restaurant menus",
       error: error.message,
     });

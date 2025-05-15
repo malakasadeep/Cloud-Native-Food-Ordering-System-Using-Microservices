@@ -164,6 +164,57 @@ const partnerService = {
       };
     }
   },
+   getRestaurantById: async (restaurantId) => {
+    try {
+      const response = await userClient.get(`${API_CONSTANTS.GET_RESTAURANT}/${restaurantId}`);
+      return {
+        success: true,
+        data: response.data.data || response.data,
+      };
+    } catch (error) {
+      console.error(`Error fetching restaurant ${restaurantId}:`, error);
+      return {
+        success: false,
+        message: "Failed to fetch restaurant details",
+      };
+    }
+  },
+
+  updateRestaurentAvailability: async (Id, availabilityStatus) => {
+    try {
+      const response = await userClient.patch(
+        `${API_CONSTANTS.UPDATE_REST_AVAILABILITY}/${Id}/availability`,
+        { isAvailable : availabilityStatus }
+      );
+
+      if (response.status === 200 && response.data?.success) {
+        return {
+          success: true,
+          message: response.data.message || "Menu availability updated successfully",
+          data: response.data.data || null,
+        };
+      } else {
+        return {
+          success: false,
+          message: response.data?.message || "Failed to update menu availability",
+        };
+      }
+    } catch (error) {
+      if (error instanceof AxiosError && error.response?.data) {
+        console.error(`Error updating menu availability for ${menuId}:`, error.response.data);
+        return {
+          success: false,
+          message: error.response?.data?.message || "Failed to update menu availability",
+        };
+      }
+
+      console.error(`Error updating menu availability for ${menuId}:`, error);
+      return {
+        success: false,
+        message: error.message || "An unknown error occurred",
+      };
+    }
+  },
 };
 
 export default partnerService;
