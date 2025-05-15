@@ -39,13 +39,13 @@ services:
     restart: unless-stopped
 
   order-service:
-    image: malakasadeep/fds-order-service:latest
+    image: malakasadeep/fds-order-service-v2:latest
     container_name: order-service
     ports:
       - "5003:5003"
     environment:
       - PORT=5003
-      - MONGO_URL=mongodb+srv://dewnijayasuriya123:event123@cluster0.r3uz9qa.mongodb.net/food_ordering_system?retryWrites=true&w=majority
+      - MONGODB_URL=mongodb+srv://dewnijayasuriya123:event123@cluster0.r3uz9qa.mongodb.net/food_ordering_system?retryWrites=true&w=majority
       - STRIPE_SECRET_KEY=sk_test_51RD6tEGd3xGfzgsU9V5WTckVrBOAVFHBBatfWTDtUrQUYLPX098vDQZKNF9mOBGSzGHH0aSAi4wukOjxDJxgLsoQ00zD6FdivY
     restart: unless-stopped
 

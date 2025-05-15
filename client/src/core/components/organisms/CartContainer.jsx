@@ -10,11 +10,13 @@ import { Link, Navigate } from "react-router-dom";
 import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
 import orderService from "../../../features/restaurentManageent/services/orderservice";
+import { createServiceClient } from "../../network/axiosClient";
+import API_CONSTANTS from "../../constants/apiConstents";
 
 const stripePromise = loadStripe(
   "pk_test_51RD6tEGd3xGfzgsURpAHakH87YSP2ed1ncxqHAWGJVLfPT5uMXNks1BvvRDRwZG18xu03dSQv8PPZP1FBTiONntb00ns5UWWHU"
 );
-
+const orderClient = createServiceClient('order');
 const CartContainer = () => {
   const { isCartOpen, toggleCart } = useCart();
   const [cartItems, setCartItems] = useState([]);
@@ -77,10 +79,11 @@ const CartContainer = () => {
     const stripe = await stripePromise;
 
     // Send cart items to backend
-    const response = await axios.post(
-      "http://localhost:80/api/orders/api/v1/orders/create-checkout-session",
-      { cartItems, deliveryAddress: user?.address || "No address found" }
-    );
+    const response = await orderClient.post(API_CONSTANTS.POST_CREATE_SESSION, { cartItems, deliveryAddress: user?.address || "No address found" });
+    // const response = await axios.post(
+    //   "http://localhost:5003/api/v1/orders/create-checkout-session",
+    //   { cartItems, deliveryAddress: user?.address || "No address found" }
+    // );
 
     // Redirect user to Stripe Checkout page
     const result = await stripe.redirectToCheckout({

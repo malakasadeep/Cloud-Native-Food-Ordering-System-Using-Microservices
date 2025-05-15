@@ -26,6 +26,7 @@ const API_CONSTANTS = {
 
 
   //orders
+  CREATE_ORDER: "/api/v1/orders/create-order",
   GET_ORDERS: "/api/v1/orders",
   POST_CREATE_SESSION: "/api/v1/orders/create-checkout-session",
   UPDATE_ORDER_STATUS: "/api/v1/orders/status",

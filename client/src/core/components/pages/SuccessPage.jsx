@@ -1,6 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { createServiceClient } from "../../network/axiosClient";
+import API_CONSTANTS from "../../constants/apiConstents";
+
+const orderClient = createServiceClient('order');
 
 const SuccessPage = () => {
   const [searchParams] = useSearchParams();
@@ -13,12 +17,14 @@ const SuccessPage = () => {
     const sessionId = searchParams.get("session_id");
 
     try {
-      const res = await axios.post(
-        "http://localhost:80/api/orders/api/v1/orders",
-        {
-          sessionId,
-        }
-      );
+      const res = await orderClient.post(API_CONSTANTS.CREATE_ORDER, {
+        sessionId,});
+      // const res = await axios.post(
+      //   "http://localhost:5003/api/v1/orders/create-order",
+      //   {
+      //     sessionId,
+      //   }
+      // );
 
       const orderId = res.data?.order?._id;
 
