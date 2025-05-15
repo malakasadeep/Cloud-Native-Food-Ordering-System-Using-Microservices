@@ -72,16 +72,16 @@ async function assignRider({ orderId, customerId, resturentId }) {
     }).save();
   }
 
-  const timeout = setTimeout(async () => {
-    await Delivery.findByIdAndUpdate(delivery._id, {
-      delivery_status: "canceled",
-    });
+  // const timeout = setTimeout(async () => {
+  //   await Delivery.findByIdAndUpdate(delivery._id, {
+  //     delivery_status: "canceled",
+  //   });
 
-    await DeliveryRequest.findByIdAndUpdate(request._id, {
-      status: "rejected",
-    });
-    console.log(`Order ${orderId} canceled due to timeout`);
-  }, 10 * 60 * 1000);
+  //   await DeliveryRequest.findByIdAndUpdate(request._id, {
+  //     status: "rejected",
+  //   });
+  //   console.log(`Order ${orderId} canceled due to timeout`);
+  // }, 10 * 60 * 1000);
 
   return riders;
 }

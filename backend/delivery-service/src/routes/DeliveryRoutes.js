@@ -1,5 +1,6 @@
 const express = require("express");
 const DeliveryController = require("../controllers/DeliveryController");
+const DeliveryRequestController = require("../controllers/DeliveryRequestController");
 
 const router = express.Router();
 
@@ -23,6 +24,10 @@ router.get("/start/order/:deliveryId", DeliveryController.riderStartDelivery);
 router.get(
   "/ongoing/driver/:driverId",
   DeliveryController.getRiderOngoingOrder
+);
+router.get(
+  "/request/:riderId",
+  DeliveryRequestController.getDeliveryRequestByRider
 );
 
 module.exports = router;

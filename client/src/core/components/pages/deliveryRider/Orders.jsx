@@ -8,14 +8,12 @@ import {
   Typography,
   Button,
   Divider,
-  CircularProgress,
   Chip,
   IconButton,
   Collapse,
   Tabs,
   Tab,
   Badge,
-  Tooltip,
   Skeleton,
 } from "@mui/material";
 import {
@@ -28,7 +26,7 @@ import {
 } from "@mui/icons-material";
 import { fetchUser } from "../../../utils/fetchLocalStorageData";
 
-const Orders = () => {
+const Orders = ({ isSidebarCollapsed }) => {
   const [loading, setLoading] = useState(true);
   const [assignedOrders, setAssignedOrders] = useState([]);
   const [acceptedOrders, setAcceptedOrders] = useState([]);
@@ -271,125 +269,135 @@ const Orders = () => {
   }
 
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: "grey.100" }}>
-      {/* Header */}
-      <Box
-        sx={{
-          bgcolor: "primary.main",
-          color: "white",
-          p: 3,
-          boxShadow: 2,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
+    <div>
+      <main
+        style={{
+          marginLeft: isSidebarCollapsed ? "60px" : "220px",
+          transition: "margin-left 0.3s",
         }}
+        className="bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen rounded-2xl"
       >
-        <Box>
-          <Typography variant="h4" fontWeight="bold">
-            Rider Dashboard
-          </Typography>
-          <Typography variant="body1">Manage your deliveries</Typography>
-        </Box>
-        <Button
-          variant="outlined"
-          color="inherit"
-          startIcon={<Refresh />}
-          onClick={fetchAllOrders}
-          disabled={loading}
-        >
-          Refresh
-        </Button>
-      </Box>
+        <div className="px-20 py-6">
+          {/* Header */}
+          <Box
+            sx={{
+              bgcolor: "primary.main",
+              color: "white",
+              p: 3,
+              boxShadow: 2,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Box>
+              <Typography variant="h4" fontWeight="bold">
+                Rider Dashboard
+              </Typography>
+              <Typography variant="body1">Manage your deliveries</Typography>
+            </Box>
+            <Button
+              variant="outlined"
+              color="inherit"
+              startIcon={<Refresh />}
+              onClick={fetchAllOrders}
+              disabled={loading}
+            >
+              Refresh
+            </Button>
+          </Box>
 
-      {/* Main Content */}
-      <Box sx={{ maxWidth: "1200px", mx: "auto", p: { xs: 2, md: 4 } }}>
-        {/* Tabs */}
-        <Tabs
-          value={tabValue}
-          onChange={handleTabChange}
-          centered
-          sx={{ mb: 4, bgcolor: "white", borderRadius: 2, boxShadow: 1 }}
-        >
-          <Tab label="All Orders" />
-          <Tab label="Assigned" />
-          <Tab label="Accepted" />
-          <Tab label="Ongoing" />
-          <Tab label="Delivered" />
-        </Tabs>
+          {/* Main Content */}
+          <Box sx={{ maxWidth: "1200px", mx: "auto", p: { xs: 2, md: 4 } }}>
+            {/* Tabs */}
+            <Tabs
+              value={tabValue}
+              onChange={handleTabChange}
+              centered
+              sx={{ mb: 4, bgcolor: "white", borderRadius: 2, boxShadow: 1 }}
+            >
+              <Tab label="All Orders" />
+              <Tab label="Assigned" />
+              <Tab label="Accepted" />
+              <Tab label="Ongoing" />
+              <Tab label="Delivered" />
+            </Tabs>
 
-        {/* Content */}
-        {tabValue === 0 && (
-          <>
-            {renderSection(
-              "Ongoing Order",
-              ongoingOrder ? [ongoingOrder] : [],
-              "ongoing",
-              ongoingOrder ? 1 : 0
+            {/* Content */}
+            {tabValue === 0 && (
+              <>
+                {renderSection(
+                  "Ongoing Order",
+                  ongoingOrder ? [ongoingOrder] : [],
+                  "ongoing",
+                  ongoingOrder ? 1 : 0
+                )}
+                {renderSection(
+                  "Assigned Orders",
+                  assignedOrders,
+                  "assigned",
+                  assignedOrders.length
+                )}
+                {renderSection(
+                  "Accepted Orders",
+                  acceptedOrders,
+                  "accepted",
+                  acceptedOrders.length
+                )}
+                {renderSection(
+                  "Delivered Orders",
+                  deliveredOrders,
+                  "delivered",
+                  deliveredOrders.length
+                )}
+              </>
             )}
-            {renderSection(
-              "Assigned Orders",
-              assignedOrders,
-              "assigned",
-              assignedOrders.length
-            )}
-            {renderSection(
-              "Accepted Orders",
-              acceptedOrders,
-              "accepted",
-              acceptedOrders.length
-            )}
-            {renderSection(
-              "Delivered Orders",
-              deliveredOrders,
-              "delivered",
-              deliveredOrders.length
-            )}
-          </>
-        )}
-        {tabValue === 1 &&
-          renderSection(
-            "Assigned Orders",
-            assignedOrders,
-            "assigned",
-            assignedOrders.length
-          )}
-        {tabValue === 2 &&
-          renderSection(
-            "Accepted Orders",
-            acceptedOrders,
-            "accepted",
-            acceptedOrders.length
-          )}
-        {tabValue === 3 &&
-          renderSection(
-            "Ongoing Order",
-            ongoingOrder ? [ongoingOrder] : [],
-            "ongoing",
-            ongoingOrder ? 1 : 0
-          )}
-        {tabValue === 4 &&
-          renderSection(
-            "Delivered Orders",
-            deliveredOrders,
-            "delivered",
-            deliveredOrders.length
-          )}
-      </Box>
+            {tabValue === 1 &&
+              renderSection(
+                "Assigned Orders",
+                assignedOrders,
+                "assigned",
+                assignedOrders.length
+              )}
+            {tabValue === 2 &&
+              renderSection(
+                "Accepted Orders",
+                acceptedOrders,
+                "accepted",
+                acceptedOrders.length
+              )}
+            {tabValue === 3 &&
+              renderSection(
+                "Ongoing Order",
+                ongoingOrder ? [ongoingOrder] : [],
+                "ongoing",
+                ongoingOrder ? 1 : 0
+              )}
+            {tabValue === 4 &&
+              renderSection(
+                "Delivered Orders",
+                deliveredOrders,
+                "delivered",
+                deliveredOrders.length
+              )}
+          </Box>
 
-      {/* Footer */}
-      <Box
-        sx={{
-          bgcolor: "grey.200",
-          p: 2,
-          textAlign: "center",
-          mt: 4,
-        }}
-      >
-        <Typography variant="body2" color="text.secondary">
-          Powered by DeliveryPro | <a href="/support">Support</a>
-        </Typography>
-      </Box>
-    </Box>
+          {/* Footer */}
+          <Box
+            sx={{
+              bgcolor: "grey.200",
+              p: 2,
+              textAlign: "center",
+              mt: 4,
+            }}
+          >
+            <Typography variant="body2" color="text.secondary">
+              Powered by DeliveryPro | <a href="/support">Support</a>
+            </Typography>
+          </Box>
+        </div>
+      </main>
+    </div>
   );
 };
 

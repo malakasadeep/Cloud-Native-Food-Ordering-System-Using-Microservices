@@ -48,7 +48,7 @@ const debounce = (func, wait) => {
 
 const SOCKET_SERVER_URL = "http://localhost:8090";
 
-const OrderStartPage = () => {
+const OrderStartPage = ({ isSidebarCollapsed }) => {
   const [loading, setLoading] = useState(true);
   const [order, setOrder] = useState(null);
   const [error, setError] = useState("");
@@ -253,205 +253,223 @@ const OrderStartPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-          <div>
-            <Typography variant="h4" className="font-bold text-gray-800">
-              Delivery Dashboard
-            </Typography>
-            <Typography variant="body2" color="textSecondary">
-              Real-time tracking and order details
-            </Typography>
-          </div>
-          <Chip
-            label={order.delivery_status.toUpperCase()}
-            color={
-              order.delivery_status === "started" ? "primary" : "secondary"
-            }
-            className="mt-2 md:mt-0"
-          />
-        </div>
-
-        {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Sidebar - Order Details */}
-          <div className="space-y-4">
-            {/* Order Summary Card */}
-            <Card className="shadow-sm">
-              <CardContent>
-                <div className="flex justify-between items-center mb-3">
-                  <Typography variant="h6" className="font-semibold">
-                    Order #{order.orderId}
-                  </Typography>
-                  <Avatar className="bg-blue-100 text-blue-600">
-                    {order.customerId?.charAt(0) || "C"}
-                  </Avatar>
-                </div>
-
-                <Divider className="my-2" />
-
-                {/* Route Summary */}
-                <div className="space-y-3">
-                  <div className="flex items-start">
-                    <LocationOn color="primary" className="mr-2 mt-0.5" />
-                    <div>
-                      <Typography variant="subtitle2">
-                        Pickup Location
-                      </Typography>
-                      <Typography>
-                        {order.pickup_location.address ||
-                          `${order.pickup_location.lat.toFixed(
-                            4
-                          )}, ${order.pickup_location.lng.toFixed(4)}`}
-                      </Typography>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start">
-                    <Flag color="secondary" className="mr-2 mt-0.5" />
-                    <div>
-                      <Typography variant="subtitle2">
-                        Dropoff Location
-                      </Typography>
-                      <Typography>
-                        {order.dropoff_location.address ||
-                          `${order.dropoff_location.lat.toFixed(
-                            4
-                          )}, ${order.dropoff_location.lng.toFixed(4)}`}
-                      </Typography>
-                    </div>
-                  </div>
-                </div>
-
-                <Divider className="my-3" />
-
-                {/* Route Stats */}
-                {routeInfo && (
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <DirectionsCar color="action" className="mr-2" />
-                        <Typography variant="subtitle2">Distance</Typography>
-                      </div>
-                      <Typography>
-                        {formatDistance(routeInfo.distance)}
-                      </Typography>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <Schedule color="action" className="mr-2" />
-                        <Typography variant="subtitle2">Est. Time</Typography>
-                      </div>
-                      <Typography>
-                        {formatDuration(routeInfo.duration)}
-                      </Typography>
-                    </div>
-                  </div>
-                )}
-
-                <Button
-                  variant="contained"
-                  fullWidth
-                  className="mt-4"
-                  startIcon={<CheckCircle />}
-                  color="primary"
-                >
-                  Mark as Delivered
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Driver Card */}
-            <Card className="shadow-sm">
-              <CardContent>
-                <Typography variant="subtitle1" className="font-semibold mb-3">
-                  Your Location
+    <div>
+      {" "}
+      <main
+        style={{
+          marginLeft: isSidebarCollapsed ? "60px" : "220px",
+          transition: "margin-left 0.3s",
+        }}
+        className="bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen rounded-2xl"
+      >
+        <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+          <div className="max-w-7xl mx-auto">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+              <div>
+                <Typography variant="h4" className="font-bold text-gray-800">
+                  Delivery Dashboard
                 </Typography>
-                <div className="flex items-center">
-                  <PersonPin color="primary" className="mr-2" />
-                  <Typography>
-                    {driverLocation.lat.toFixed(4)},{" "}
-                    {driverLocation.lng.toFixed(4)}
-                  </Typography>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+                <Typography variant="body2" color="textSecondary">
+                  Real-time tracking and order details
+                </Typography>
+              </div>
+              <Chip
+                label={order.delivery_status.toUpperCase()}
+                color={
+                  order.delivery_status === "started" ? "primary" : "secondary"
+                }
+                className="mt-2 md:mt-0"
+              />
+            </div>
 
-          {/* Map Section */}
-          <div className="lg:col-span-2">
-            <div className="h-full min-h-[500px]">
-              <GoogleMap
-                mapContainerStyle={mapContainerStyle}
-                center={driverLocation}
-                zoom={14}
-                options={{
-                  streetViewControl: true,
-                  mapTypeControl: false,
-                  fullscreenControl: false,
-                }}
-                onLoad={onMapLoad}
-              >
-                {/* Driver Marker */}
-                {driverLocation && (
-                  <Marker
-                    position={driverLocation}
-                    icon={{
-                      path: window.google.maps.SymbolPath.CIRCLE,
-                      scale: 8,
-                      fillColor: "#4285F4",
-                      fillOpacity: 1,
-                      strokeWeight: 2,
-                      strokeColor: "white",
-                    }}
-                  />
-                )}
+            {/* Main Content */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Left Sidebar - Order Details */}
+              <div className="space-y-4">
+                {/* Order Summary Card */}
+                <Card className="shadow-sm">
+                  <CardContent>
+                    <div className="flex justify-between items-center mb-3">
+                      <Typography variant="h6" className="font-semibold">
+                        Order #{order.orderId}
+                      </Typography>
+                      <Avatar className="bg-blue-100 text-blue-600">
+                        {order.customerId?.charAt(0) || "C"}
+                      </Avatar>
+                    </div>
 
-                {/* Pickup Marker */}
-                {order && (
-                  <Marker
-                    position={order.pickup_location}
-                    icon={{
-                      url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
-                    }}
-                  />
-                )}
+                    <Divider className="my-2" />
 
-                {/* Dropoff Marker */}
-                {order && (
-                  <Marker
-                    position={order.dropoff_location}
-                    icon={{
-                      url: "https://maps.google.com/mapfiles/ms/icons/green-dot.png",
-                    }}
-                  />
-                )}
+                    {/* Route Summary */}
+                    <div className="space-y-3">
+                      <div className="flex items-start">
+                        <LocationOn color="primary" className="mr-2 mt-0.5" />
+                        <div>
+                          <Typography variant="subtitle2">
+                            Pickup Location
+                          </Typography>
+                          <Typography>
+                            {order.pickup_location.address ||
+                              `${order.pickup_location.lat.toFixed(
+                                4
+                              )}, ${order.pickup_location.lng.toFixed(4)}`}
+                          </Typography>
+                        </div>
+                      </div>
 
-                {/* Route */}
-                {directions && (
-                  <DirectionsRenderer
-                    directions={directions}
+                      <div className="flex items-start">
+                        <Flag color="secondary" className="mr-2 mt-0.5" />
+                        <div>
+                          <Typography variant="subtitle2">
+                            Dropoff Location
+                          </Typography>
+                          <Typography>
+                            {order.dropoff_location.address ||
+                              `${order.dropoff_location.lat.toFixed(
+                                4
+                              )}, ${order.dropoff_location.lng.toFixed(4)}`}
+                          </Typography>
+                        </div>
+                      </div>
+                    </div>
+
+                    <Divider className="my-3" />
+
+                    {/* Route Stats */}
+                    {routeInfo && (
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center">
+                            <DirectionsCar color="action" className="mr-2" />
+                            <Typography variant="subtitle2">
+                              Distance
+                            </Typography>
+                          </div>
+                          <Typography>
+                            {formatDistance(routeInfo.distance)}
+                          </Typography>
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center">
+                            <Schedule color="action" className="mr-2" />
+                            <Typography variant="subtitle2">
+                              Est. Time
+                            </Typography>
+                          </div>
+                          <Typography>
+                            {formatDuration(routeInfo.duration)}
+                          </Typography>
+                        </div>
+                      </div>
+                    )}
+
+                    <Button
+                      variant="contained"
+                      fullWidth
+                      className="mt-4"
+                      startIcon={<CheckCircle />}
+                      color="primary"
+                    >
+                      Mark as Delivered
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                {/* Driver Card */}
+                <Card className="shadow-sm">
+                  <CardContent>
+                    <Typography
+                      variant="subtitle1"
+                      className="font-semibold mb-3"
+                    >
+                      Your Location
+                    </Typography>
+                    <div className="flex items-center">
+                      <PersonPin color="primary" className="mr-2" />
+                      <Typography>
+                        {driverLocation.lat.toFixed(4)},{" "}
+                        {driverLocation.lng.toFixed(4)}
+                      </Typography>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Map Section */}
+              <div className="lg:col-span-2">
+                <div className="h-full min-h-[500px]">
+                  <GoogleMap
+                    mapContainerStyle={mapContainerStyle}
+                    center={driverLocation}
+                    zoom={14}
                     options={{
-                      polylineOptions: {
-                        strokeColor: "#1a73e8",
-                        strokeWeight: 5,
-                        strokeOpacity: 0.8,
-                      },
-                      markerOptions: {
-                        visible: false,
-                      },
-                      suppressMarkers: true,
+                      streetViewControl: true,
+                      mapTypeControl: false,
+                      fullscreenControl: false,
                     }}
-                  />
-                )}
-              </GoogleMap>
+                    onLoad={onMapLoad}
+                  >
+                    {/* Driver Marker */}
+                    {driverLocation && (
+                      <Marker
+                        position={driverLocation}
+                        icon={{
+                          path: window.google.maps.SymbolPath.CIRCLE,
+                          scale: 8,
+                          fillColor: "#4285F4",
+                          fillOpacity: 1,
+                          strokeWeight: 2,
+                          strokeColor: "white",
+                        }}
+                      />
+                    )}
+
+                    {/* Pickup Marker */}
+                    {order && (
+                      <Marker
+                        position={order.pickup_location}
+                        icon={{
+                          url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
+                        }}
+                      />
+                    )}
+
+                    {/* Dropoff Marker */}
+                    {order && (
+                      <Marker
+                        position={order.dropoff_location}
+                        icon={{
+                          url: "https://maps.google.com/mapfiles/ms/icons/green-dot.png",
+                        }}
+                      />
+                    )}
+
+                    {/* Route */}
+                    {directions && (
+                      <DirectionsRenderer
+                        directions={directions}
+                        options={{
+                          polylineOptions: {
+                            strokeColor: "#1a73e8",
+                            strokeWeight: 5,
+                            strokeOpacity: 0.8,
+                          },
+                          markerOptions: {
+                            visible: false,
+                          },
+                          suppressMarkers: true,
+                        }}
+                      />
+                    )}
+                  </GoogleMap>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 };

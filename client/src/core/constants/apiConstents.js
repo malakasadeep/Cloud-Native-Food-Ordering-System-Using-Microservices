@@ -35,12 +35,12 @@ const API_CONSTANTS = {
   GET_ORDER_BY_ID: "/api/v1/orders",
 
   //deliver-services
-  GET_RIDER_ASSIGNED_ORDERS: `/api/delivery-requests/`,
+  GET_RIDER_ASSIGNED_ORDERS: `/api/delivery/request/`,
   GET_RIDER_ACCEPT_ORDER_BY_STATUS: `/api/delivery/driver/`,
   GET_RIDER_ONGOING_DELIVERY: `/api/delivery/ongoing/driver/`,
   RIDER_ACCEPT_ORDER: `/api/delivery/accept/driver/`,
   RIDER_START_DELIVERY: `/api/delivery/start/order/`,
-  RIDER_ASSIGN_TO_DELIVERY: `/api/delivery/api/delivery/assign`,
+  RIDER_ASSIGN_TO_DELIVERY: `/api/delivery/assign`,
 
   //orders
   GET_ORDERS_BELONGS_TO_RESTURENT: `/api/orders/`,

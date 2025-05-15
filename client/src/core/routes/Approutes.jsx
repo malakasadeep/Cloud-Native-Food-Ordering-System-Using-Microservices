@@ -9,9 +9,10 @@ import RestaurantPage from "../components/pages/RestaurantPage";
 // import CheckoutPage from '../components/pages/CheckoutPage';
 import SuccessPage from "../components/pages/SuccessPage";
 import OrderConfirmation from "../components/pages/OrderConfirmation";
-import RestaurantDetailsPage from "../components/pages/RestaurantDetailsPage";
-import AllRestaurants from "../../features/restaurantManagement/pages/AllRestaurants";
-import ProfilePage from "../../features/customerProfile/components/ProfilePage";
+import OrderTrackingPage from "../components/pages/customer/OrderTrackingPage";
+import Orders from "../components/pages/deliveryRider/Orders";
+import OrderStartPage from "../components/pages/deliveryRider/OrderStartPage";
+import RiderDashboard from "../components/pages/deliveryRider/Dashboard";
 
 function AppRoutes() {
   return (
@@ -70,9 +71,7 @@ function AppRoutes() {
         element={
           <ProtectedRoute allowedRoles={["delivery_rider"]}>
             <Routes>
-              <Route path="/*" element={<AdminPage />} />
-              <Route path="/orders" element={<Orders />} />
-              <Route path="/orders/start" element={<OrderStartPage />} />
+              <Route path="/*" element={<RiderDashboard />} />
             </Routes>
           </ProtectedRoute>
         }
