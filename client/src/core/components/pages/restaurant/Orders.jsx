@@ -1,9 +1,8 @@
-import React from 'react'
+import React from "react";
+import OrderTable from "../../../../features/restaurentManageent/components/OrderTable";
 
 function Orders() {
-  return (
-    <div>Orders</div>
-  )
+  return <OrderTable />;
 }
 
-export default Orders
+export default Orders;

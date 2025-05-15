@@ -8,13 +8,13 @@ const servicePaths = {
   restaurant: "/api/restaurants",
   notification: "/api/notification",
   order: "/api/orders",
-  delivery: "/api/delivery"
+  delivery: "/api/delivery",
 };
 
 const createServiceClient = (serviceName) => {
   const baseURL = gatewayBaseURL;
   const servicePath = servicePaths[serviceName] || "";
-  
+
   const serviceClient = axios.create({
     withCredentials: true,
     baseURL: baseURL,
@@ -51,7 +51,7 @@ const createServiceClient = (serviceName) => {
 
   return serviceClient;
 };
-const client = createServiceClient('default');
+const client = createServiceClient("default");
 
 export { createServiceClient };
 export default client;

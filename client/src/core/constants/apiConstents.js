@@ -24,5 +24,11 @@ const API_CONSTANTS = {
   UPDATE_MENU: "/api/v1/restaurant/foodMenu",
   DELETE_MENU: "/api/v1/restaurant/foodMenu",
 
+
+  //orders
+  GET_ORDERS: "/api/v1/orders",
+  POST_CREATE_SESSION: "/api/v1/orders/create-checkout-session",
+  UPDATE_ORDER_STATUS: "/api/v1/orders/status",
+  GET_ORDER_BY_ID: "/api/v1/orders",
 };
 export default API_CONSTANTS;
