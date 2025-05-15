@@ -24,7 +24,8 @@ menuRouter.delete("/:foodMenuId", deleteFoodMenu);
 //getAllFoodMenu
 menuRouter.get("/", getAllFoodMenus);
 
-menuRouter.get("/:restaurantId", getFoodMenusByRestaurantId);
+// get food menus by restaurant ID (fix: use /restaurant/:restaurantId)
+menuRouter.get("/restaurant/:restaurantId", getFoodMenusByRestaurantId);
 
 //getFoodMenuById
 menuRouter.get("/:foodMneuId", getFoodMenuById);
