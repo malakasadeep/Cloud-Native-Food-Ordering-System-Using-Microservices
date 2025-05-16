@@ -393,3 +393,43 @@ export const updateRiderLocation = async (req, res) => {
     });
   }
 };
+
+export const getAllRestaurants = async (req, res) => {
+  try {
+    const restaurants = await UserService.getAllRestaurants();
+    
+    res.status(200).json({
+      success: true,
+      data: restaurants,
+      count: restaurants.length
+    });
+  } catch (err) {
+    console.error('Error fetching all restaurants:', err);
+    
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch restaurants',
+      error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
+  }
+};
+
+export const getAllRiders = async (req, res) => {
+  try {
+    const riders = await UserService.getAllRiders();
+    
+    res.status(200).json({
+      success: true,
+      data: riders,
+      count: riders.length
+    });
+  } catch (err) {
+    console.error('Error fetching all delivery riders:', err);
+    
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch delivery riders',
+      error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
+  }
+};

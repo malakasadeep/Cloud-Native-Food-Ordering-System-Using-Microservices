@@ -10,7 +10,9 @@ router.get('/:id', UserController.getById);
 router.delete('/:id', UserController.remove);
 router.patch('/:id/status', UserController.changeStatus);
 router.put('/:id', UserController.update);
+router.get('/restaurants', UserController.getAllRestaurants);  // New route for getting all restaurants
 router.get('/restaurants/:id', UserController.getRestaurantById);
+router.get('/riders', UserController.getAllRiders);  // New route for getting all riders
 router.get('/riders/:id', UserController.getRiderById);
 router.patch('/restaurants/:id/availability', UserController.updateRestaurantAvailability);
 router.patch('/riders/:id/location', UserController.updateRiderLocation);

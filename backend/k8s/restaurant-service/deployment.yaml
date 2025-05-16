@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: restaurant-service
+  namespace: food-delivery-system
+  labels:
+    app: restaurant-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: restaurant-service
+  template:
+    metadata:
+      labels:
+        app: restaurant-service
+    spec:
+      containers:
+      - name: restaurant-service
+        image: malakasadeep/fds-restaurent-service:latest
+        ports:
+        - containerPort: 5002
+        env:
+        - name: PORT
+          value: "5002"
+        - name: MONGO_URL
+          valueFrom:
+            configMapKeyRef:
+              name: mongodb-config
+              key: restaurant-service-mongodb-url
+        - name: JWT_SECRET
+          valueFrom:
+            configMapKeyRef:
+              name: service-config
+              key: jwt-secret        resources:
+          limits:
+            cpu: "0.5"
+            memory: "512Mi"
+          requests:
+            cpu: "0.2"
+            memory: "256Mi"
+        # Temporary: removing health check probes since endpoint doesn't exist
+        # livenessProbe:
+        #   httpGet:
+        #     path: /health
+        #     port: 5002
+        #   initialDelaySeconds: 30
+        #   periodSeconds: 10
+        # readinessProbe:
+        #   httpGet:
+        #     path: /health
+        #     port: 5002
+        #   initialDelaySeconds: 5
+        #   periodSeconds: 5

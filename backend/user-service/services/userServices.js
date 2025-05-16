@@ -255,4 +255,30 @@ export const updateRiderLocation = async (id, location) => {
   }
 };
 
+export const getAllRestaurants = async () => {
+  try {
+    const restaurants = await User.find({ 
+      role: 'restaurant_owner',
+      status: 'approved' 
+    }).select('-password');
+    
+    return restaurants;
+  } catch (error) {
+    throw new Error(`Failed to fetch restaurants: ${error.message}`);
+  }
+};
+
+export const getAllRiders = async () => {
+  try {
+    const riders = await User.find({ 
+      role: 'delivery_rider',
+      status: 'approved' 
+    }).select('-password');
+    
+    return riders;
+  } catch (error) {
+    throw new Error(`Failed to fetch delivery riders: ${error.message}`);
+  }
+};
+
 

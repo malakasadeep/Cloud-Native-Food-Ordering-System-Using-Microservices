@@ -44,6 +44,10 @@ app.post('/api/v1/notification/send-sms', validateSmsRequest, async (req, res, n
   }
 });
 
+// Health check endpoint for Kubernetes
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', service: 'notification-service' });
+});
 
 app.use((req, res) => {
   res.status(404).json({ error: 'Endpoint not found' });

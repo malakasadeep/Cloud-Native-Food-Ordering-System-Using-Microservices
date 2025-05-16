@@ -26,6 +26,11 @@ const FALLBACK_PORT = 7002;
 app.use("/api/v1/orders", orderRoutes);
 app.use("/api/cart", cartRoutes);
 
+// Health check endpoint for Kubernetes
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', service: 'order-service' });
+});
+
 const startServer = (port) => {
   const server = http.createServer(app);
 
