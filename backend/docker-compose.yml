@@ -23,17 +23,6 @@ services:
       - JWT_SECRET=576520617265204465764372616674732e206465766372616674732e746f70
     restart: unless-stopped
 
-  order-service:
-    build: ./order-service
-    container_name: order-service
-    ports:
-      - "5003:5003"
-    environment:
-      - PORT=5003
-      - MONGODB_URL=mongodb+srv://dewnijayasuriya123:event123@cluster0.r3uz9qa.mongodb.net/food_ordering_system?retryWrites=true&w=majority
-      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
-    restart: unless-stopped
-
   notification-service:
     build: ./notification-service
     container_name: notification-service
@@ -60,14 +49,14 @@ services:
     restart: unless-stopped
 
   order-service:
-    image: malakasadeep/fds-order-service-v2:latest
+    build: ./order-service
     container_name: order-service
     ports:
       - "5003:5003"
     environment:
       - PORT=5003
-      - MONGODB_URL=mongodb+srv://dewnijayasuriya123:event123@cluster0.r3uz9qa.mongodb.net/food_ordering_system?retryWrites=true&w=majority
-      - STRIPE_SECRET_KEY=sk_test_51RD6tEGd3xGfzgsU9V5WTckVrBOAVFHBBatfWTDtUrQUYLPX098vDQZKNF9mOBGSzGHH0aSAi4wukOjxDJxgLsoQ00zD6FdivY
+      - MONGO_URL=mongodb+srv://dewnijayasuriya123:event123@cluster0.r3uz9qa.mongodb.net/food_ordering_system?retryWrites=true&w=majority
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
     restart: unless-stopped
 
   api-gateway:

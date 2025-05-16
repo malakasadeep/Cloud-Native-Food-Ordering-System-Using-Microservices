@@ -1,39 +1,21 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Link } from "react-router-dom";
 import deliverService from "../../../../features/partnersManagement/services/deliverServices";
 import {
-  Box,
-  Card,
-  CardContent,
-  Typography,
-  Button,
-  Divider,
-  Chip,
-  IconButton,
-  Collapse,
-  Tabs,
-  Tab,
-  Badge,
-  Skeleton,
-} from "@mui/material";
-import {
-  Refresh,
-  ExpandMore,
-  ExpandLess,
-  LocalShipping,
-  CheckCircle,
-  Directions,
-} from "@mui/icons-material";
-import { fetchUser } from "../../../utils/fetchLocalStorageData";
+  FaChevronDown,
+  FaChevronRight,
+  FaMapMarkerAlt,
+  FaClock,
+  FaBox,
+  FaUser,
+} from "react-icons/fa";
 
 const Orders = ({ isSidebarCollapsed }) => {
   const [loading, setLoading] = useState(true);
   const [assignedOrders, setAssignedOrders] = useState([]);
   const [acceptedOrders, setAcceptedOrders] = useState([]);
-  const [ongoingOrder, setOngoingOrder] = useState(null);
+  const [ongoingOrders, setOngoingOrders] = useState([]);
   const [deliveredOrders, setDeliveredOrders] = useState([]);
   const [error, setError] = useState("");
-  const [tabValue, setTabValue] = useState(0);
   const [expandedSections, setExpandedSections] = useState({
     assigned: true,
     accepted: true,
@@ -43,40 +25,50 @@ const Orders = ({ isSidebarCollapsed }) => {
 
   const riderId = "68079119955e8db805bf2471"; // TODO: Make dynamic
 
-  // Fetch all orders
+  const normalizeOrder = (order) => {
+    let deliveryId = order.deliveryId;
+    return {
+      ...order,
+      deliveryId:
+        typeof deliveryId === "object" && deliveryId !== null
+          ? {
+              _id: deliveryId._id || "N/A",
+              dropoff_location: deliveryId.dropoff_location || null,
+              pickup_location: deliveryId.pickup_location || null,
+              recipient_name: deliveryId.recipient_name || "Unknown",
+              eta: deliveryId.eta || null,
+            }
+          : {
+              _id: deliveryId || "N/A",
+              dropoff_location: null,
+              pickup_location: null,
+              recipient_name: "Unknown",
+              eta: null,
+            },
+    };
+  };
+
   const fetchAllOrders = useCallback(async () => {
     setLoading(true);
     setError("");
     try {
-      // Fetch Assigned Orders
       const assignedRes = await deliverService.getRiderAssignedOrders(riderId);
-      if (assignedRes.success) {
-        setAssignedOrders(assignedRes.data || []);
-      } else {
-        setError(assignedRes.message || "Failed to load assigned orders.");
-      }
+      setAssignedOrders((assignedRes.data || []).map(normalizeOrder));
 
-      // Fetch Accepted Orders
       const acceptedRes = await deliverService.getRiderOrderByStatus(
         riderId,
         "accepted"
       );
-      setAcceptedOrders(acceptedRes.data || []);
+      setAcceptedOrders((acceptedRes.data || []).map(normalizeOrder));
 
-      // Fetch Ongoing Order
       const ongoingRes = await deliverService.getRiderOngoingDelivery(riderId);
-      if (ongoingRes.success && ongoingRes.data.length > 0) {
-        setOngoingOrder(ongoingRes.data[0]);
-      } else {
-        setOngoingOrder(null);
-      }
+      setOngoingOrders((ongoingRes.data || []).map(normalizeOrder));
 
-      // Fetch Delivered Orders (mocked API call)
       const deliveredRes = await deliverService.getRiderOrderByStatus(
         riderId,
         "delivered"
       );
-      setDeliveredOrders(deliveredRes.data || []);
+      setDeliveredOrders((deliveredRes.data || []).map(normalizeOrder));
     } catch (err) {
       console.error("Error fetching orders:", err);
       setError("Failed to load orders. Please try again.");
@@ -89,7 +81,10 @@ const Orders = ({ isSidebarCollapsed }) => {
     fetchAllOrders();
   }, [fetchAllOrders]);
 
-  // Handle Accept Order
+  const handleToggleSection = (section) => {
+    setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));
+  };
+
   const handleAccept = async (orderId) => {
     try {
       await deliverService.riderAcceptOrder(riderId, orderId);
@@ -100,7 +95,6 @@ const Orders = ({ isSidebarCollapsed }) => {
     }
   };
 
-  // Handle Start Delivery
   const handleStart = async (orderId) => {
     try {
       await deliverService.riderStartDelivery(orderId);
@@ -111,292 +105,154 @@ const Orders = ({ isSidebarCollapsed }) => {
     }
   };
 
-  // Toggle section expansion
-  const toggleSection = (section) => {
-    setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));
+  const statusColors = {
+    assigned: "bg-yellow-100 text-yellow-800",
+    accepted: "bg-blue-100 text-blue-800",
+    ongoing: "bg-orange-100 text-orange-800",
+    delivered: "bg-green-100 text-green-800",
   };
 
-  // Handle tab change
-  const handleTabChange = (event, newValue) => {
-    setTabValue(newValue);
-  };
+  const OrderCard = ({ order, status }) => {
+    const dropoff = order.deliveryId?.dropoff_location;
+    const pickup = order.deliveryId?.pickup_location;
+    const recipient = order.deliveryId?.recipient_name;
+    const eta = order.deliveryId?.eta;
 
-  // Render order card
-  const renderOrderCard = (order, type) => (
-    <Card
-      key={order._id}
-      sx={{
-        mb: 2,
-        boxShadow: 3,
-        transition: "transform 0.2s",
-        "&:hover": { transform: "scale(1.02)" },
-      }}
-    >
-      <CardContent>
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          mb={1}
-        >
-          <Typography variant="h6" fontWeight="bold">
-            Order #{order.deliveryId}
-          </Typography>
-          <Chip
-            label={order?.status}
-            color={
-              order.status === "assigned"
-                ? "warning"
-                : order.status === "accepted"
-                ? "primary"
-                : "success"
-            }
-            size="small"
-          />
-        </Box>
-        <Typography variant="body2" color="text.secondary" mb={1}>
-          <strong>Customer:</strong> {order.customerName || "N/A"}
-        </Typography>
-        <Typography variant="body2" color="text.secondary" mb={1}>
-          <strong>Address:</strong> {order.deliveryAddress || "N/A"}
-        </Typography>
-        <Typography variant="body2" color="text.secondary" mb={1}>
-          <strong>Distance:</strong>{" "}
-          {order.distance ? `${order.distance} km` : "Calculating..."}
-        </Typography>
-        <Typography variant="body2" color="text.secondary" mb={2}>
-          <strong>Estimated Delivery:</strong>{" "}
-          {order.estimated_delivery_time
-            ? new Date(order.estimated_delivery_time).toLocaleString()
-            : "N/A"}
-        </Typography>
-        <Divider sx={{ my: 2 }} />
-        <Box display="flex" gap={1}>
-          {type === "assigned" && (
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<CheckCircle />}
-              onClick={() => handleAccept(order.deliveryId)}
-            >
-              Accept
-            </Button>
-          )}
-          {type === "accepted" && (
-            <Button
-              variant="contained"
-              color="secondary"
-              startIcon={<Directions />}
-              onClick={() => handleStart(order._id)}
-            >
-              Start Delivery
-            </Button>
-          )}
-          {type === "ongoing" && (
-            <Button
-              variant="contained"
-              color="primary"
-              component={Link}
-              to={`/delivery/orders/start`}
-              startIcon={<LocalShipping />}
-            >
-              View Map
-            </Button>
-          )}
-        </Box>
-      </CardContent>
-    </Card>
-  );
-
-  // Render section
-  const renderSection = (title, orders, type, badgeCount) => (
-    <Box mb={4}>
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={2}
-      >
-        <Typography variant="h5" fontWeight="bold">
-          <Badge badgeContent={badgeCount} color="primary" sx={{ mr: 2 }}>
-            {title}
-          </Badge>
-        </Typography>
-        <IconButton onClick={() => toggleSection(type)}>
-          {expandedSections[type] ? <ExpandLess /> : <ExpandMore />}
-        </IconButton>
-      </Box>
-      <Collapse in={expandedSections[type]}>
-        {loading ? (
-          <>
-            <Skeleton variant="rectangular" height={150} sx={{ mb: 2 }} />
-            <Skeleton variant="rectangular" height={150} sx={{ mb: 2 }} />
-          </>
-        ) : orders.length > 0 ? (
-          orders.map((order) => renderOrderCard(order, type))
-        ) : (
-          <Typography color="text.secondary">
-            No {title.toLowerCase()} available.
-          </Typography>
-        )}
-      </Collapse>
-    </Box>
-  );
-
-  if (error) {
     return (
-      <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        justifyContent="center"
-        minHeight="100vh"
-        bgcolor="grey.100"
-      >
-        <Typography variant="h6" color="error" mb={2}>
-          {error}
-        </Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<Refresh />}
-          onClick={fetchAllOrders}
-        >
-          Retry
-        </Button>
-      </Box>
+      <div className="bg-white p-5 rounded-2xl shadow border hover:shadow-lg transition flex flex-col gap-3">
+        <div className="flex justify-between items-center">
+          <h3 className="font-semibold text-gray-800 flex items-center gap-2">
+            <FaBox /> Order ID: {order.deliveryId?._id || order._id}
+          </h3>
+          <span
+            className={`text-xs font-semibold px-3 py-1 rounded-full ${statusColors[status]}`}
+          >
+            {status.toUpperCase()}
+          </span>
+        </div>
+        <div className="text-sm text-gray-600 space-y-1">
+          <p className="flex items-center gap-2">
+            <FaUser className="text-gray-400" /> <strong>Recipient:</strong>{" "}
+            {recipient}
+          </p>
+          <p className="flex items-center gap-2">
+            <FaMapMarkerAlt className="text-red-500" />{" "}
+            <strong>Drop-off:</strong>{" "}
+            {dropoff ? `${dropoff.lat}, ${dropoff.lng}` : "N/A"}
+          </p>
+          {pickup && (
+            <p className="flex items-center gap-2">
+              <FaMapMarkerAlt className="text-green-500" />{" "}
+              <strong>Pickup:</strong> {pickup.lat}, {pickup.lng}
+            </p>
+          )}
+          {eta && (
+            <p className="flex items-center gap-2">
+              <FaClock className="text-blue-400" /> <strong>ETA:</strong> {eta}
+            </p>
+          )}
+          <p>
+            <strong>Status:</strong> {order.status || order.delivery_status}
+          </p>
+          <p>
+            <strong>Created:</strong>{" "}
+            {new Date(order.createdAt).toLocaleString()}
+          </p>
+        </div>
+
+        {/* Action Buttons */}
+        {status === "assigned" && (
+          <button
+            onClick={() => handleAccept(order.deliveryId._id)}
+            className="mt-3 px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded shadow"
+          >
+            Accept Order
+          </button>
+        )}
+        {status === "accepted" && (
+          <button
+            onClick={() => handleStart(order._id)}
+            className="mt-3 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded shadow"
+          >
+            Start Delivery
+          </button>
+        )}
+      </div>
     );
-  }
+  };
+
+  const Section = ({ title, orders, sectionKey, status }) => (
+    <section className="mb-8">
+      <button
+        className="w-full flex justify-between items-center px-4 py-3 bg-gray-100 hover:bg-gray-200 rounded-lg"
+        onClick={() => handleToggleSection(sectionKey)}
+      >
+        <h2 className="text-lg font-semibold text-gray-800">
+          {title} <span className="text-gray-500">({orders.length})</span>
+        </h2>
+        {expandedSections[sectionKey] ? <FaChevronDown /> : <FaChevronRight />}
+      </button>
+      {expandedSections[sectionKey] && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 mt-4 px-2">
+          {orders.length === 0 ? (
+            <p className="text-gray-500 italic col-span-full">
+              No orders found.
+            </p>
+          ) : (
+            orders.map((order) => (
+              <OrderCard key={order._id} order={order} status={status} />
+            ))
+          )}
+        </div>
+      )}
+    </section>
+  );
 
   return (
-    <div>
-      <main
-        style={{
-          marginLeft: isSidebarCollapsed ? "60px" : "220px",
-          transition: "margin-left 0.3s",
-        }}
-        className="bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen rounded-2xl"
-      >
-        <div className="px-20 py-6">
-          {/* Header */}
-          <Box
-            sx={{
-              bgcolor: "primary.main",
-              color: "white",
-              p: 3,
-              boxShadow: 2,
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Box>
-              <Typography variant="h4" fontWeight="bold">
-                Rider Dashboard
-              </Typography>
-              <Typography variant="body1">Manage your deliveries</Typography>
-            </Box>
-            <Button
-              variant="outlined"
-              color="inherit"
-              startIcon={<Refresh />}
-              onClick={fetchAllOrders}
-              disabled={loading}
-            >
-              Refresh
-            </Button>
-          </Box>
+    <div
+      className={`transition-all duration-300 ${
+        isSidebarCollapsed ? "ml-20" : "ml-64"
+      } p-6 bg-gray-50 min-h-screen`}
+    >
+      <h1 className="text-3xl font-bold text-gray-800 mb-8">
+        📦 Orders Dashboard
+      </h1>
 
-          {/* Main Content */}
-          <Box sx={{ maxWidth: "1200px", mx: "auto", p: { xs: 2, md: 4 } }}>
-            {/* Tabs */}
-            <Tabs
-              value={tabValue}
-              onChange={handleTabChange}
-              centered
-              sx={{ mb: 4, bgcolor: "white", borderRadius: 2, boxShadow: 1 }}
-            >
-              <Tab label="All Orders" />
-              <Tab label="Assigned" />
-              <Tab label="Accepted" />
-              <Tab label="Ongoing" />
-              <Tab label="Delivered" />
-            </Tabs>
-
-            {/* Content */}
-            {tabValue === 0 && (
-              <>
-                {renderSection(
-                  "Ongoing Order",
-                  ongoingOrder ? [ongoingOrder] : [],
-                  "ongoing",
-                  ongoingOrder ? 1 : 0
-                )}
-                {renderSection(
-                  "Assigned Orders",
-                  assignedOrders,
-                  "assigned",
-                  assignedOrders.length
-                )}
-                {renderSection(
-                  "Accepted Orders",
-                  acceptedOrders,
-                  "accepted",
-                  acceptedOrders.length
-                )}
-                {renderSection(
-                  "Delivered Orders",
-                  deliveredOrders,
-                  "delivered",
-                  deliveredOrders.length
-                )}
-              </>
-            )}
-            {tabValue === 1 &&
-              renderSection(
-                "Assigned Orders",
-                assignedOrders,
-                "assigned",
-                assignedOrders.length
-              )}
-            {tabValue === 2 &&
-              renderSection(
-                "Accepted Orders",
-                acceptedOrders,
-                "accepted",
-                acceptedOrders.length
-              )}
-            {tabValue === 3 &&
-              renderSection(
-                "Ongoing Order",
-                ongoingOrder ? [ongoingOrder] : [],
-                "ongoing",
-                ongoingOrder ? 1 : 0
-              )}
-            {tabValue === 4 &&
-              renderSection(
-                "Delivered Orders",
-                deliveredOrders,
-                "delivered",
-                deliveredOrders.length
-              )}
-          </Box>
-
-          {/* Footer */}
-          <Box
-            sx={{
-              bgcolor: "grey.200",
-              p: 2,
-              textAlign: "center",
-              mt: 4,
-            }}
-          >
-            <Typography variant="body2" color="text.secondary">
-              Powered by DeliveryPro | <a href="/support">Support</a>
-            </Typography>
-          </Box>
+      {loading ? (
+        <div className="flex flex-col items-center justify-center h-60">
+          <div className="w-12 h-12 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
+          <p className="mt-4 text-gray-600">Loading orders...</p>
         </div>
-      </main>
+      ) : error ? (
+        <p className="text-red-500 text-center">{error}</p>
+      ) : (
+        <>
+          <Section
+            title="Assigned Orders"
+            orders={assignedOrders}
+            sectionKey="assigned"
+            status="assigned"
+          />
+          <Section
+            title="Accepted Orders"
+            orders={acceptedOrders}
+            sectionKey="accepted"
+            status="accepted"
+          />
+          <Section
+            title="Ongoing Orders"
+            orders={ongoingOrders}
+            sectionKey="ongoing"
+            status="ongoing"
+          />
+          <Section
+            title="Delivered Orders"
+            orders={deliveredOrders}
+            sectionKey="delivered"
+            status="delivered"
+          />
+        </>
+      )}
     </div>
   );
 };

@@ -25,7 +25,7 @@ import {
 } from "@mui/icons-material";
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyCUNJVymb9TyStgPqJSE5Ond4dZHn7fwZU";
-const SOCKET_URL = "http://localhost:8090";
+const SOCKET_URL = "ws://localhost:5004";
 
 const containerStyle = {
   width: "100%",
@@ -67,7 +67,7 @@ const OrderTrackingPage = () => {
       setLoading(true);
       try {
         const mockOrder = {
-          orderId: "12345",
+          orderId: "663b3d30a42c6b63cd7f1236",
           delivery_status: "started",
           pickup_location: {
             lat: 6.9271,

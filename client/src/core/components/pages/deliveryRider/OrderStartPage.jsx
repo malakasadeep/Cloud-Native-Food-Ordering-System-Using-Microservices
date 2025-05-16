@@ -46,7 +46,7 @@ const debounce = (func, wait) => {
   };
 };
 
-const SOCKET_SERVER_URL = "http://localhost:8090";
+const SOCKET_SERVER_URL = "ws://localhost:5004";
 
 const OrderStartPage = ({ isSidebarCollapsed }) => {
   const [loading, setLoading] = useState(true);
