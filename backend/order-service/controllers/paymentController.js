@@ -2,8 +2,9 @@ import Stripe from "stripe";
 import dotenv from "dotenv";
 dotenv.config();
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY); //Creates a new Stripe instance using secret key from the .env file.
 
+//creates a payment intent in Stripe.
 export const createStripePayment = async (totalAmount, currency = "usd") => {
   try {
     const paymentIntent = await stripe.paymentIntents.create({
@@ -13,7 +14,7 @@ export const createStripePayment = async (totalAmount, currency = "usd") => {
     });
 
     return {
-      clientSecret: paymentIntent.client_secret,
+      clientSecret: paymentIntent.client_secret, //Used by frontend to complete the payment.
       paymentIntentId: paymentIntent.id,
     };
   } catch (error) {
