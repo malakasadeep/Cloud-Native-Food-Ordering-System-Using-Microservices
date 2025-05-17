@@ -4,6 +4,7 @@ import { AnimatePresence } from "framer-motion";
 import { CartProvider } from "./core/contexts/CartContext";
 import AppRoutes from "./core/routes/Approutes";
 import ProfilePage from "./features/customerProfile/components/ProfilePage";
+import { ThemeProvider } from "./core/contexts/theme-context";
 
 const App = () => {
   return (

@@ -16,6 +16,7 @@ import RiderDashboard from "../components/pages/deliveryRider/Dashboard";
 import Layout from "../components/pages/deliveryRider/layout";
 import DashboardPage from "../components/pages/deliveryRider/Dashboard/page";
 import CustomerOrders from "../components/pages/customer/CistomerOrders";
+import ProfilePage from "../../features/customerProfile/components/ProfilePage";
 
 function AppRoutes() {
   return (
@@ -24,12 +25,12 @@ function AppRoutes() {
       <Route path="/customer-auth" element={<CusAuthPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/registration" element={<RegistrationPage />} />
-      <Route path="/restaurants" element={<AllRestaurants />} />
+      {/* <Route path="/restaurants" element={<AllRestaurants />} /> */}
 
-      <Route
+      {/* <Route
         path="/restaurant-details/:id"
         element={<RestaurantDetailsPage />}
-      />
+      /> */}
       <Route
         path="/customer/*"
         element={
