@@ -1,7 +1,7 @@
 #version: "3.8"
 services:
   user-service:
-    image: malakasadeep/fds-user-service:latest
+    image: malakasadeep/fds-user-service-v3:latest
     container_name: user-service
     ports:
       - "5001:5001"

@@ -215,6 +215,38 @@ const partnerService = {
       };
     }
   },
+
+  getAllRestaurants: async () => {
+    try {
+      const response = await userClient.get(API_CONSTANTS.GET_ALL_RESTAURANTS);
+      return {
+        success: true,
+        data: response.data.data || response.data,
+      };
+    } catch (error) {
+      console.error("Error fetching all restaurants:", error);
+      return {
+        success: false,
+        message: "Failed to fetch restaurants",
+      };
+    }
+  },
+
+  getAllRiders: async () => {
+    try {
+      const response = await userClient.get(API_CONSTANTS.GET_ALL_RIDERS);
+      return {
+        success: true,
+        data: response.data.data || response.data,
+      };
+    } catch (error) {
+      console.error("Error fetching all riders:", error);
+      return {
+        success: false,
+        message: "Failed to fetch riders",
+      };
+    }
+  },
 };
 
 export default partnerService;

@@ -9,6 +9,7 @@ import RestaurantPage from "../components/pages/RestaurantPage";
 // import CheckoutPage from '../components/pages/CheckoutPage';
 import SuccessPage from "../components/pages/SuccessPage";
 import OrderConfirmation from "../components/pages/OrderConfirmation";
+import RestaurantDetailsPage from "../components/pages/RestaurantDetailsPage";
 
 function AppRoutes() {
   return (
@@ -17,6 +18,7 @@ function AppRoutes() {
       <Route path="/customer-auth" element={<CusAuthPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/registration" element={<RegistrationPage />} />
+      <Route path="/restaurant-details/:id" element={<RestaurantDetailsPage />} />
       <Route
         path="/customer/*"
         element={
