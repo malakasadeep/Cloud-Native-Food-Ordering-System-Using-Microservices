@@ -11,6 +11,7 @@ import SuccessPage from "../components/pages/SuccessPage";
 import OrderConfirmation from "../components/pages/OrderConfirmation";
 import RestaurantDetailsPage from "../components/pages/RestaurantDetailsPage";
 import AllRestaurants from "../../features/restaurantManagement/pages/AllRestaurants";
+import ProfilePage from "../../features/customerProfile/components/ProfilePage";
 
 function AppRoutes() {
   return (
@@ -34,6 +35,7 @@ function AppRoutes() {
                 path="order/confirmation"
                 element={<OrderConfirmation />}
               />
+              <Route path="/profile" element={<ProfilePage />} />
             </Routes>
           </ProtectedRoute>
         }

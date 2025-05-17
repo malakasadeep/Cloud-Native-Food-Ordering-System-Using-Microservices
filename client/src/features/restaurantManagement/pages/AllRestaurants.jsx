@@ -54,10 +54,10 @@ const AllRestaurants = () => {
   };
 
   return (
-    <div className="w-full h-auto min-h-screen flex flex-col">
+    <div className="w-full h-auto min-h-screen flex flex-col bg-primary">
       <Header />
 
-      <div className="container mx-auto px-4 py-8 mt-20">
+      <div className="container mx-auto px-4 py-8 mt-20 bg-primary">
         <div className="w-full flex justify-between items-center mb-8">
           <h2 className="text-2xl font-semibold text-headingColor">
             All Restaurants

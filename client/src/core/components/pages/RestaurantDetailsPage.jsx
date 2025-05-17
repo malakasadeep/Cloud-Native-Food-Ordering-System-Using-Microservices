@@ -291,7 +291,7 @@ const RestaurantDetailsPage = () => {
   return (
     <>
       <Header />
-      <div className="w-full bg-gray-50">
+      <div className="w-full bg-primary">
         {/* Hero Section with Cover Image */}
         <div className="relative w-full h-[300px] md:h-[400px]">
           <img 

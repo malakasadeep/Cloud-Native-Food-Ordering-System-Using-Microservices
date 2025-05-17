@@ -3,6 +3,7 @@ import {  BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import { CartProvider } from './core/contexts/CartContext';
 import AppRoutes from "./core/routes/Approutes";
+import ProfilePage from './features/customerProfile/components/ProfilePage';
 
 const App = () => {
   return (
