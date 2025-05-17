@@ -150,8 +150,8 @@ const OrderTable = () => {
                             try {
                               const requestBody = {
                                 orderId: order._id,
-                                customerId: "680f6bd0bdc07e87c9332fd6",
-                                resturentId: "6807f49eb6416f7a21985b9b",
+                                customerId: "680f6bd0bdc07e87c9332fd6", //hard coded bcuse of no data found on db
+                                resturentId: "6807f49eb6416f7a21985b9b", //hard coded bcuse of no data found on db
                               };
                               const deliveryResponse =
                                 await deliverService.assignRiderToDelivery(

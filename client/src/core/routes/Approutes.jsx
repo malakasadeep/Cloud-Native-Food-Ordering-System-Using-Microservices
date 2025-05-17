@@ -13,6 +13,9 @@ import OrderTrackingPage from "../components/pages/customer/OrderTrackingPage";
 import Orders from "../components/pages/deliveryRider/Orders";
 import OrderStartPage from "../components/pages/deliveryRider/OrderStartPage";
 import RiderDashboard from "../components/pages/deliveryRider/Dashboard";
+import Layout from "../components/pages/deliveryRider/layout";
+import DashboardPage from "../components/pages/deliveryRider/Dashboard/page";
+import CustomerOrders from "../components/pages/customer/CistomerOrders";
 
 function AppRoutes() {
   return (
@@ -32,8 +35,8 @@ function AppRoutes() {
         element={
           <ProtectedRoute allowedRoles={["customer"]}>
             <Routes>
-              {/* <Route path="/profile" element={<ProfilePage />} /> */}
-
+              <Route path="/profile" element={<OrderConfirmation />} />
+              <Route path="/orders" element={<CustomerOrders />} />
               {/* <Route path="/checkout" element={<CheckoutPage />} /> */}
               <Route path="order/success" element={<SuccessPage />} />
               <Route
@@ -70,12 +73,14 @@ function AppRoutes() {
         path="/delivery/*"
         element={
           <ProtectedRoute allowedRoles={["delivery_rider"]}>
-            <Routes>
-              <Route path="/*" element={<RiderDashboard />} />
-            </Routes>
+            <Layout />
           </ProtectedRoute>
         }
-      />
+      >
+        <Route index element={<DashboardPage />} />
+        <Route path="orders" element={<Orders />} />
+        <Route path="orders/start" element={<OrderStartPage />} />
+      </Route>
     </Routes>
   );
 }

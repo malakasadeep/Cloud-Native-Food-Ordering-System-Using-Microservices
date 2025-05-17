@@ -217,6 +217,76 @@ const deliverService = {
       };
     }
   },
+
+  getCustomerOrders: async (customerId) => {
+    try {
+      const response = await deliverClient.get(
+        `${API_CONSTANTS.GET_CUSTOMER_ORDERS}/${customerId}`
+      );
+
+      return {
+        success: true,
+        message: response.data.message || "Account created successfully",
+        data: response.data.data,
+      };
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.response?.data) {
+          console.error("Error creating account:", error.response.data);
+          return {
+            success: false,
+            message: error.response.data.message || "Failed to create account",
+          };
+        }
+      } else if (error instanceof Error) {
+        console.error("Error creating account:", error.message);
+        return {
+          success: false,
+          message: error.message,
+        };
+      }
+      console.error("Error creating account:", error);
+      return {
+        success: false,
+        message: "An unknown error occurred",
+      };
+    }
+  },
+
+  getAllDeliveryLogs: async () => {
+    try {
+      const response = await deliverClient.get(
+        `${API_CONSTANTS.GET_ALL_DELIVERY_ORDERS}`
+      );
+
+      return {
+        success: true,
+        message: response.data.message || "Account created successfully",
+        data: response.data.data,
+      };
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.response?.data) {
+          console.error("Error creating account:", error.response.data);
+          return {
+            success: false,
+            message: error.response.data.message || "Failed to create account",
+          };
+        }
+      } else if (error instanceof Error) {
+        console.error("Error creating account:", error.message);
+        return {
+          success: false,
+          message: error.message,
+        };
+      }
+      console.error("Error creating account:", error);
+      return {
+        success: false,
+        message: "An unknown error occurred",
+      };
+    }
+  },
 };
 
 export default deliverService;

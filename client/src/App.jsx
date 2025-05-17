@@ -7,15 +7,17 @@ import ProfilePage from "./features/customerProfile/components/ProfilePage";
 
 const App = () => {
   return (
-    <Router>
-      <CartProvider>
-        <AnimatePresence>
-          <div className="overflow-x-hidden ">
-            <AppRoutes />
-          </div>
-        </AnimatePresence>
-      </CartProvider>
-    </Router>
+    <ThemeProvider storageKey="theme">
+      <Router>
+        <CartProvider>
+          <AnimatePresence>
+            <div className="overflow-x-hidden ">
+              <AppRoutes />
+            </div>
+          </AnimatePresence>
+        </CartProvider>
+      </Router>
+    </ThemeProvider>
   );
 };
 

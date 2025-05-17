@@ -41,7 +41,10 @@ const API_CONSTANTS = {
   RIDER_ACCEPT_ORDER: `/api/delivery/accept/driver/`,
   RIDER_START_DELIVERY: `/api/delivery/start/order/`,
   RIDER_ASSIGN_TO_DELIVERY: `/api/delivery/assign`,
-
+  GET_CUSTOMER_ORDERS: `/api/delivery/customer`,
+  GET_ALL_DELIVERY_ORDERS: `/api/delivery/logs/all`,
+  GET_ALL_PENDING_DELIVERY_LOGS_FOR_ORDER: `/api/delivery/delivery-requests/delivery`,
+  RIDER_COMPLEATE_DELIVERY: `/api/dilivery/stop`,
   //orders
   GET_ORDERS_BELONGS_TO_RESTURENT: `/api/orders/`,
 };

@@ -8,6 +8,10 @@ import {
   FaBox,
   FaUser,
 } from "react-icons/fa";
+import {
+  fetchPersistedUser,
+  fetchUser,
+} from "../../../utils/fetchLocalStorageData";
 
 const Orders = ({ isSidebarCollapsed }) => {
   const [loading, setLoading] = useState(true);
@@ -23,7 +27,10 @@ const Orders = ({ isSidebarCollapsed }) => {
     delivered: false,
   });
 
-  const riderId = "68079119955e8db805bf2471"; // TODO: Make dynamic
+  const user = fetchPersistedUser();
+
+  console.log(user);
+  const riderId = user._id;
 
   const normalizeOrder = (order) => {
     let deliveryId = order.deliveryId;
@@ -209,11 +216,7 @@ const Orders = ({ isSidebarCollapsed }) => {
   );
 
   return (
-    <div
-      className={`transition-all duration-300 ${
-        isSidebarCollapsed ? "ml-20" : "ml-64"
-      } p-6 bg-gray-50 min-h-screen`}
-    >
+    <div className="bg-white">
       <h1 className="text-3xl font-bold text-gray-800 mb-8">
         📦 Orders Dashboard
       </h1>

@@ -21,6 +21,23 @@ class DeliveryRequestController {
       next(error);
     }
   }
+
+  static async getAllPendingDeliveryRequestByDeliveryId(req, res, next) {
+    const { deliveryId } = req.params;
+    try {
+      const deliveryRequests = await DeliveryRequest.findAll({
+        where: {
+          deliveryId,
+          status: "pending",
+        },
+        order: [["createdAt", "DESC"]],
+      });
+      res.status(200).json(deliveryRequests);
+    } catch (error) {
+      console.error("Error fetching pending delivery requests:", error);
+      next(error);
+    }
+  }
 }
 
 module.exports = DeliveryRequestController;

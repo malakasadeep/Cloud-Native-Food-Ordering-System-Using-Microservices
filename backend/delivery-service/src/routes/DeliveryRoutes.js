@@ -30,4 +30,18 @@ router.get(
   DeliveryRequestController.getDeliveryRequestByRider
 );
 
+router.get("/logs/all", DeliveryController.getAllDeliveryLogs);
+
+router.get(
+  "/delivery-requests/delivery/:deliveryId",
+  DeliveryRequestController.getAllPendingDeliveryRequestByDeliveryId
+);
+
+router.get(
+  "/customer/:customerId",
+  DeliveryController.getAllDeliveryOrdersByCustomer
+);
+
+router.get("/stop/:deliveryId", DeliveryController.completeOngoingDelivery);
+
 module.exports = router;

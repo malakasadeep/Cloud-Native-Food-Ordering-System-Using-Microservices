@@ -1,6 +1,7 @@
 const Delivery = require("../models/Delivery.js");
 const DeliveryRequest = require("../models/DeliveryRequest.js");
 const { assignRider } = require("../services/delivery.service");
+const axios = require("axios");
 
 class DeliveryController {
   //after order payment created this will call
@@ -26,6 +27,79 @@ class DeliveryController {
       });
     } catch (err) {
       next(err);
+    }
+  }
+
+  static async getAllDeliveryLogs(req, res, next) {
+    try {
+      const deliveryLogs = await Delivery.find();
+      res.status(200).json(deliveryLogs);
+    } catch (error) {
+      console.error("Error fetching delivery logs:", error);
+      next(error);
+    }
+  }
+
+  static async getAllDeliveryOrdersByCustomer(req, res, next) {
+    const { customerId } = req.params;
+
+    try {
+      const ordersResponse = await axios.get(
+        `http://order-service:5003/api/v1/orders/customer/${customerId}`
+      );
+
+      const orders = ordersResponse.data.orders;
+
+      if (!orders || orders.length === 0) {
+        return res
+          .status(404)
+          .json({ message: "No orders found for this customer" });
+      }
+
+      const enrichedOrders = await Promise.all(
+        orders.map(async (order) => {
+          const deliveryLogs = await Delivery.find({ orderId: order._id });
+          return {
+            ...order,
+            deliveryLogs,
+          };
+        })
+      );
+
+      res.status(200).json({ orders: enrichedOrders });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async completeOngoingDelivery(req, res, next) {
+    try {
+      const { deliveryId } = req.params;
+
+      const deliveryLog = await Delivery.findById(deliveryId);
+      if (!deliveryLog) {
+        return res.status(404).json({ message: "Delivery log not found" });
+      }
+
+      const orderId = deliveryLog.orderId;
+
+      deliveryLog.delivery_status = "delivered";
+      await deliveryLog.save();
+
+      const ordersResponse = await axios.post(
+        `http://order-service:5003/api/v1/orders/status/${orderId}`,
+        {
+          newStatus: "DELIVERED",
+        }
+      );
+
+      res.status(200).json({
+        message: "Delivery marked as completed and order updated",
+        delivery: deliveryLog,
+        orderUpdate: ordersResponse.data,
+      });
+    } catch (error) {
+      next(error);
     }
   }
 
