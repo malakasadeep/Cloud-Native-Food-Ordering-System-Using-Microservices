@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
+import { Link } from "react-router-dom";
 import HomeContainer from "./HomeContainer";
 import RowContainer from "./RowContainer";
 import MenuContainer from "./MenuContainer";
@@ -52,7 +53,7 @@ const MainContainer = () => {
           </p>
 
           <div className="hidden md:flex gap-3 items-center">
-            <motion.div
+            {/* <motion.div
               whileTap={{ scale: 0.75 }}
               className="w-8 h-8 rounded-lg bg-orange-300 hover:bg-orange-500 cursor-pointer hover:shadow-lg flex items-center justify-center"
               onClick={() => setScrollValue(-200)}
@@ -65,7 +66,13 @@ const MainContainer = () => {
               onClick={() => setScrollValue(200)}
             >
               <MdChevronRight className="text-lg text-white" />
-            </motion.div>
+            </motion.div> */}
+            <Link 
+              to="/restaurants" 
+              className="ml-4 text-orange-500 hover:text-orange-700 font-medium"
+            >
+              View All
+            </Link>
           </div>
         </div>
         
@@ -74,7 +81,7 @@ const MainContainer = () => {
           {loading ? (
             <p className="text-center w-full">Loading restaurants...</p>
           ) : restaurants && restaurants.length > 0 ? (
-            restaurants.map((restaurant) => (
+            restaurants.slice(0, 5).map((restaurant) => (
               <RestaurantCard key={restaurant._id} restaurant={restaurant} />
             ))
           ) : (

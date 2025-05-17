@@ -10,6 +10,7 @@ import RestaurantPage from "../components/pages/RestaurantPage";
 import SuccessPage from "../components/pages/SuccessPage";
 import OrderConfirmation from "../components/pages/OrderConfirmation";
 import RestaurantDetailsPage from "../components/pages/RestaurantDetailsPage";
+import AllRestaurants from "../../features/restaurantManagement/pages/AllRestaurants";
 
 function AppRoutes() {
   return (
@@ -18,6 +19,8 @@ function AppRoutes() {
       <Route path="/customer-auth" element={<CusAuthPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/registration" element={<RegistrationPage />} />
+      <Route path="/restaurants" element={<AllRestaurants />} />
+
       <Route path="/restaurant-details/:id" element={<RestaurantDetailsPage />} />
       <Route
         path="/customer/*"
