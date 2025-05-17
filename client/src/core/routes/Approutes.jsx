@@ -36,7 +36,6 @@ function AppRoutes() {
         element={
           <ProtectedRoute allowedRoles={["customer"]}>
             <Routes>
-              <Route path="/profile" element={<OrderConfirmation />} />
               <Route path="/orders" element={<CustomerOrders />} />
               {/* <Route path="/checkout" element={<CheckoutPage />} /> */}
               <Route path="order/success" element={<SuccessPage />} />
@@ -44,7 +43,8 @@ function AppRoutes() {
                 path="order/confirmation"
                 element={<OrderConfirmation />}
               />
-              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/track-order" element={<OrderTrackingPage />} />
+              <Route path="/profilee" element={<ProfilePage />} />
             </Routes>
           </ProtectedRoute>
         }
