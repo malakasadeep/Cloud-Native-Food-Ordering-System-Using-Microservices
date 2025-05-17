@@ -83,10 +83,11 @@ export const placeOrder = async (req, res) => {
       qty: item.qty,
     }));
 
-    const totalAmount = cartItemsFormatted.reduce(
+    const itemTotal = cartItemsFormatted.reduce(
       (sum, item) => sum + item.unitPrice * item.qty,
       0
     );
+    const totalAmount = itemTotal + 250;
 
     const orderData = {
       customerId:
