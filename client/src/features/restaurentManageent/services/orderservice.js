@@ -22,6 +22,23 @@ const orderService = {
     }
   },
 
+  // Add a method to get customer's orders specifically
+  getCustomerOrders: async () => {
+    try {
+      const response = await orderClient.get(API_CONSTANTS.GET_CUSTOMER_ORDERS);
+      return {
+        success: true,
+        data: response.data,
+      };
+    } catch (error) {
+      console.error("Error fetching customer orders:", error);
+      return {
+        success: false,
+        message: "Failed to fetch your orders",
+      };
+    }
+  },
+
   createCheckoutSession: async (cartItems, address) => {
     try {
       const response = await orderClient.post(

@@ -14,6 +14,8 @@ const API_CONSTANTS = {
   GET_ALL: "/api/v1/user",
   GET_RESTAURANT: "/api/v1/user/restaurants",
   UPDATE_REST_AVAILABILITY: "/api/v1/user/restaurants",
+  GET_ALL_RESTAURANTS: "/api/v1/user/all-restaurants",
+  GET_ALL_RIDERS: "/api/v1/user/all-riders",
 
   // restaurant
   CREATE_CATEGORY: "/api/v1/restaurant/category",

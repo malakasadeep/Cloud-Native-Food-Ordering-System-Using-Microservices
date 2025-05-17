@@ -66,8 +66,7 @@ const Header = () => {
   };
 
   const handleSignOut = () => {
-    dispatch(logout(navigate));
-    setIsUserMenuOpen(false);
+    navigate("/customer/profile")
   };
 
   const handleBecomeSeller = () => {
@@ -164,8 +163,10 @@ const Header = () => {
                 >
                   <ul>
                     <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2">
-                      <User size={16} strokeWidth={2} />
-                      <span>Profile</span>
+                      <Link to="/customer/profile" className="flex items-center gap-2 w-full">
+                        <User size={16} strokeWidth={2} />
+                        <span>Profile</span>
+                      </Link>
                     </li>
                     <li 
                       className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2 text-red-500"
@@ -274,8 +275,10 @@ const Header = () => {
                 >
                   <ul>
                     <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2">
-                      <User size={14} strokeWidth={2} />
-                      <span>Profile</span>
+                      <Link to="/customer/profile" className="flex items-center gap-2 w-full">
+                        <User size={14} strokeWidth={2} />
+                        <span>Profile</span>
+                      </Link>
                     </li>
                     <li 
                       className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2 text-red-500"
