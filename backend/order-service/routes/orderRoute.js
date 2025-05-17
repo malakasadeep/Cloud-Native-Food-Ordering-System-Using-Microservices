@@ -12,7 +12,7 @@ import {
 
 const router = express.Router();
 
-router.post("/", placeOrder); // Place Order
+router.post("/create-order", placeOrder); // Place Order
 router.post("/create-checkout-session", createPaymentIntent); // Place Order
 router.get("/", getAllOrders); // Get All Orders
 router.post("/status/:orderId", updateOrderStatus); // Update Order Status

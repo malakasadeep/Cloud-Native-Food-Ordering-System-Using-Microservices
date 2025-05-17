@@ -20,6 +20,11 @@ app.use(
 app.use("/api/v1/restaurant/category", categoryRouter);
 app.use("/api/v1/restaurant/foodMenu", menuRouter);
 
+// Health check endpoint for Kubernetes
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', service: 'restaurant-service' });
+});
+
 //MongoDB Connection
 mongoose
   .connect(

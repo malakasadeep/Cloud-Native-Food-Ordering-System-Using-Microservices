@@ -138,7 +138,7 @@ const menuService = {
       );
       return {
         success: true,
-        data: response.data,
+        data: response.data.data,
       };
     } catch (error) {
       console.error(
@@ -214,6 +214,8 @@ const menuService = {
       };
     }
   },
+
+ 
 };
 
 export default menuService;

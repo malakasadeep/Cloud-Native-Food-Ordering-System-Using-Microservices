@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mongodb-config
+  namespace: food-delivery-system
+data:
+  user-service-mongodb-url: mongodb+srv://pgmsadeep:1234@cluster0.phudmlq.mongodb.net/FoodDelevery_DB?retryWrites=true&w=majority
+  restaurant-service-mongodb-url: mongodb+srv://pgmsadeep:1234@cluster0.phudmlq.mongodb.net/FoodDelevery_DB?retryWrites=true&w=majority
+  notification-service-mongodb-url: mongodb+srv://pgmsadeep:1234@cluster0.phudmlq.mongodb.net/FoodDelevery_DB?retryWrites=true&w=majority
+  order-service-mongodb-url: mongodb+srv://dewnijayasuriya123:event123@cluster0.r3uz9qa.mongodb.net/food_ordering_system?retryWrites=true&w=majority
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: service-config
+  namespace: food-delivery-system
+data:
+  jwt-secret: "576520617265204465764372616674732e206465766372616674732e746f70"
+  user-service-url: "http://user-service:5001"
+  restaurant-service-url: "http://restaurant-service:5002"
+  notification-service-url: "http://notification-service:5005"
+  order-service-url: "http://order-service:5003"

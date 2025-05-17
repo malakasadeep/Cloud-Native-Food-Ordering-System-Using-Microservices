@@ -1,6 +1,6 @@
 // import orderClient from "../api/orderClient";
 import API_CONSTANTS from "../../../core/constants/apiConstents";
-import { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 import client, { createServiceClient } from "../../../core/network/axiosClient";
 
 const orderClient = createServiceClient("order");
@@ -82,6 +82,7 @@ const orderService = {
   getOrderById: async (orderId) => {
     try {
       const response = await orderClient.get(`${API_CONSTANTS.GET_ORDER_BY_ID}/${orderId}`);
+      //const response = await axios.get(`http://localhost:5003/api/v1/orders/${orderId}`);
       return {
         success: true,
         data: response.data.order,

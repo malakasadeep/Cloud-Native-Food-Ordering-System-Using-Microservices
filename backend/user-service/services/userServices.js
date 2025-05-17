@@ -78,6 +78,44 @@ export const viewById = async (id) => {
   }
 };
 
+export const getRestaurantById = async (id) => {
+  try {
+    const restaurant = await User.findOne({ 
+      _id: id, 
+      role: 'restaurant_owner' 
+    }).select('-password');
+    
+    if (!restaurant) {
+      throw new Error('Restaurant not found');
+    }
+    return restaurant;
+  } catch (error) {
+    if (error.name === 'CastError') {
+      throw new Error('Invalid ID format');
+    }
+    throw error;
+  }
+};
+
+export const getRiderById = async (id) => {
+  try {
+    const rider = await User.findOne({ 
+      _id: id, 
+      role: 'delivery_rider' 
+    }).select('-password');
+    
+    if (!rider) {
+      throw new Error('Delivery rider not found');
+    }
+    return rider;
+  } catch (error) {
+    if (error.name === 'CastError') {
+      throw new Error('Invalid ID format');
+    }
+    throw error;
+  }
+};
+
 export const deleteUser = async (id) => {
   try {
     const user = await User.findByIdAndDelete(id);
@@ -154,6 +192,93 @@ export const updateDetails = async (id, data) => {
     data.password = await bcrypt.hash(data.password, 10);
   }
   return await User.findByIdAndUpdate(id, data, { new: true });
+};
+
+export const changeRestaurantAvailability = async (id, isAvailable) => {
+  try {
+    // Find restaurant owner and ensure they exist
+    const restaurant = await User.findOne({ 
+      _id: id, 
+      role: 'restaurant_owner' 
+    });
+    
+    if (!restaurant) {
+      throw new Error('Restaurant not found');
+    }
+    
+    // Update the restaurant's availability status
+    const updatedRestaurant = await User.findByIdAndUpdate(
+      id,
+      { 'restaurant.availability': isAvailable },
+      { new: true }
+    ).select('-password');
+    
+    return updatedRestaurant;
+  } catch (error) {
+    if (error.name === 'CastError') {
+      throw new Error('Invalid ID format');
+    }
+    throw error;
+  }
+};
+
+export const updateRiderLocation = async (id, location) => {
+  try {
+    // Validate that location contains valid lat and lng
+    if (!location || typeof location.lat !== 'number' || typeof location.lng !== 'number') {
+      throw new Error('Invalid location data. Latitude and longitude are required.');
+    }
+    
+    // Find rider and ensure they exist
+    const rider = await User.findOne({ 
+      _id: id, 
+      role: 'delivery_rider' 
+    });
+    
+    if (!rider) {
+      throw new Error('Delivery rider not found');
+    }
+    
+    // Update the rider's current location
+    const updatedRider = await User.findByIdAndUpdate(
+      id,
+      { 'currentLocation': { lat: location.lat, lng: location.lng } },
+      { new: true }
+    ).select('-password');
+    
+    return updatedRider;
+  } catch (error) {
+    if (error.name === 'CastError') {
+      throw new Error('Invalid ID format');
+    }
+    throw error;
+  }
+};
+
+export const getAllRestaurants = async () => {
+  try {
+    const restaurants = await User.find({ 
+      role: 'restaurant_owner',
+      status: 'approved' 
+    }).select('-password');
+    
+    return restaurants;
+  } catch (error) {
+    throw new Error(`Failed to fetch restaurants: ${error.message}`);
+  }
+};
+
+export const getAllRiders = async () => {
+  try {
+    const riders = await User.find({ 
+      role: 'delivery_rider',
+      status: 'approved' 
+    }).select('-password');
+    
+    return riders;
+  } catch (error) {
+    throw new Error(`Failed to fetch delivery riders: ${error.message}`);
+  }
 };
 
 
