@@ -312,38 +312,6 @@ const OrderTrackingPage = () => {
                 </Stepper>
               </CardContent>
             </Card>
-
-            {/* Driver Info */}
-            {order?.driver && (
-              <Card sx={{ boxShadow: 3 }}>
-                <CardContent>
-                  <Typography variant="h6" fontWeight="bold" mb={2}>
-                    Your Driver
-                  </Typography>
-                  <Box display="flex" alignItems="center" mb={2}>
-                    <Avatar sx={{ bgcolor: "primary.main", mr: 2 }}>
-                      <Person />
-                    </Avatar>
-                    <Box>
-                      <Typography variant="subtitle1" fontWeight="medium">
-                        {order.driver.name}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {order.driver.vehicle}
-                      </Typography>
-                    </Box>
-                  </Box>
-                  <Button
-                    variant="outlined"
-                    fullWidth
-                    startIcon={<Person />}
-                    disabled
-                  >
-                    Contact Driver
-                  </Button>
-                </CardContent>
-              </Card>
-            )}
           </Box>
 
           {/* Map Section */}

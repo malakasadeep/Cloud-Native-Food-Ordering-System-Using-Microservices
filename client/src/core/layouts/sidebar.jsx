@@ -25,7 +25,7 @@ export const Sidebar = forwardRef(({ collapsed }, ref) => {
         <img src={logoDark} alt="Logoipsum" className="hidden dark:block" />
         {!collapsed && (
           <p className="text-lg font-medium text-slate-900 transition-colors dark:text-slate-50">
-            Logoipsum
+            Food Hub
           </p>
         )}
       </div>

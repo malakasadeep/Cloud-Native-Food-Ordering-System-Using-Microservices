@@ -44,7 +44,7 @@ function AppRoutes() {
                 element={<OrderConfirmation />}
               />
               <Route path="/track-order" element={<OrderTrackingPage />} />
-              <Route path="/profilee" element={<ProfilePage />} />
+              <Route path="/profile" element={<ProfilePage />} />
             </Routes>
           </ProtectedRoute>
         }
