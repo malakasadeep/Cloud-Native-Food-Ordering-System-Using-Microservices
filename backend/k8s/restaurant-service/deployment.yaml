@@ -32,7 +32,8 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: service-config
-              key: jwt-secret        resources:
+              key: jwt-secret
+        resources:
           limits:
             cpu: "0.5"
             memory: "512Mi"
