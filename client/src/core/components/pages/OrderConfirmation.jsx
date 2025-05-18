@@ -79,7 +79,7 @@ const OrderConfirmation = () => {
         <strong>Order ID:</strong> {order._id}
       </p>
       <p className="text-gray-700 text-left">
-        <strong>Amount:</strong> ${order.totalAmount}
+        <strong>Amount:</strong> RS {order.totalAmount}
       </p>
       <p className="text-gray-700 text-left">
         <strong>Delivery Address:</strong> {order.deliveryAddress}
@@ -90,7 +90,7 @@ const OrderConfirmation = () => {
       <ul className="text-gray-700 text-left list-disc ml-6">
         {order.items.map((item, index) => (
           <li key={index}>
-            {item.itemName} x {item.qty} — ${item.unitPrice}
+            {item.itemName} x {item.qty} — RS {item.unitPrice}
           </li>
         ))}
       </ul>

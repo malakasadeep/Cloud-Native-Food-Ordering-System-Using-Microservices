@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import menuService from "../services/menuservice";
 
-const MenuTable = ({ restaurantId, onEdit, onDelete, refreshTrigger  }) => {
+const MenuTable = ({ restaurantId, onEdit, onDelete, refreshTrigger }) => {
   const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -67,7 +67,7 @@ const MenuTable = ({ restaurantId, onEdit, onDelete, refreshTrigger  }) => {
     if (restaurantId) {
       fetchData();
     }
-  }, [restaurantId, refreshTrigger ]);
+  }, [restaurantId, refreshTrigger]);
 
   // Function to get category name from categoryId
   const getCategoryName = (categoryId) => {
@@ -226,7 +226,7 @@ const MenuTable = ({ restaurantId, onEdit, onDelete, refreshTrigger  }) => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-headingColor font-medium">
-                      ${item.price.toFixed(2)}
+                      RS {item.price.toFixed(2)}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">

@@ -124,7 +124,7 @@ const OrderTable = () => {
                     {order.deliveryAddress}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-textColor">
-                    ${order.totalAmount?.toFixed(2)}
+                    RS {order.totalAmount?.toFixed(2)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     <select

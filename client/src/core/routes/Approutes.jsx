@@ -27,10 +27,10 @@ function AppRoutes() {
       <Route path="/registration" element={<RegistrationPage />} />
       {/* <Route path="/restaurants" element={<AllRestaurants />} /> */}
 
-      {/* <Route
+      <Route
         path="/restaurant-details/:id"
         element={<RestaurantDetailsPage />}
-      /> */}
+      />
       <Route
         path="/customer/*"
         element={
