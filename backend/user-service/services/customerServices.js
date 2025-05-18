@@ -1,9 +1,13 @@
-import { generateToken } from '../utils/jwt.js';
-import { notifySMS, notifyEmail } from '../utils/notify.js';
-import Customer from '../models/customerModel.js';
-import { generateOTP, storeOTP, getOTP, deleteOTP } from '../utils/otpManager.js';
-import { getOtpEmailTemplate } from '../templates/otpEmailTemplate.js';
-
+import { generateToken } from "../utils/jwt.js";
+import { notifySMS, notifyEmail } from "../utils/notify.js";
+import Customer from "../models/customerModel.js";
+import {
+  generateOTP,
+  storeOTP,
+  getOTP,
+  deleteOTP,
+} from "../utils/otpManager.js";
+import { getOtpEmailTemplate } from "../templates/otpEmailTemplate.js";
 
 export async function loginWithMobile(mobile) {
   try {
@@ -12,8 +16,8 @@ export async function loginWithMobile(mobile) {
     storeOTP(`otp:mobile:${mobile}`, otp);
     return otp;
   } catch (error) {
-    console.error('Error in loginWithMobile service:', error);
-    throw new Error('Failed to send OTP via SMS');
+    console.error("Error in loginWithMobile service:", error);
+    throw new Error("Failed to send OTP via SMS");
   }
 }
 
@@ -21,62 +25,59 @@ export async function verifyMobileOTP(mobile, otp, res) {
   try {
     const storedOTP = getOTP(`otp:mobile:${mobile}`);
     if (!storedOTP || storedOTP !== otp) {
-      throw new Error('Invalid OTP');
+      throw new Error("Invalid OTP");
     }
 
     deleteOTP(`otp:mobile:${mobile}`);
-    
+
     let user = await Customer.findOne({ mobile });
     if (!user) {
       user = await Customer.create({ mobile });
     }
     const token = generateToken({ id: user._id, role: user.role });
     const { password, ...rest } = user._doc;
-    
+
     if (res) {
       res
         .cookie("access_token", token, { httpOnly: true })
         .status(200)
         .json({ success: true, token, user: rest });
     }
-    
+
     return { token, user: rest };
   } catch (error) {
-    console.error('Error in verifyMobileOTP service:', error);
-    if (error.message === 'Invalid OTP') {
+    console.error("Error in verifyMobileOTP service:", error);
+    if (error.message === "Invalid OTP") {
       throw error;
     }
-    throw new Error('Failed to verify OTP');
+    throw new Error("Failed to verify OTP");
   }
 }
 
 export async function loginWithEmail(email) {
   try {
     const otp = generateOTP();
-    
 
     const emailHtml = getOtpEmailTemplate(otp);
-    await notifyEmail(email, 'Your Login OTP', emailHtml);
-    
+    await notifyEmail(email, "Your Login OTP", emailHtml);
 
     storeOTP(`otp:email:${email}`, otp);
     return otp;
   } catch (error) {
-    console.error('Error in loginWithEmail service:', error);
-    throw new Error('Failed to send OTP via email');
+    console.error("Error in loginWithEmail service:", error);
+    throw new Error("Failed to send OTP via email");
   }
 }
 
 export async function verifyEmailOTP(email, otp, res) {
   try {
-
     const storedOTP = getOTP(`otp:email:${email}`);
     if (!storedOTP || storedOTP !== otp) {
-      throw new Error('Invalid OTP');
+      throw new Error("Invalid OTP");
     }
-    
+
     deleteOTP(`otp:email:${email}`);
-    
+
     let user = await Customer.findOne({ email });
     if (!user) {
       user = await Customer.create({ email });
@@ -84,7 +85,7 @@ export async function verifyEmailOTP(email, otp, res) {
 
     const token = generateToken({ id: user._id, role: user.role });
     const { password, ...rest } = user._doc;
-    
+
     if (res) {
       res
         .cookie("access_token", token, { httpOnly: true })
@@ -92,24 +93,26 @@ export async function verifyEmailOTP(email, otp, res) {
         .json({ success: true, token, user: rest });
     }
     return { token, user: rest };
-
   } catch (error) {
-    console.error('Error in verifyEmailOTP service:', error);
-    if (error.message === 'Invalid OTP') {
+    console.error("Error in verifyEmailOTP service:", error);
+    if (error.message === "Invalid OTP") {
       throw error;
     }
-    throw new Error('Failed to verify email OTP');
+    throw new Error("Failed to verify email OTP");
   }
 }
 
-export async function completeProfile(userId,profileData) {
+export async function completeProfile(userId, profileData) {
   try {
     const user = await Customer.findById(userId);
     if (!user) {
-      throw new Error('User not found');
+      throw new Error("User not found");
     }
 
-    if (profileData.paymentMethods && typeof profileData.paymentMethods === 'string') {
+    if (
+      profileData.paymentMethods &&
+      typeof profileData.paymentMethods === "string"
+    ) {
       try {
         profileData.paymentMethods = JSON.parse(profileData.paymentMethods);
       } catch (e) {
@@ -117,9 +120,14 @@ export async function completeProfile(userId,profileData) {
       }
     }
 
-    if (profileData.secondaryAddresses && typeof profileData.secondaryAddresses === 'string') {
+    if (
+      profileData.secondaryAddresses &&
+      typeof profileData.secondaryAddresses === "string"
+    ) {
       try {
-        profileData.secondaryAddresses = JSON.parse(profileData.secondaryAddresses);
+        profileData.secondaryAddresses = JSON.parse(
+          profileData.secondaryAddresses
+        );
       } catch (e) {
         profileData.secondaryAddresses = [];
       }
@@ -141,7 +149,7 @@ export async function completeProfile(userId,profileData) {
     await user.save();
     return user;
   } catch (error) {
-    console.error('Error in completeProfile service:', error);
-    throw new Error('Failed to update profile');
+    console.error("Error in completeProfile service:", error);
+    throw new Error("Failed to update profile");
   }
 }

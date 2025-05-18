@@ -94,9 +94,9 @@ export const placeOrder = async (req, res) => {
 
     //Creates an object with all the order details.
     const orderData = {
-      customerId:
-        session.client_reference_id ??
-        Math.random().toString(36).substring(2, 15),
+      customerId: "680f6bd0bdc07e87c9332fd6", //just added real user id to do a demo
+      // session.client_reference_id ??
+      // Math.random().toString(36).substring(2, 15),
       items: cartItemsFormatted,
       totalAmount: totalAmount,
       paymentMethod: "Card",
@@ -245,6 +245,25 @@ export const trackOrder = async (req, res) => {
     }
 
     res.status(200).json({ order });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+//Get All orders placed by customer
+export const getOrdersBelongToCustomer = async (req, res) => {
+  try {
+    const { customerId } = req.params;
+
+    const orders = await Order.find({ customerId });
+
+    if (!orders || orders.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No orders found for this customer" });
+    }
+
+    res.status(200).json({ orders });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

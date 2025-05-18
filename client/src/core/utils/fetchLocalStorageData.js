@@ -15,3 +15,20 @@ export const fetchCart = () => {
 
   return cartInfo ? cartInfo : [];
 };
+
+export const fetchPersistedUser = () => {
+  const root = localStorage.getItem("persist:root");
+  if (!root) return null;
+
+  try {
+    const parsedRoot = JSON.parse(root);
+    const userStr = parsedRoot.user;
+    if (userStr && userStr !== "undefined") {
+      return JSON.parse(userStr);
+    }
+  } catch (err) {
+    console.error("Error parsing persisted user:", err);
+  }
+
+  return null;
+};

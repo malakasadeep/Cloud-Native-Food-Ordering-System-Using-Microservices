@@ -3,7 +3,7 @@ import { MdShoppingBasket } from "react-icons/md";
 import { motion } from "framer-motion";
 import Logo from "../../../assets/img/logo.png";
 import { Link } from "react-router-dom";
-import { User, Store, LogOut, Menu as MenuIcon } from "lucide-react"; 
+import { User, Store, LogOut, Menu as MenuIcon } from "lucide-react";
 import { useCart } from "../../contexts/CartContext";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../../features/customerAuth/actions/customerAction";
@@ -41,23 +41,26 @@ const Header = () => {
   }, []);
 
   useEffect(() => {
-    
-    const storedCartItems = localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems')) : [];
+    const storedCartItems = localStorage.getItem("cartItems")
+      ? JSON.parse(localStorage.getItem("cartItems"))
+      : [];
     setCartItems(storedCartItems);
   }, []);
 
   useEffect(() => {
     const updateCartItems = () => {
-      const items = localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems')) : [];
+      const items = localStorage.getItem("cartItems")
+        ? JSON.parse(localStorage.getItem("cartItems"))
+        : [];
       setCartItems(items);
     };
 
-    window.addEventListener('cartUpdated', updateCartItems);
-    
+    window.addEventListener("cartUpdated", updateCartItems);
+
     updateCartItems();
-    
+
     return () => {
-      window.removeEventListener('cartUpdated', updateCartItems);
+      window.removeEventListener("cartUpdated", updateCartItems);
     };
   }, []);
 
@@ -98,10 +101,10 @@ const Header = () => {
             <li className="text-lg text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer">
               About Us
             </li>
-            <Link to={"/login"}>
-            <li className="text-lg text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer">
-              Become a Seller
-            </li>
+            <Link to={"/login"} id="seller-link">
+              <li className="text-lg text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer">
+                Become a Seller
+              </li>
             </Link>
           </motion.ul>
 
@@ -113,8 +116,14 @@ const Header = () => {
             >
               <MdShoppingBasket className="text-white text-xl" />
               {cartItems && cartItems.length > 0 && (
-                <div className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-cartNumBg flex items-center justify-center">
-                  <p className="text-xs text-white font-semibold">
+                <div
+                  className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-cartNumBg flex items-center justify-center "
+                  id="item-count-div"
+                >
+                  <p
+                    className="text-xs text-white font-semibold"
+                    id="item-count"
+                  >
                     {cartItems.length}
                   </p>
                 </div>
@@ -125,13 +134,16 @@ const Header = () => {
           {/* Conditional rendering based on authentication status */}
           {!isAuthenticated ? (
             <motion.button
-              whileHover={{ scale: 1.05, backgroundColor: "rgba(40, 40, 40, 0.1)" }}
+              whileHover={{
+                scale: 1.05,
+                backgroundColor: "rgba(40, 40, 40, 0.1)",
+              }}
               whileTap={{ scale: 0.95 }}
               className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-transparent to-transparent border border-orange-500 text-orange-500 hover:text-white hover:bg-gradient-to-r hover:from-orange-500 hover:to-orange-600 transition-all duration-300 ease-in-out"
               onClick={handleSignIn}
             >
               <User size={18} strokeWidth={2} />
-              <span>Sign In</span>
+              <span id="login">Sign In</span>
             </motion.button>
           ) : (
             <div className="relative" ref={userMenuRef}>
@@ -142,11 +154,18 @@ const Header = () => {
                 onClick={handleSignOut}
               >
                 {user?.avatar ? (
-                  <img src={user.avatar} alt="user profile" className="w-full h-full object-cover" />
+                  <img
+                    src={user.avatar}
+                    alt="user profile"
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
                   <div className="w-full h-full bg-orange-300 flex items-center justify-center">
-                    <span className="text-white font-bold text-lg">
-                      {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+                    <span
+                      className="text-white font-bold text-lg"
+                      id="sign-out"
+                    >
+                      {user?.name?.charAt(0)?.toUpperCase() || "U"}
                     </span>
                   </div>
                 )}
@@ -159,7 +178,6 @@ const Header = () => {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   className="absolute top-12 right-0 bg-white shadow-xl rounded-lg py-2 min-w-[180px] z-50"
-                  
                 >
                   <ul>
                     <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2">
@@ -168,7 +186,7 @@ const Header = () => {
                         <span>Profile</span>
                       </Link>
                     </li>
-                    <li 
+                    <li
                       className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2 text-red-500"
                       onClick={handleSignOut}
                     >
@@ -203,10 +221,18 @@ const Header = () => {
               className="absolute top-16 left-2 bg-white shadow-xl rounded-lg py-2 min-w-[160px] z-50"
             >
               <ul>
-                <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Home</li>
-                <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Menu</li>
-                <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">About Us</li>
-                <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Become a Seller</li>
+                <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                  Home
+                </li>
+                <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                  Menu
+                </li>
+                <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                  About Us
+                </li>
+                <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                  Become a Seller
+                </li>
               </ul>
             </motion.div>
           )}
@@ -230,7 +256,10 @@ const Header = () => {
               <MdShoppingBasket className="text-white text-xl" />
               {cartItems && cartItems.length > 0 && (
                 <div className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-cartNumBg flex items-center justify-center">
-                  <p className="text-xs text-white font-semibold">
+                  <p
+                    className="text-xs text-white font-semibold"
+                    id="item-count"
+                  >
                     {cartItems.length}
                   </p>
                 </div>
@@ -255,11 +284,15 @@ const Header = () => {
                 onClick={toggleUserMenu}
               >
                 {user?.avatar ? (
-                  <img src={user.avatar} alt="user profile" className="w-full h-full object-cover" />
+                  <img
+                    src={user.avatar}
+                    alt="user profile"
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
                   <div className="w-full h-full bg-orange-300 flex items-center justify-center">
                     <span className="text-white font-bold text-sm">
-                      {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+                      {user?.name?.charAt(0)?.toUpperCase() || "U"}
                     </span>
                   </div>
                 )}
@@ -280,7 +313,7 @@ const Header = () => {
                         <span>Profile</span>
                       </Link>
                     </li>
-                    <li 
+                    <li
                       className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2 text-red-500"
                       onClick={handleSignOut}
                     >

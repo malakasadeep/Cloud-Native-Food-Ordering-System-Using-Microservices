@@ -4,6 +4,7 @@ import orderService from "../../../features/restaurentManageent/services/orderse
 import Lottie from "lottie-react";
 import { Check, Clock } from "lucide-react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 import placedAnimation from "../../../assets/lottie/placed.json";
 import processingAnimation from "../../../assets/lottie/processingg.json";
@@ -53,6 +54,13 @@ const OrderConfirmation = () => {
   const orderId = searchParams.get("orderId");
   const [order, setOrder] = useState(null);
   const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
+
+  const handleTrackOrder = () => {
+    const orderId = "6817cdfba1c33f3329849d61";
+    navigate(`/customer/track-order/?orderId=${orderId}`);
+  };
 
   useEffect(() => {
     if (!orderId) return;
@@ -219,6 +227,12 @@ const OrderConfirmation = () => {
                 ))}
               </p>
               <OrderDetails />
+              <button
+                onClick={handleTrackOrder}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out"
+              >
+                Track Order
+              </button>
             </motion.div>
           </>
         )}
