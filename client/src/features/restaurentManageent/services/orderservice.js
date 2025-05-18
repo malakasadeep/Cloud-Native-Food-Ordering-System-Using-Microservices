@@ -98,7 +98,9 @@ const orderService = {
 
   getOrderById: async (orderId) => {
     try {
-      const response = await orderClient.get(`${API_CONSTANTS.GET_ORDER_BY_ID}/${orderId}`);
+      const response = await orderClient.get(
+        `${API_CONSTANTS.GET_ORDER_BY_ID}/${orderId}`
+      );
       //const response = await axios.get(`http://localhost:5003/api/v1/orders/${orderId}`);
       return {
         success: true,

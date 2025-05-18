@@ -8,7 +8,7 @@ const orderSchema = new mongoose.Schema(
       {
         // itemId: { type: mongoose.Schema.Types.ObjectId, required: true },
         itemId: { type: String, required: true },
-        itemName: { type: String},
+        itemName: { type: String },
         unitPrice: { type: Number, required: true },
         qty: { type: Number, required: true },
       },
@@ -23,7 +23,14 @@ const orderSchema = new mongoose.Schema(
     },
     orderStatus: {
       type: String,
-      enum: ["PLACED", "PROCESSING", "COMPLETED", "CANCELLED"],
+      enum: [
+        "PLACED",
+        "PROCESSING",
+        "COMPLETED",
+        "ON_DELIVERY",
+        "DELIVERED",
+        "CANCELLED",
+      ],
       default: "PLACED",
     },
     deliveryAddress: { type: String, required: true },

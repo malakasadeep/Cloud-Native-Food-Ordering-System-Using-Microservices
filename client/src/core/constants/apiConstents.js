@@ -26,12 +26,25 @@ const API_CONSTANTS = {
   UPDATE_MENU: "/api/v1/restaurant/foodMenu",
   DELETE_MENU: "/api/v1/restaurant/foodMenu",
 
-
   //orders
   CREATE_ORDER: "/api/v1/orders/create-order",
   GET_ORDERS: "/api/v1/orders",
   POST_CREATE_SESSION: "/api/v1/orders/create-checkout-session",
   UPDATE_ORDER_STATUS: "/api/v1/orders/status",
   GET_ORDER_BY_ID: "/api/v1/orders",
+
+  //deliver-services
+  GET_RIDER_ASSIGNED_ORDERS: `/api/delivery/api/delivery/request/`,
+  GET_RIDER_ACCEPT_ORDER_BY_STATUS: `/api/delivery/api/delivery/driver/`,
+  GET_RIDER_ONGOING_DELIVERY: `/api/delivery/api/delivery/ongoing/driver/`,
+  RIDER_ACCEPT_ORDER: `/api/delivery/api/delivery/accept/driver/`,
+  RIDER_START_DELIVERY: `/api/delivery/api/delivery/start/order/`,
+  RIDER_ASSIGN_TO_DELIVERY: `/api/delivery/api/delivery/assign`,
+  GET_CUSTOMER_ORDERS: `/api/delivery/customer`,
+  GET_ALL_DELIVERY_ORDERS: `/api/delivery/api/delivery/logs/all`,
+  GET_ALL_PENDING_DELIVERY_LOGS_FOR_ORDER: `/api/delivery/delivery-requests/delivery`,
+  RIDER_COMPLEATE_DELIVERY: `/api/delivery/api/delivery/stop`,
+  //orders
+  GET_ORDERS_BELONGS_TO_RESTURENT: `/api/orders/`,
 };
 export default API_CONSTANTS;

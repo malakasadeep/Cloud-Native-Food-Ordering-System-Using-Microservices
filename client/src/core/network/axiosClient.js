@@ -14,7 +14,7 @@ const servicePaths = {
 const createServiceClient = (serviceName) => {
   const baseURL = gatewayBaseURL;
   const servicePath = servicePaths[serviceName] || "";
-
+  console.log(servicePath);
   const serviceClient = axios.create({
     withCredentials: true,
     baseURL: baseURL,

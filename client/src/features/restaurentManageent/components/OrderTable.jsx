@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Info, Search } from "lucide-react";
 import orderService from "../services/orderservice";
+import deliverService from "../../partnersManagement/services/deliverServices";
 
 const OrderTable = () => {
   const [orders, setOrders] = useState([]);
@@ -134,6 +135,7 @@ const OrderTable = () => {
                           order._id,
                           newStatus
                         );
+
                         if (result.success) {
                           setOrders((prev) =>
                             prev.map((o) =>
@@ -142,6 +144,32 @@ const OrderTable = () => {
                                 : o
                             )
                           );
+
+                          //if status set to compleated then call the deliver service
+                          if (newStatus === "COMPLETED") {
+                            try {
+                              const requestBody = {
+                                orderId: order._id,
+                                customerId: "680f6bd0bdc07e87c9332fd6", //hard coded bcuse of no data found on db
+                                resturentId: "6807f49eb6416f7a21985b9b", //hard coded bcuse of no data found on db
+                              };
+                              const deliveryResponse =
+                                await deliverService.assignRiderToDelivery(
+                                  requestBody
+                                );
+                              if (!deliveryResponse.success) {
+                                alert(
+                                  deliveryResponse.message ||
+                                    "Failed to trigger delivery"
+                                );
+                              }
+                            } catch (error) {
+                              console.error("Delivery API error:", error);
+                              alert(
+                                "An error occurred while triggering delivery"
+                              );
+                            }
+                          }
                         } else {
                           alert(
                             result.message || "Failed to update order status"

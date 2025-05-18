@@ -8,6 +8,7 @@ import {
   getAllOrders,
   updateOrderStatus,
   getOrderById,
+  getOrdersBelongToCustomer,
 } from "../controllers/orderController.js"; // Make sure this is also an ES module
 
 const router = express.Router();
@@ -20,5 +21,6 @@ router.get("/:id", getOrderById); // Get Order by ID
 router.put("/:orderId", updateOrder); // Update Order
 router.delete("/:orderId", cancelOrder); // Cancel Order
 router.get("/:orderId", trackOrder); // Track Order
+router.get("/customer/:customerId", getOrdersBelongToCustomer); //get customer orders
 
 export default router;
