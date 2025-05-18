@@ -47,7 +47,8 @@ spec:
           valueFrom:
             secretKeyRef:
               name: email-sms-secrets
-              key: email-password        - name: SMS_API_KEY
+              key: email-password
+        - name: SMS_API_KEY
           valueFrom:
             secretKeyRef:
               name: email-sms-secrets

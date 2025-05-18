@@ -5,6 +5,15 @@ import MainMap from "../molecules/MainMap";
 import { FiUsers, FiShoppingBag, FiSettings, FiActivity } from "react-icons/fi";
 import PendingRequests from "../../../features/partnersManagement/components/PendingRequests";
 import AdminOrderPage from "./AdminOrderPage";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import AdminHeader from '../organisms/AdminHeader';
+import AdminSidebar from '../organisms/AdminSidebar';
+import MainMap from '../molecules/MainMap';
+import { FiUsers, FiShoppingBag, FiSettings, FiActivity, FiLogOut } from 'react-icons/fi';
+import PendingRequests from '../../../features/partnersManagement/components/PendingRequests';
+import { logout } from '../../../features/customerAuth/actions/customerAction';
+import { useDispatch } from 'react-redux';
 
 const AdminPage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);

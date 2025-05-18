@@ -27,7 +27,8 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: mongodb-config
-              key: user-service-mongodb-url        - name: JWT_SECRET
+              key: user-service-mongodb-url
+        - name: JWT_SECRET
           valueFrom:
             configMapKeyRef:
               name: service-config

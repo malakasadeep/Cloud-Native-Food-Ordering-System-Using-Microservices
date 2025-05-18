@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FiMenu, FiSearch, FiSettings, FiLogOut } from "react-icons/fi";
 
-const AdminHeader = ({ toggleSidebar, showSettings }) => {
+const AdminHeader = ({ toggleSidebar, showSettings, onSignOut }) => {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const toggleDropdown = () => {
@@ -9,7 +9,7 @@ const AdminHeader = ({ toggleSidebar, showSettings }) => {
   };
 
   return (
-    <header className="bg-white shadow-md py-4 px-6 flex justify-between items-center">
+    <header className="bg-white shadow-sm h-16 flex items-center justify-between px-4 md:px-6">
       {/* Site Title */}
       <div className="flex items-center">
         <h1 className="text-red-600 text-2xl font-bold">Food<span className="text-orange-500">Delivery</span></h1>
@@ -49,7 +49,7 @@ const AdminHeader = ({ toggleSidebar, showSettings }) => {
               </button>
               <button
                 onClick={() => {
-                  // Implement logout
+                  onSignOut();
                   setShowDropdown(false);
                 }}
                 className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-all duration-200"

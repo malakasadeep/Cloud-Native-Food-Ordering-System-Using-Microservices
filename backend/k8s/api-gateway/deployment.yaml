@@ -9,7 +9,8 @@ spec:
   replicas: 2
   selector:
     matchLabels:
-      app: api-gateway  template:
+      app: api-gateway
+  template:
     metadata:
       labels:
         app: api-gateway
@@ -18,7 +19,8 @@ spec:
       - name: api-gateway
         image: malakasadeep/fds-gateway-v2:latest
         ports:
-        - containerPort: 80        resources:
+        - containerPort: 80
+        resources:
           limits:
             cpu: "0.3"
             memory: "256Mi"
