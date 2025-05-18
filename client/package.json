@@ -22,6 +22,7 @@
     "@uidotdev/usehooks": "^2.4.1",
     "axios": "^1.8.4",
     "chart.js": "^4.4.9",
+    "date-fns": "^4.1.0",
     "firebase": "^11.6.0",
     "framer-motion": "^12.6.5",
     "i18n-iso-countries": "^7.14.0",

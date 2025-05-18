@@ -23,6 +23,8 @@ import {
   CheckCircle,
   Person,
 } from "@mui/icons-material";
+import { fetchPersistedUser } from "../../../utils/fetchLocalStorageData";
+import { useSearchParams } from "react-router-dom";
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyCUNJVymb9TyStgPqJSE5Ond4dZHn7fwZU";
 const SOCKET_URL = "ws://localhost:5004";
@@ -52,6 +54,7 @@ const OrderTrackingPage = () => {
   const [order, setOrder] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const [searchParams] = useSearchParams();
   const mapRef = useRef(null);
   const socketRef = useRef(null);
 
@@ -60,14 +63,20 @@ const OrderTrackingPage = () => {
     libraries: ["places"],
   });
 
-  const customerId = "6808dfac50ce43cfddea0ea7"; // TODO: Make dynamic
+  const user = fetchPersistedUser();
+  console.log(user);
+
+  const customerId = user._id;
+  const orderId = searchParams.get("orderId");
+
+  //?orderId=6817cdfba1c33f3329849d61
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
       setLoading(true);
       try {
         const mockOrder = {
-          orderId: "663b3d30a42c6b63cd7f1236",
+          orderId: orderId,
           delivery_status: "started",
           pickup_location: {
             lat: 6.9271,
@@ -194,21 +203,6 @@ const OrderTrackingPage = () => {
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "#f5f5f5" }}>
       {/* Header */}
-      <Box
-        sx={{
-          bgcolor: "primary.main",
-          color: "white",
-          p: 3,
-          boxShadow: 2,
-        }}
-      >
-        <Typography variant="h4" fontWeight="bold">
-          Track Your Order
-        </Typography>
-        <Typography variant="body1">
-          Follow your delivery in real-time
-        </Typography>
-      </Box>
 
       {/* Main Content */}
       <Box sx={{ maxWidth: "1200px", mx: "auto", p: { xs: 2, md: 4 } }}>
@@ -405,20 +399,6 @@ const OrderTrackingPage = () => {
             </CardContent>
           </Card>
         </Box>
-      </Box>
-
-      {/* Footer */}
-      <Box
-        sx={{
-          bgcolor: "grey.200",
-          p: 2,
-          textAlign: "center",
-          mt: 4,
-        }}
-      >
-        <Typography variant="body2" color="text.secondary">
-          Powered by DeliveryPro | <a href="/support">Support</a>
-        </Typography>
       </Box>
     </Box>
   );

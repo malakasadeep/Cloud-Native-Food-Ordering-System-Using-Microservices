@@ -12,6 +12,7 @@ import {
   fetchPersistedUser,
   fetchUser,
 } from "../../../utils/fetchLocalStorageData";
+import { useNavigate } from "react-router-dom";
 
 const Orders = ({ isSidebarCollapsed }) => {
   const [loading, setLoading] = useState(true);
@@ -27,9 +28,11 @@ const Orders = ({ isSidebarCollapsed }) => {
     delivered: false,
   });
 
+  const navigate = useNavigate();
   const user = fetchPersistedUser();
 
   console.log(user);
+
   const riderId = user._id;
 
   const normalizeOrder = (order) => {
@@ -100,6 +103,10 @@ const Orders = ({ isSidebarCollapsed }) => {
       console.error("Error accepting order:", err);
       setError("Failed to accept order.");
     }
+  };
+
+  const handleMap = (orderId) => {
+    navigate(`/delivery/orders/start?orderId=${orderId}`);
   };
 
   const handleStart = async (orderId) => {
@@ -182,6 +189,14 @@ const Orders = ({ isSidebarCollapsed }) => {
             className="mt-3 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded shadow"
           >
             Start Delivery
+          </button>
+        )}
+        {status === "ongoing" && (
+          <button
+            onClick={() => handleMap(order._id)}
+            className="mt-3 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded shadow"
+          >
+            Map
           </button>
         )}
       </div>

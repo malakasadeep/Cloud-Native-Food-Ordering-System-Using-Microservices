@@ -27,6 +27,8 @@ import {
 } from "@mui/icons-material";
 import io from "socket.io-client";
 import deliverService from "../../../../features/partnersManagement/services/deliverServices";
+import { fetchPersistedUser } from "../../../utils/fetchLocalStorageData";
+import { useSearchParams } from "react-router-dom";
 
 // Libraries for Google Maps
 const libraries = ["places", "directions"];
@@ -48,7 +50,7 @@ const debounce = (func, wait) => {
 
 const SOCKET_SERVER_URL = "ws://localhost:5004";
 
-const OrderStartPage = ({ isSidebarCollapsed }) => {
+const OrderStartPage = () => {
   const [loading, setLoading] = useState(true);
   const [order, setOrder] = useState(null);
   const [error, setError] = useState("");
@@ -60,13 +62,18 @@ const OrderStartPage = ({ isSidebarCollapsed }) => {
   const [routeInfo, setRouteInfo] = useState(null);
   const mapRef = useRef(null);
   const socketRef = useRef(null);
+  const [searchParams] = useSearchParams();
+  const orderId = searchParams.get("orderId");
 
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: "AIzaSyCUNJVymb9TyStgPqJSE5Ond4dZHn7fwZU",
     libraries,
   });
 
-  const driverId = "68079119955e8db805bf2471";
+  const user = fetchPersistedUser();
+  console.log(user);
+
+  const driverId = user._id;
 
   // Format distance and duration
   const formatDistance = (meters) => {
@@ -125,6 +132,14 @@ const OrderStartPage = ({ isSidebarCollapsed }) => {
       }
     });
   }, []);
+
+  const handleCompleateDelivery = async (orderId) => {
+    try {
+      await deliverService.riderStopDelivery(orderId);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   // Fetch ongoing order
   useEffect(() => {
@@ -254,14 +269,7 @@ const OrderStartPage = ({ isSidebarCollapsed }) => {
 
   return (
     <div>
-      {" "}
-      <main
-        style={{
-          marginLeft: isSidebarCollapsed ? "60px" : "220px",
-          transition: "margin-left 0.3s",
-        }}
-        className="bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen rounded-2xl"
-      >
+      <main className="bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen rounded-2xl">
         <div className="min-h-screen bg-gray-50 p-4 md:p-8">
           <div className="max-w-7xl mx-auto">
             {/* Header */}
@@ -367,6 +375,7 @@ const OrderStartPage = ({ isSidebarCollapsed }) => {
 
                     <Button
                       variant="contained"
+                      onClick={() => handleCompleateDelivery(order._id)}
                       fullWidth
                       className="mt-4"
                       startIcon={<CheckCircle />}
