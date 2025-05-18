@@ -27,10 +27,10 @@ function AppRoutes() {
       <Route path="/registration" element={<RegistrationPage />} />
       {/* <Route path="/restaurants" element={<AllRestaurants />} /> */}
 
-      {/* <Route
+      <Route
         path="/restaurant-details/:id"
         element={<RestaurantDetailsPage />}
-      /> */}
+      />
       <Route
         path="/customer/*"
         element={
@@ -44,7 +44,7 @@ function AppRoutes() {
                 element={<OrderConfirmation />}
               />
               <Route path="/track-order" element={<OrderTrackingPage />} />
-              <Route path="/profilee" element={<ProfilePage />} />
+              <Route path="/profile" element={<ProfilePage />} />
             </Routes>
           </ProtectedRoute>
         }

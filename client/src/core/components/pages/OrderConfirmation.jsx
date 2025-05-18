@@ -11,23 +11,6 @@ import processingAnimation from "../../../assets/lottie/processingg.json";
 import completedAnimation from "../../../assets/lottie/completed.json";
 import cancelledAnimation from "../../../assets/lottie/cancelled.json";
 
-const currencyFormat = (amount, withoutLKR) => {
-  let formattedAmount;
-  if (withoutLKR) {
-    formattedAmount = Intl.NumberFormat("en-US", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(Math.abs(amount));
-  } else {
-    formattedAmount = Intl.NumberFormat("si-LK", {
-      style: "currency",
-      currency: "LKR",
-    }).format(Math.abs(amount));
-  }
-
-  return amount < 0 ? `LKR -${formattedAmount.slice(4)}` : `${formattedAmount}`;
-};
-
 const steps = [
   {
     label: "Order Placed",
@@ -96,6 +79,9 @@ const OrderConfirmation = () => {
         <strong>Order ID:</strong> {order._id}
       </p>
       <p className="text-gray-700 text-left">
+        <strong>Amount:</strong> RS {order.totalAmount}
+      </p>
+      <p className="text-gray-700 text-left">
         <strong>Delivery Address:</strong> {order.deliveryAddress}
       </p>
       <p className="text-gray-700 text-left">
@@ -104,16 +90,10 @@ const OrderConfirmation = () => {
       <ul className="text-gray-700 text-left list-disc ml-6">
         {order.items.map((item, index) => (
           <li key={index}>
-            {item.itemName} x {item.qty} — {currencyFormat(item.unitPrice)}
+            {item.itemName} x {item.qty} — RS {item.unitPrice}
           </li>
         ))}
       </ul>
-      <p className="text-gray-700 text-left">
-        <strong>Delivery Charges:</strong> {currencyFormat(250)}
-      </p>
-      <p className="text-gray-700 text-left">
-        <strong>Total Amount:</strong> {currencyFormat(order.totalAmount)}
-      </p>
     </>
   );
 
@@ -227,12 +207,21 @@ const OrderConfirmation = () => {
                 ))}
               </p>
               <OrderDetails />
-              <button
-                onClick={handleTrackOrder}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out"
-              >
-                Track Order
-              </button>
+              <div className="flex gap-8">
+                <button
+                  onClick={handleTrackOrder}
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out"
+                >
+                  Track Order
+                </button>
+
+                <button
+                  onClick={() => navigate(`/customer/profile`)}
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out"
+                >
+                  Go To Profile
+                </button>
+              </div>
             </motion.div>
           </>
         )}
