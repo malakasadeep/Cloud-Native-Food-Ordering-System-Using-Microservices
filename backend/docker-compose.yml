@@ -1,8 +1,7 @@
 #version: "3.8"
 services:
   user-service:
-    build: ./user-service
-    container_name: user-service
+    image: malakasadeep/fds-user-service-v3:latest
     ports:
       - "5001:5001"
     environment:
@@ -13,7 +12,7 @@ services:
     restart: unless-stopped
 
   restaurant-service:
-    build: ./restaurant-service
+    image: malakasadeep/fds-restaurent-service:latest
     container_name: restaurant-service
     ports:
       - "5002:5002"
@@ -24,7 +23,7 @@ services:
     restart: unless-stopped
 
   notification-service:
-    build: ./notification-service
+    image: malakasadeep/fds-notification-service-v2:latest
     container_name: notification-service
     ports:
       - "5005:5005"
@@ -39,7 +38,7 @@ services:
     restart: unless-stopped
 
   delivery-service:
-    build: ./delivery-service
+    image: malakasadeep/fds-delivery-service:latest
     container_name: delivery-service
     ports:
       - "5004:5004"
@@ -49,7 +48,7 @@ services:
     restart: unless-stopped
 
   order-service:
-    build: ./order-service
+    image: malakasadeep/fds-order-service-v2:latest
     container_name: order-service
     ports:
       - "5003:5003"

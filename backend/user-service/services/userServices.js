@@ -6,7 +6,6 @@ import { notifyEmail } from "../utils/notify.js";
 import { getPasswordEmailTemplate } from "../templates/passwordSentTemplate.js";
 import { getRejectionEmailTemplate } from "../templates/rejectionEmailTemplate.js";
 import generatePassword from "../utils/passwordGenerator.js";
-
 dotenv.config();
 
 const SECRET = process.env.JWT_SECRET;
@@ -73,44 +72,6 @@ export const viewById = async (id) => {
       throw new Error("User not found");
     }
     return user;
-  } catch (error) {
-    if (error.name === "CastError") {
-      throw new Error("Invalid ID format");
-    }
-    throw error;
-  }
-};
-
-export const getRestaurantById = async (id) => {
-  try {
-    const restaurant = await User.findOne({
-      _id: id,
-      role: "restaurant_owner",
-    }).select("-password");
-
-    if (!restaurant) {
-      throw new Error("Restaurant not found");
-    }
-    return restaurant;
-  } catch (error) {
-    if (error.name === "CastError") {
-      throw new Error("Invalid ID format");
-    }
-    throw error;
-  }
-};
-
-export const getRiderById = async (id) => {
-  try {
-    const rider = await User.findOne({
-      _id: id,
-      role: "delivery_rider",
-    }).select("-password");
-
-    if (!rider) {
-      throw new Error("Delivery rider not found");
-    }
-    return rider;
   } catch (error) {
     if (error.name === "CastError") {
       throw new Error("Invalid ID format");
@@ -328,4 +289,10 @@ export const getAllRiders = async () => {
   } catch (error) {
     throw new Error(`Failed to fetch delivery riders: ${error.message}`);
   }
+};
+
+export const getUserByRole = async (role) => {
+  return await User.find({
+    role: { $regex: new RegExp(`^${role}$`, "i") },
+  });
 };
