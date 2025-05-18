@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AdminHeader from '../organisms/AdminHeader';
 import AdminSidebar from '../organisms/AdminSidebar';
 import MainMap from '../molecules/MainMap';
-import { FiUsers, FiShoppingBag, FiSettings, FiActivity } from 'react-icons/fi';
+import { FiUsers, FiShoppingBag, FiSettings, FiActivity, FiLogOut } from 'react-icons/fi';
 import PendingRequests from '../../../features/partnersManagement/components/PendingRequests';
+import { logout } from '../../../features/customerAuth/actions/customerAction';
+import { useDispatch } from 'react-redux';
 
 const AdminPage = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeContent, setActiveContent] = useState('dashboard');
 
@@ -16,6 +21,13 @@ const AdminPage = () => {
   const showSettings = () => {
     setSidebarOpen(true);
     setActiveContent('settings');
+  };
+  
+  const handleSignOut = () => {
+    // Clear authentication tokens/cookies
+    dispatch(logout(navigate));
+    // Redirect to login page
+    navigate('/');
   };
 
   const renderContent = () => {
@@ -31,6 +43,22 @@ const AdminPage = () => {
             </div>
           </div>
         );
+      case 'settings':
+        return (
+          <div className="p-6">
+            <h2 className="text-2xl font-semibold mb-6 text-gray-800">Settings</h2>
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <h3 className="text-lg font-medium mb-4 text-gray-700">Account Options</h3>
+              <button 
+                onClick={handleSignOut}
+                className="flex items-center text-red-600 hover:text-red-800 transition-colors"
+              >
+                <FiLogOut className="mr-2" /> Sign Out
+              </button>
+              <p className="text-gray-600 mt-4">Other settings options go here...</p>
+            </div>
+          </div>
+        );
       default:
         return (
           <div className="p-6">
@@ -43,9 +71,9 @@ const AdminPage = () => {
 
   return (
     <div className="h-screen flex flex-col bg-gray-50">
-      <AdminHeader toggleSidebar={toggleSidebar} showSettings={showSettings} />
+      <AdminHeader toggleSidebar={toggleSidebar} showSettings={showSettings} onSignOut={handleSignOut} />
       <div className="flex flex-1 overflow-hidden">
-        <AdminSidebar isOpen={sidebarOpen} setActiveContent={setActiveContent} />
+        <AdminSidebar isOpen={sidebarOpen} setActiveContent={setActiveContent} onSignOut={handleSignOut} />
         <main className="flex-1 overflow-y-auto transition-all duration-300">
           {renderContent()}
         </main>
