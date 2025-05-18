@@ -7,8 +7,9 @@ dotenv.config();
 // const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
+//creates a Stripe Checkout session when the user clicks "Pay Now".
 export const createPaymentIntent = async (req, res) => {
-  const { cartItems, deliveryAddress } = req.body;
+  const { cartItems, deliveryAddress } = req.body; ////Gets items in the cart and the delivery address from the request body.
 
   try {
     const session = await stripe.checkout.sessions.create({
@@ -28,7 +29,7 @@ export const createPaymentIntent = async (req, res) => {
           shipping_rate_data: {
             type: "fixed_amount",
             fixed_amount: {
-              amount: 250 * 100, // $5.00 shipping
+              amount: 250 * 100, //Adds a flat-rate shipping fee (250 LKR).
               currency: "lkr",
             },
             display_name: "Standard Shipping",
@@ -42,7 +43,7 @@ export const createPaymentIntent = async (req, res) => {
       mode: "payment",
       success_url: `http://localhost:5173/customer/order/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: "http://localhost:5173/cancel",
-      metadata: {
+      metadata: { //Metadata stores cart data and delivery address with the session for later use.
         cartItems: JSON.stringify(
           cartItems.map((item) => ({
             id: item._id,
@@ -67,15 +68,16 @@ export const placeOrder = async (req, res) => {
   try {
     const { sessionId } = req.body;
 
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    const session = await stripe.checkout.sessions.retrieve(sessionId); //Fetches session data from Stripe using the session ID
+
 
     const cartItemsRaw = session.metadata.cartItems
       ? JSON.parse(session.metadata.cartItems)
       : [];
 
     const deliveryAddress = session.metadata.deliveryAddress || "Not available";
-    // console.log(cartItemsRaw);
 
+    //Prepares the order items for storing in the database
     const cartItemsFormatted = cartItemsRaw.map((item) => ({
       itemName: item.name,
       itemId: item.id,
@@ -83,11 +85,14 @@ export const placeOrder = async (req, res) => {
       qty: item.qty,
     }));
 
-    const totalAmount = cartItemsFormatted.reduce(
+    //Calculates total price of the order.
+    const itemTotal = cartItemsFormatted.reduce(
       (sum, item) => sum + item.unitPrice * item.qty,
       0
     );
+    const totalAmount = itemTotal + 250;
 
+    //Creates an object with all the order details.
     const orderData = {
       customerId:
         session.client_reference_id ??
@@ -97,8 +102,7 @@ export const placeOrder = async (req, res) => {
       paymentMethod: "Card",
       deliveryAddress: deliveryAddress,
       paymentStatus: "PAID",
-      orderStatus: "PLACED", // default status
-      // cardInfo: paymentMethod === "Card" ? cardInfo : undefined,
+      orderStatus: "PLACED", 
     };
 
     if (session.payment_status === "paid") {
